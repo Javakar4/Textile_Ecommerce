@@ -1,12 +1,13 @@
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import assets from "../assets/assets";
+import ProductCard from "./ProductCard";
 
 function CollectionsScroller() {
     const [stopScroll, setStopScroll] = React.useState(false);
 
     // Duplicate cards for infinite scrolling
-    const cards = [...assets.scrollingCard, ...assets.scrollingCard];
+    const cards = [...assets.productData, ...assets.productData];
 
     return (
         <>
@@ -42,7 +43,7 @@ function CollectionsScroller() {
 
                 {/* Scroller */}
                 <div
-                    className="overflow-hidden w-full relative max-w-6xl mx-auto"
+                    className="overflow-hidden w-full relative max-w-7xl mx-auto"
                     onMouseEnter={() => setStopScroll(true)}
                     onMouseLeave={() => setStopScroll(false)}
                 >
@@ -51,31 +52,36 @@ function CollectionsScroller() {
 
                     {/* Marquee */}
                     <div
-                        className="marquee-inner"
+                        className="marquee-inner gap-4"
                         style={{
                             animationPlayState: stopScroll ? "paused" : "running",
-                            animationDuration: `${assets.scrollingCard.length * 3000}ms`,
+                            animationDuration: `${assets.productData.length * 3000}ms`,
                         }}
                     >
-                        {cards.map((card, index) => (
-                            <div
-                                key={index}
-                                className="w-64 mx-4 h-[22rem] relative group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex-shrink-0"
-                            >
-                                <img
-                                    src={card.image}
-                                    alt={card.title}
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                />
-                                <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white">
-                                    <h3 className="text-lg font-bold mb-1" style={{ fontFamily: "Playfair Display, serif" }}>
-                                        {card.title}
-                                    </h3>
-                                    <p className="text-sm mb-3 opacity-90">{card.desc}</p>
-                                    <button className="px-3 py-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 rounded-md transition">
-                                        View Collection
-                                    </button>
-                                </div>
+                        {/* {cards.map((product, index) => (
+                            // <div
+                            //     key={index}
+                            //     className="w-64 mx-4 h-[22rem] relative group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex-shrink-0"
+                            // >
+                            //     <img
+                            //         src={card.images.main}
+                            //         alt={card.name}
+                            //         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            //     />
+                            //     <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white">
+                            //         <h3 className="text-lg font-bold mb-1" style={{ fontFamily: "Playfair Display, serif" }}>
+                            //             {card.name}
+                            //         </h3>
+                            //         <p className="text-sm mb-3 opacity-90">{card.description[0]}</p>
+                            //         <button className="px-3 py-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 rounded-md transition">
+                            //             View Collection
+                            //         </button>
+                            //     </div>
+                            // </div>
+                        ))} */}
+                        {cards.map((product, index) => (
+                            <div key={product.id || index}>
+                                <ProductCard product={product} />
                             </div>
                         ))}
                     </div>

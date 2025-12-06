@@ -80,588 +80,492 @@ const testimonials = [
     }
 ];
 
-// ScrollingCard
-const scrollingCard = [
-    {
-        title: "Streetwear Essentials",
-        desc: "Bold looks designed for modern men.",
-        image: "https://images.unsplash.com/photo-1543487945-139a97f387d5?w=1200&auto=format&fit=crop&q=60"
-    },
-    {
-        title: "Urban Classics",
-        desc: "Premium everyday outfits.",
-        image: "https://images.unsplash.com/photo-1529254479751-faeedc59e78f?w=1200&auto=format&fit=crop&q=60"
-    },
-    {
-        title: "Work & Formal",
-        desc: "Sharp, confident, professional fits.",
-        image: "https://images.unsplash.com/photo-1618327907215-4e514efabd41?w=1200&auto=format&fit=crop&q=60"
-    },
-    {
-        title: "Casual Comfort",
-        desc: "Soft and stylish daily wear.",
-        image: "https://images.unsplash.com/photo-1583407723467-9b2d22504831?w=1200&auto=format&fit=crop&q=60"
-    }
-];
 
 
 
 // Product-Card
-const product = {
-    id: "FAB002",
-    name: "Classic Pure Cotton Printed Fabric",
-    image: "/images/fabric-sample.jpg",
-    material: "100% Pure Cotton",
-    price: 549,
-    originalPrice: 799,
-    discount: 31,
-    colors: ["#D4A373", "#F5F5DC", "#8B5E3C"],
-    category: "Handblock Printed Cotton",
-    gsm: 160,
-    fabricCare: "Gentle Machine Wash",
-    inStock: true
-};
+// const product = {
+//     id: "FAB002",
+//     name: "Classic Pure Cotton Printed Fabric",
+//     image: "/images/fabric-sample.jpg",
+//     material: "100% Pure Cotton",
+//     price: 549,
+//     originalPrice: 799,
+//     discount: 31,
+//     colors: ["#D4A373", "#F5F5DC", "#8B5E3C"],
+//     category: "Handblock Printed Cotton",
+//     gsm: 160,
+//     fabricCare: "Gentle Machine Wash",
+//     inStock: true
+// };
 
 
 // Product Details
 const productData = [
     {
-    id: "PRD-2024-001",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-201",
+        sku: "MN-BLZ-2024-NVY",
+        name: "Slim Fit Blazer Jacket",
+        brand: {
+            name: "Executive Style",
+            url: "#"
+        },
+        category: "MC",
+        pricing: {
+            current: 149.99,
+            original: 229.99,
+            discount: 35,
+            savings: 80.00
+        },
+        rating: {
+            score: 4.6,
+            count: 412
+        },
+        stock: {
+            available: true,
+            label: "In Stock"
+        },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=800&h=800&fit=crop",
+            thumbnails: [
+                "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1594938291221-94f18cbb5660?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1593030668990-a9c29f7c8d04?w=200&h=200&fit=crop",
+                "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=200&h=200&fit=crop"
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "L",
+        material: "Premium Wool Blend",
+        description: [
+            "Elevate your professional wardrobe with this sophisticated slim fit blazer. Perfect for business meetings, interviews, or formal events.",
+            "Crafted from premium wool blend fabric with a modern slim fit silhouette that's tailored to perfection.",
+            "Features notch lapels, two-button closure, functional sleeve buttons, and interior pockets for a refined finish."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
+        ],
+        specifications: {
+            category: "Men's Fashion",
+            brand: "Executive Style",
+            material: "Wool Blend",
+            sizes: "S, M, L, XL, XXL",
+            productId: "PRD-2024-201"
+        },
+        collections: ["Business Wear", "Best Sellers", "Formal Collection"],
+        tags: ['blazer', 'formal', 'business', 'slim-fit', 'wool', 'professional'],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Fashion", url: "#" },
+            { label: "Slim Fit Blazer Jacket", url: null }
+        ],
+        offer: {
+            title: "Professional Style!",
+            description: "Save 35% on premium blazers. Look sharp every day!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-002",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-303",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "MC",
+        pricing: { current: 129.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/1/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/2/600/400",
+                "https://picsum.photos/id/3/600/400",
+                "https://picsum.photos/id/4/600/400",
+                "https://picsum.photos/id/5/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Silk",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Shirts", "Casual Wear"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-003",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-302",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "MC",
+        pricing: { current: 129.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/6/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/7/600/400",
+                "https://picsum.photos/id/8/600/400",
+                "https://picsum.photos/id/9/600/400",
+                "https://picsum.photos/id/10/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Premium Wool Blend",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["T-Shirts", "Casual Wear"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-004",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-304",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "MC",
+        pricing: { current: 129.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/11/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/22/600/400",
+                "https://picsum.photos/id/33/600/400",
+                "https://picsum.photos/id/44/600/400",
+                "https://picsum.photos/id/55/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Premium Wool Blend",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Pants", "Denim"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-005",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-305",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "KC",
+        pricing: { current: 90.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/12/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/13/600/400",
+                "https://picsum.photos/id/14/600/400",
+                "https://picsum.photos/id/15/600/400",
+                "https://picsum.photos/id/16/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Cotton",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Shorts", "Summer Wear"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-006",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-306",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "KC",
+        pricing: { current: 109.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/17/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/18/600/400",
+                "https://picsum.photos/id/19/600/400",
+                "https://picsum.photos/id/20/600/400",
+                "https://picsum.photos/id/21/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Premium Wool Blend",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Ethnic Wear", "Festive Collection"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-007",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-307",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "KC",
+        pricing: { current: 111.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/23/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/24/600/400",
+                "https://picsum.photos/id/25/600/400",
+                "https://picsum.photos/id/26/600/400",
+                "https://picsum.photos/id/27/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Cotton",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Winter Wear", "Jackets"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
-    },
-    rating: {
-        score: 4.5,
-        count: 248
-    },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
     {
-    id: "PRD-2024-008",
-    sku: "WH-PRO-2024-BLK",
-    name: "Premium Wireless Headphones",
-    brand: {
-        name: "AudioTech",
-        url: "#"
+        id: "PRD-2024-308",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "KC",
+        pricing: { current: 115.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/28/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/29/600/400",
+                "https://picsum.photos/id/30/600/400",
+                "https://picsum.photos/id/31/600/400",
+                "https://picsum.photos/id/32/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Premium Wool Blend",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Kids Shorts", "Summer Wear"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    category: "Electronics",
-    pricing: {
-        current: 199.99,
-        original: 299.99,
-        discount: 33,
-        savings: 100.00
+    {
+        id: "PRD-2024-309",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "KC",
+        pricing: { current: 119.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/34/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/35/600/400",
+                "https://picsum.photos/id/36/600/400",
+                "https://picsum.photos/id/37/600/400",
+                "https://picsum.photos/id/38/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Premium Wool Blend",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Kids T-Shirts", "Casual Wear"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    rating: {
-        score: 4.5,
-        count: 248
+    {
+        id: "PRD-2024-3010",
+        sku: "MN-BLZ-2024-BLK",
+        name: "Classic Black Slim Fit Blazer",
+        brand: { name: "Urban Elite", url: "#" },
+        category: "KC",
+        pricing: { current: 100.99, original: 199.99, discount: 35, savings: 70.00 },
+        rating: { score: 4.7, count: 350 },
+        stock: { available: true, label: "In Stock" },
+        badges: ["Best Seller"],
+        images: {
+            main: "https://picsum.photos/id/39/600/400",
+            thumbnails: [
+                "https://picsum.photos/id/40/600/400",
+                "https://picsum.photos/id/41/600/400",
+                "https://picsum.photos/id/42/600/400",
+                "https://picsum.photos/id/43/600/400",
+            ]
+        },
+        sizes: ["S", "M", "L", "XL", "XXL"],
+        defaultSize: "M",
+        material: "Premium Wool Blend",
+        description: [
+            "A timeless slim fit blazer designed for meetings and events.",
+            "Crafted using premium wool blend fabric with a structured silhouette."
+        ],
+        features: [
+            { icon: "Truck", label: "Free Shipping" },
+            { icon: "Shield", label: "1-Year Warranty" }
+        ],
+        specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
+        collections: ["Frocks", "Party Wear"],
+        tags: ["blazer", "formal", "black"],
+        breadcrumb: [
+            { label: "Home", url: "#" },
+            { label: "Men's Collections", url: "#" },
+            { label: "Classic Black Slim Fit Blazer", url: null }
+        ],
+        offer: {
+            title: "Exclusive Deal",
+            description: "Save 35% on premium blazers!",
+            ctaText: "Shop Now"
+        }
     },
-    stock: {
-        available: true,
-        label: "In Stock"
-    },
-    badges: ["Featured"],
-    images: {
-        main: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&h=800&fit=crop",
-        thumbnails: [
-            "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1484704849700-f032a568e944?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1487215078519-e21cc028cb29?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-            "https://images.unsplash.com/photo-1545127398-14699f92334b?w=200&h=200&fit=crop",
-        ]
-    },
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    defaultSize: "M",
-    material: "Premium Leather & Aluminum",
-    description: [
-        "Experience premium audio quality with our flagship wireless headphones. Engineered with advanced noise-cancellation technology and premium materials.",
-        "The ergonomic design features memory foam ear cushions wrapped in genuine leather for exceptional comfort.",
-        "With up to 30 hours of battery life, Bluetooth 5.0 connectivity, and intuitive touch controls, these headphones are the perfect companion."
-    ],
-    features: [
-        { icon: Truck, label: "Free Shipping" },
-        { icon: RotateCcw, label: "30-Day Returns" },
-        { icon: Shield, label: "2-Year Warranty" }
-    ],
-    specifications: {
-        category: "Electronics",
-        brand: "AudioTech",
-        material: "Leather & Aluminum",
-        sizes: "S, M, L, XL, XXL",
-        productId: "PRD-2024-001"
-    },
-    collections: ["Premium Audio", "Best Sellers", "New Arrivals"],
-    tags: ['wireless', 'noise-cancelling', 'bluetooth', 'premium', 'over-ear', 'long-battery'],
-    breadcrumb: [
-        { label: "Home", url: "#" },
-        { label: "Electronics", url: "#" },
-        { label: "Premium Wireless Headphones", url: null }
-    ],
-    offer: {
-        title: "Limited Time Offer!",
-        description: "Get 33% off on this featured product. Don't miss out!",
-        ctaText: "Shop Now"
-    }
-},
-];
+]
 
 
 
@@ -676,7 +580,6 @@ export default {
     heroImage4,
     categories,
     testimonials,
-    scrollingCard,
-    product,
+    // product,
     productData,
 }
