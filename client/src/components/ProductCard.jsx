@@ -13,10 +13,11 @@ const ProductCard = ({ product }) => {
 
     const handleQuickView = () => {
         navigate(`/product-detail/${product.id}`);
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     return (
-        <div className="flex items-center justify-center w-[300px]">
+        <div className="flex items-center justify-center w-[270px]">
             {/* Product Card */}
             <div
                 className="group relative flex flex-col bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full h-[400px]"
