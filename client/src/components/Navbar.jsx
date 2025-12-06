@@ -22,7 +22,7 @@ function Navbar() {
             </NavLink>
 
             {/* Desktop Menu */}
-            <div className="hidden sm:flex items-center gap-8 font-semibold">
+            <div className="hidden sm:flex items-center gap-8 uppercase">
                 <NavLink to="/" className="hover:text-amber-700 transition duration-200">
                     Home
                 </NavLink>
