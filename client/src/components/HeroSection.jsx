@@ -8,7 +8,7 @@ export default function HeroSection() {
         if (!particleContainer) return;
 
         particleContainer.innerHTML = "";
-        const particleCount = 25;
+        const particleCount = 10;
 
         const shapes = [
             '<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10" opacity="0.3"/><circle cx="12" cy="12" r="6" opacity="0.5"/><circle cx="12" cy="12" r="3"/></svg>',
@@ -120,7 +120,7 @@ export default function HeroSection() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <NavLink to='/products' className="group bg-amber-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center gap-3">
+                                <NavLink to='/all-products' className="group bg-amber-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center gap-3">
                                     Explore Collections
                                 </NavLink>
 
