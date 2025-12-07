@@ -221,7 +221,9 @@ export default function ProductDetailPage() {
                                     const Icon = item.icon;
                                     return (
                                         <div key={item.label} className="flex flex-col items-center">
-                                            <Icon className="w-8 h-8 text-amber-700 mb-2" />
+                                            {item.icon === "Truck" && <Truck className="w-8 h-8 text-amber-700 mb-2" />}
+                                            {item.icon === "RotateCcw" && <RotateCcw className="w-8 h-8 text-amber-700 mb-2" />}
+                                            {item.icon === "Shield" && <Shield className="w-8 h-8 text-amber-700 mb-2" />}
                                             <span className="text-xs text-gray-600 font-medium">{item.label}</span>
                                         </div>
                                     );

@@ -22,7 +22,7 @@ function Navbar() {
             </NavLink>
 
             {/* Desktop Menu */}
-            <div className="hidden sm:flex items-center gap-8 uppercase">
+            <div className="hidden lg:flex items-center gap-8 uppercase">
                 <NavLink to="/" className="hover:text-amber-700 transition duration-200">
                     Home
                 </NavLink>
@@ -122,7 +122,7 @@ function Navbar() {
                 )}
             </div>
 
-            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="sm:hidden">
+            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="lg:hidden">
                 {/* Menu Icon SVG */}
                 <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="21" height="1.5" rx=".75" fill="#426287" />
@@ -133,7 +133,7 @@ function Navbar() {
 
             {/* Mobile Menu */}
             {open && (
-                <div className="bg-white/90 absolute top-[60px] left-0 w-full text-black shadow-lg py-5 flex flex-col gap-5 px-6 text-lg sm:hidden z-40 animate-fadeSlide border-t border-[--color-secondary]/40 backdrop-blur-md">
+                <div className="bg-white/90 absolute top-[60px] left-0 w-full text-black shadow-lg py-5 flex flex-col gap-5 px-6 text-lg lg:hidden z-40 animate-fadeSlide border-t border-[--color-secondary]/40 backdrop-blur-md">
                     <NavLink to="/" onClick={() => setOpen(false)} className="hover:text-amber-700 transition duration-200">
                         Home
                     </NavLink>

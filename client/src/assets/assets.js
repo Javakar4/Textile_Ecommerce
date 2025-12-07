@@ -197,7 +197,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Shirts", "Casual Wear"],
@@ -241,7 +242,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["T-Shirts", "Casual Wear"],
@@ -285,7 +287,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Pants", "Denim"],
@@ -329,7 +332,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Shorts", "Summer Wear"],
@@ -373,7 +377,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Ethnic Wear", "Festive Collection"],
@@ -417,7 +422,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Winter Wear", "Jackets"],
@@ -461,7 +467,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Kids Shorts", "Summer Wear"],
@@ -505,7 +512,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Kids T-Shirts", "Casual Wear"],
@@ -549,7 +557,8 @@ const productData = [
         ],
         features: [
             { icon: "Truck", label: "Free Shipping" },
-            { icon: "Shield", label: "1-Year Warranty" }
+            { icon: "RotateCcw", label: "60-Day Returns" },
+            { icon: "Shield", label: "2-Year Warranty" }
         ],
         specifications: { category: "Men's Collections", brand: "Urban Elite", material: "Wool Blend" },
         collections: ["Frocks", "Party Wear"],
