@@ -133,8 +133,8 @@ const ProductCard = ({ product }) => {
                                 ${product.pricing.original.toFixed(2)}
                             </span>
                         </div>
-                        <button className="bg-gray-900 text-white p-2 rounded-lg hover:bg-gray-800 transition-colors">
-                            <ShoppingBag size={14} />
+                        <button className="bg-gray-900 text-white p-2 rounded-lg hover:bg-gray-800 transition-colors flex flex-row items-center gap-1">
+                            <span className='text-[10px]'>Add to Cart</span><ShoppingBag size={14} />
                         </button>
                     </div>
                 </div>

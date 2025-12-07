@@ -24,10 +24,10 @@ const AllProductsPage = () => {
         price: true,
         material: true,
         size: true,
-        rating: true,
+        rating: false,
         brand: true,
         tags: true,
-        stock: true
+        stock: false
     });
 
     // Extract unique values from products for filter options
