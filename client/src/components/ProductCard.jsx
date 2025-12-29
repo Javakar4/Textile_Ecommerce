@@ -17,7 +17,7 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <div className="flex items-center justify-center w-[270px]">
+        <div className="flex items-center justify-center w-[250px]">
             {/* Product Card */}
             <div
                 className="group relative flex flex-col bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full h-[400px]"
@@ -25,7 +25,9 @@ const ProductCard = ({ product }) => {
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {/* Image Container */}
-                <div className="relative h-[60%] bg-gray-200 overflow-hidden">
+                {/* <div className="relative h-[60%] bg-gray-200 overflow-hidden"> */}
+                <div className="relative w-full aspect-[3/4] bg-gray-200 overflow-hidden">
+
                     <img
                         src={product.images.main}
                         alt={product.name}
