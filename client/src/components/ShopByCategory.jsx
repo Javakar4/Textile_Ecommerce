@@ -40,7 +40,7 @@ export default function CategoriesSection() {
                         return (
                             <div
                                 key={i}
-                                className="group relative bg-gradient-to-br from-stone-50 to-amber-50 rounded-xl p-4 hover:shadow-xl duration-300 transform hover:-translate-y-1 border border-stone-200 overflow-hidden"
+                                className="group relative bg-linear-to-br from-stone-50 to-amber-50 rounded-xl p-4 hover:shadow-xl duration-300 transform hover:-translate-y-1 border border-stone-200 overflow-hidden"
                             >
                                 <div className="absolute top-0 right-0 w-16 h-16 bg-amber-200 rounded-full blur-xl opacity-0 group-hover:opacity-40 duration-300"></div>
 
@@ -48,7 +48,7 @@ export default function CategoriesSection() {
 
                                     {/* Icon */}
                                     <div
-                                        className={`w-10 h-10 bg-gradient-to-br ${cat.color} rounded-xl flex items-center justify-center mb-3 transform duration-300 group-hover:scale-105 group-hover:translate-x-1 group-hover:rotate-[20deg] text-white text-lg`}
+                                        className={`w-10 h-10 bg-linear-to-br ${cat.color} rounded-xl flex items-center justify-center mb-3 transform duration-300 group-hover:scale-105 group-hover:translate-x-1 group-hover:rotate-[20deg] text-white text-lg`}
                                     >
                                         <Icon className="text-xl" /> {/* FIXED */}
                                     </div>

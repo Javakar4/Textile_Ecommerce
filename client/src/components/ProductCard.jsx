@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
             >
                 {/* Image Container */}
                 {/* <div className="relative h-[60%] bg-gray-200 overflow-hidden"> */}
-                <div className="relative w-full aspect-[3/4] bg-gray-200 overflow-hidden">
+                <div className="relative w-full aspect-3/4 bg-gray-200 overflow-hidden">
 
                     <img
                         src={product.images.main}
@@ -43,7 +43,7 @@ const ProductCard = ({ product }) => {
                     {/* Discount Badge */}
                     {product.pricing.discount > 0 && (
                         <div className="absolute top-2 left-2">
-                            <span className="bg-rose-600 text-white text-[10px] font-bold px-1 py-[1px] rounded">
+                            <span className="bg-rose-600 text-white text-[10px] font-bold px-1 py-px rounded">
                                 -{product.pricing.discount}%
                             </span>
                         </div>
@@ -118,7 +118,7 @@ const ProductCard = ({ product }) => {
                         {product.tags.slice(0, 2).map((tag, index) => (
                             <span
                                 key={index}
-                                className="text-[8px] bg-gray-100 text-gray-700 px-1 py-[1px] rounded-full"
+                                className="text-[8px] bg-gray-100 text-gray-700 px-1 py-px rounded-full"
                             >
                                 {tag}
                             </span>
