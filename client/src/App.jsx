@@ -1,6 +1,7 @@
 import React from 'react'
 import Navbar from './components/Navbar'
-import AppRoutes from './components/AppRoutes'
+// import AppRoutes from './components/AppRoutes'
+import Routes from './components/Routes'
 import ScrollToTop from './components/ScrollToTop'
 import Footer from './components/Footer'
 import { ToastContainer } from "react-toastify";

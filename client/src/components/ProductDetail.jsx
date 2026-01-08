@@ -268,7 +268,7 @@ export default function ProductDetailPage() {
                             {Object.entries(productData.specifications).map(([key, value]) => (
                                 <div key={key} className={`flex justify-between py-2 ${key !== 'productId' ? 'border-b border-gray-100' : ''}`}>
                                     <span className="text-gray-600 font-medium">
-                                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1')}
+                                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' ₹1')}
                                     </span>
                                     <span className={`text-gray-900 font-semibold ${key === 'productId' ? 'font-mono text-sm' : ''}`}>
                                         {value}

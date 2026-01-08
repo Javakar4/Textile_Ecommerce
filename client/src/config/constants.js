@@ -1,5 +1,6 @@
 import React from 'react';
- export const constants = { cartMock :[
+export const constants = {
+    cartMock: [
         {
             name: 'Organic Cotton Canvas',
             sku: 'OCC-001-NAT',
@@ -30,19 +31,23 @@ import React from 'react';
             quantity: 1,
             image: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=200&h=200&fit=crop',
         },
-]}
+    ]
+}
 
+
+const BASE_URL =
+    import.meta.env.VITE_BASE_URL || 'http://localhost:4000'
 
 
 const apiEndpoints = {
-    NODE_ENV : import.meta.env.MODE,
-    BASE_URL ,
-    AUTH:{
-        SEND_OTP : `/api/v1/auth/sendOtp`,
-        VERIFY_OTP_SIGNUP : `/api/v1/auth/verifyOtpSignup`,
-        LOGIN : `/api/v1/auth/login`
+    NODE_ENV: import.meta.env.MODE,
+    BASE_URL,
+    AUTH: {
+        SEND_OTP: `/api/v1/auth/sendOtp`,
+        VERIFY_OTP_SIGNUP: `/api/v1/auth/verifyOtpSignup`,
+        LOGIN: `/api/v1/auth/login`
     },
-    CART:{
+    CART: {
         ADD: `/api/v1/cart/add`,
         GET: `/api/v1/cart/`,
         UPDATE_ITEM: `/api/v1/cart/item`,

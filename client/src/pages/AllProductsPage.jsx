@@ -315,10 +315,10 @@ const AllProductsPage = () => {
                     <FilterSection title="Price Range" section="price">
                         <div className="space-y-2">
                             {[
-                                { value: '0-50', label: 'Under $50' },
-                                { value: '50-100', label: '$50 - $100' },
-                                { value: '100-200', label: '$100 - $200' },
-                                { value: '200+', label: '$200 & Above' }
+                                { value: '0-50', label: 'Under ₹50' },
+                                { value: '50-100', label: '₹50 - ₹100' },
+                                { value: '100-200', label: '₹100 - ₹200' },
+                                { value: '200+', label: '₹200 & Above' }
                             ].map(range => (
                                 <label key={range.value} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
                                     <input

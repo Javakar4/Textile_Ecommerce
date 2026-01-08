@@ -90,7 +90,7 @@ function CartPage() {
                         <span>${total.toFixed(2)}</span>
                     </div>
 
-                    <button onClick={() => navigate("/cart/checkout")} className="w-full bg-amber-800 text-white py-3 rounded-lg hover:bg-amber-600 transition">
+                    <button onClick={() => (cartItems.length > 0 ? navigate("/cart/checkout") : toast.error("Cart is empty!"))} className="w-full bg-amber-800 text-white py-3 rounded-lg hover:bg-amber-600 transition">
                         Proceed to Checkout
                     </button>
                 </div>

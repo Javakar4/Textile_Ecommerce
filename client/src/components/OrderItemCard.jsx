@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ChevronRight, Package2, Clock, DollarSign, MapPin, Phone, ChevronDown } from "lucide-react";
+import { ChevronRight, Package2, Clock, IndianRupee , MapPin, Phone, ChevronDown } from "lucide-react";
 
 export default function OrderItemCard({ order }) {
     const [showDetails, setShowDetails] = useState(false);
@@ -8,8 +8,8 @@ export default function OrderItemCard({ order }) {
     const getStatusColor = (status) => {
         const colors = {
             Ordered: "from-primaryLight via-primary to-primaryDark",
-            Shipping: "from-primary via-primaryDark to-footerBg",
-            Delivered: "from-borderLight via-mutedText to-borderDark"
+            Shipping: "from-blue-400 via-blue-500 to-blue-700",
+            Delivered: "from-green-400 via-green-500 to-green-700",
         };
 
 
@@ -75,7 +75,7 @@ export default function OrderItemCard({ order }) {
                             <div className="text-right">
                                 <p className="text-sm text-gray-500 font-medium mb-1">Total Amount</p>
                                 <div className="flex items-center gap-1">
-                                    <DollarSign className="w-5 h-5 text-gray-700" />
+                                    <IndianRupee  className="w-5 h-5 text-gray-700" />
                                     <span className="text-3xl font-black text-gray-900">{order.total.toFixed(2)}</span>
                                 </div>
                             </div>
@@ -136,7 +136,7 @@ export default function OrderItemCard({ order }) {
                                                     Size: {item.size}
                                                 </span>
                                                 <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold">
-                                                    ${item.pricing.current} each
+                                                    ₹{item.pricing.current} each
                                                 </span>
                                             </div>
                                         </div>
@@ -146,7 +146,7 @@ export default function OrderItemCard({ order }) {
                                             <p className="text-sm text-gray-500 mb-1">Subtotal</p>
                                             <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 
                                                          bg-clip-text text-transparent">
-                                                ${(item.pricing.current * item.quantity).toFixed(2)}
+                                                ₹{(item.pricing.current * item.quantity).toFixed(2)}
                                             </p>
                                         </div>
                                     </div>
