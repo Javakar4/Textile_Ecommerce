@@ -9,6 +9,8 @@ import CartPage from '../pages/CartPage'
 import CheckoutPage from "../components/CheckoutPage";
 import OrdersPage from '../pages/OrdersPage'
 
+import Cart from '@components/cart/CartPage'
+
 const AppRoutes = () => {
 
     const publicRoutes = [

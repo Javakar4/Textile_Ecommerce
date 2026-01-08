@@ -18,7 +18,7 @@ export default defineConfig({
     hmr: true,
     proxy: {
       "/api": {
-        target: "http://localhost:4000",
+        target: import.meta.env.VITE_BASE_URL || "http://localhost:4000",
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ""),
       },
@@ -31,6 +31,7 @@ export default defineConfig({
       "@assets": path.resolve(__dirname, "./src/assets"),
       "@hooks": path.resolve(__dirname, "./src/hooks"),
       "@utils": path.resolve(__dirname, "./src/utils"),
+      "@config": path.resolve(__dirname, "./src/config"),
     }
   }
 })

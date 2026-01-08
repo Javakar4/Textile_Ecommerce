@@ -13,7 +13,7 @@ function App() {
       <ToastContainer />
       <Navbar/>
       <div>
-      <AppRoutes />
+      <Routes />
       </div>
       <Footer/>
     </div>
