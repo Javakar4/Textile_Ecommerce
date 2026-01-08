@@ -37,7 +37,6 @@ const AppRoutes = () => {
             {publicRoutes.map((route, index) => (
                 <Route key={index} path={route.path} element={route.element} />
             ))}
-            
             {privateRoutes.map((route, index) => (
                 <Route key={index} path={route.path} element={route.element} />
             ))}
