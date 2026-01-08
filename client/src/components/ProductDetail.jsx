@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { ChevronRight, ShoppingCart, Heart, Truck, RotateCcw, Shield, Plus, Minus } from "lucide-react";
-import assets from "../assets/assets";
+import { UseAppContext } from "../context/AppContext";
+import { toast } from 'react-toastify';
 
 export default function ProductDetailPage() {
+
+    const { navigate, showUserLogin, assets, setCartItems, addToCart } = UseAppContext()
     const { id } = useParams();
     const productData = assets.productData.find((p) => p.id === id);
     const [quantity, setQuantity] = useState(1);
@@ -11,7 +14,7 @@ export default function ProductDetailPage() {
     const [selectedImage, setSelectedImage] = useState(productData.images.main);
 
     const incrementQuantity = () => {
-        setQuantity((prev) => (prev < 99 ? prev + 1 : prev));
+        setQuantity((prev) => (prev < 20 ? prev + 1 : prev));
     };
 
     const decrementQuantity = () => {
@@ -24,6 +27,20 @@ export default function ProductDetailPage() {
         if (value > 99) value = 99;
         setQuantity(value);
     };
+
+
+    const handleCartButton = () => {
+        addToCart(productData, selectedSize, quantity);
+        console.log("ITEM ADDED TO CART");
+        toast.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
+    };
+
+    const handleBuyButton = () => {
+        addToCart(productData, selectedSize, quantity);
+        navigate("/cart");
+    };
+
+
 
     return (
         <div className="bg-gray-50 min-h-screen">
@@ -154,8 +171,8 @@ export default function ProductDetailPage() {
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
                                         className={`border-2 rounded-lg py-3 text-sm font-medium transition ${size === selectedSize
-                                                ? "border-amber-700 bg-amber-50 text-amber-800"
-                                                : "border-gray-300 text-gray-700 hover:border-amber-300"
+                                            ? "border-amber-700 bg-amber-50 text-amber-800"
+                                            : "border-gray-300 text-gray-700 hover:border-amber-300"
                                             }`}
                                     >
                                         {size}
@@ -202,14 +219,14 @@ export default function ProductDetailPage() {
                         {/* Buttons */}
                         <div className="border-t border-gray-200 pt-6 space-y-3">
                             <div className="flex gap-3">
-                                <button className="flex-1 bg-amber-700 text-white font-semibold py-4 rounded-xl hover:bg-amber-800 transition flex items-center justify-center gap-2">
+                                <button onClick={handleCartButton} className="flex-1 bg-amber-700 text-white font-semibold py-4 rounded-xl hover:bg-amber-800 transition flex items-center justify-center gap-2">
                                     <ShoppingCart className="w-5 h-5" /> Add to Cart
                                 </button>
                                 <button className="bg-white border-2 border-gray-300 text-gray-700 font-semibold px-6 py-4 rounded-xl hover:border-amber-700 hover:text-amber-700 transition">
                                     <Heart className="w-5 h-5" />
                                 </button>
                             </div>
-                            <button className="w-full bg-gray-900 text-white font-semibold py-4 rounded-xl hover:bg-gray-800 transition">
+                            <button onClick={handleBuyButton} className="w-full bg-gray-900 text-white font-semibold py-4 rounded-xl hover:bg-gray-800 transition">
                                 Buy Now
                             </button>
                         </div>

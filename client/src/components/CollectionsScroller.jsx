@@ -2,12 +2,13 @@ import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import assets from "../assets/assets";
 import ProductCard from "./ProductCard";
+import { NavLink } from "react-router-dom";
 
-function CollectionsScroller() {
+function CollectionsScroller({title, desc, products, category}) {
     const [stopScroll, setStopScroll] = React.useState(false);
 
     // Duplicate cards for infinite scrolling
-    const cards = [...assets.productData, ...assets.productData];
+    const cards = [...products, ...products];
 
     return (
         <>
@@ -28,17 +29,17 @@ function CollectionsScroller() {
                 <div className="flex justify-between items-center max-w-7xl mx-auto mb-6 flex-col sm:flex-row gap-3">
                     <div>
                         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900" style={{ fontFamily: "Playfair Display, serif" }}>
-                            Men's Collections
+                            {title}
                         </h2>
                         <p className="text-stone-600 mt-1 text-sm sm:text-base">
-                            Explore our premium selection crafted for style, comfort & confidence.
+                            {desc}
                         </p>
                     </div>
 
-                    <button className="group bg-stone-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-amber-700 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg">
+                    <NavLink to={`/all-collections?category=${category}`} className="group bg-stone-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-amber-700 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg">
                         View All Collections
                         <FaArrowRight className="text-lg transform transition-transform group-hover:translate-x-2" />
-                    </button>
+                    </NavLink>
                 </div>
 
                 {/* Scroller */}
@@ -80,7 +81,7 @@ function CollectionsScroller() {
                             // </div>
                         ))} */}
                         {cards.map((product, index) => (
-                            <div key={product.id || index}>
+                            <div key={index}>
                                 <ProductCard product={product} />
                             </div>
                         ))}

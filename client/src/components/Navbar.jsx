@@ -6,15 +6,26 @@ function Navbar() {
     const [open, setOpen] = useState(false);
     const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState()
     const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState()
-    const { navigate, user, setUser, setShowUserLogin, assets } = UseAppContext()
+    const { navigate, user, setUser, setShowUserLogin, assets, cartItems } = UseAppContext()
+    const [searchText, setSearchText] = useState("");
 
     const logout = async () => {
         setUser(null);
         navigate('/')
     }
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+
+        if (!searchText.trim()) return;
+
+        navigate(`/all-collections?search=${encodeURIComponent(searchText)}`);
+        // setSearchText("");
+        setOpen(false);
+    };
+
     return (
-        <nav className="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white/90 backdrop-blur-md transition-all">
+        <nav className="fixed font-semibold top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-gray-300 bg-white/90 backdrop-blur-md transition-all">
 
 
             <NavLink to='/'>
@@ -23,7 +34,7 @@ function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden lg:flex items-center gap-8 uppercase">
-                <NavLink to="/" className="hover:text-amber-700 transition duration-200">
+                <NavLink to="/" className="hover:text-amber-700 transition duration-200 font-semibold">
                     Home
                 </NavLink>
 
@@ -36,14 +47,14 @@ function Navbar() {
 
                     <div className="hidden group-hover:block absolute top-6  bg-white shadow border border-gray-200 py-2 w-40 rounded-md text-sm z-40">
                         <NavLink
-                            to="/collections/men"
+                            to="/all-collections?category=MC"
                             className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
                         >
                             Men&apos;s Collections
                         </NavLink>
 
                         <NavLink
-                            to="/collections/kids"
+                            to="/all-collections?category=KC"
                             className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
                         >
                             Kid&apos;s Collections
@@ -89,20 +100,37 @@ function Navbar() {
                     Contact
                 </NavLink>
 
-                <div className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full">
-                    <input className="py-1.5 w-30 bg-transparent outline-none placeholder-gray-500" type="text" placeholder="Search products" />
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M10.836 10.615 15 14.695" stroke="#7A7B7D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                        <path clipRule="evenodd" d="M9.141 11.738c2.729-1.136 4.001-4.224 2.841-6.898S7.67.921 4.942 2.057C2.211 3.193.94 6.281 2.1 8.955s4.312 3.92 7.041 2.783" stroke="#7A7B7D" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                </div>
+                <form
+                    onSubmit={handleSearch}
+                    className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full"
+                >
+                    <input
+                        value={searchText}
+                        onChange={(e) => setSearchText(e.target.value)}
+                        className="py-1.5 w-36 bg-transparent outline-none placeholder-gray-500"
+                        type="text"
+                        placeholder="Search products"
+                    />
+
+                    <button type="submit">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                            <path d="M10.836 10.615 15 14.695" stroke="#7A7B7D" strokeWidth="1.2" strokeLinecap="round" />
+                            <path d="M9.141 11.738c2.729-1.136 4.001-4.224 2.841-6.898S7.67.921 4.942 2.057C2.211 3.193.94 6.281 2.1 8.955s4.312 3.92 7.041 2.783"
+                                stroke="#7A7B7D"
+                                strokeWidth="1.2"
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </button>
+                </form>
+
 
                 <div className="relative cursor-pointer" onClick={() => navigate('/cart')}>
                     <svg width="18" height="18" viewBox="0 0 14 14" fill="none" className="text-amber-700" xmlns="http://www.w3.org/2000/svg">
                         <path d="M.583.583h2.333l1.564 7.81a1.17 1.17 0 0 0 1.166.94h5.67a1.17 1.17 0 0 0 1.167-.94l.933-4.893H3.5m2.333 8.75a.583.583 0 1 1-1.167 0 .583.583 0 0 1 1.167 0m6.417 0a.583.583 0 1 1-1.167 0 .583.583 0 0 1 1.167 0" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
 
-                    <button className="absolute -top-2 -right-3 text-xs text-black bg-amber-700 w-[18px] h-[18px] rounded-full">3</button>
+                    <button className="absolute -top-2 -right-3 text-xs text-black bg-amber-700 w-[18px] h-[18px] rounded-full">{cartItems.length}</button>
                 </div>
 
                 {!user ? (
@@ -149,8 +177,8 @@ function Navbar() {
 
                         {mobileCollectionsOpen && (
                             <div className="flex flex-col mt-2 ml-4 gap-2 animate-fadeSlide text-base ">
-                                <NavLink to="/collections/men" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Men's Collections</NavLink>
-                                <NavLink to="/collections/kids" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Kid's Collections</NavLink>
+                                <NavLink to="/all-collections?category=MC" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Men's Collections</NavLink>
+                                <NavLink to="/all-collections?category=KC" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Kid's Collections</NavLink>
                             </div>
                         )}
                     </div>

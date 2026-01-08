@@ -1,11 +1,15 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, X, ChevronUp, ChevronDown, Star, Search } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { UseAppContext } from "../context/AppContext";
+import { useSearchParams } from "react-router-dom";
 
 const AllProductsPage = () => {
     const { assets } = UseAppContext();
     const products = assets.productData || [];
+    const [searchParams] = useSearchParams();
+    const categoryParam = searchParams.get("category");
+    const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     const [sortBy, setSortBy] = useState('featured');
@@ -20,6 +24,14 @@ const AllProductsPage = () => {
         tags: [],
         inStockOnly: false
     });
+    useEffect(() => {
+        if (categoryParam) {
+            setFilters(prev => ({
+                ...prev,
+                category: categoryParam
+            }));
+        }
+    }, [categoryParam]);
     const [openSections, setOpenSections] = useState({
         price: true,
         material: true,
@@ -98,6 +110,18 @@ const AllProductsPage = () => {
 
     const filteredProducts = useMemo(() => {
         let filtered = [...products];
+
+        // 🔍 SEARCH FILTER (ADD HERE)
+        if (searchQuery) {
+            filtered = filtered.filter(p =>
+                p.name?.toLowerCase().includes(searchQuery)
+                // p.category?.toLowerCase().includes(searchQuery) ||
+                // p.brand?.name?.toLowerCase().includes(searchQuery) ||
+                // p.brand?.toLowerCase().includes(searchQuery) ||
+                // p.tags?.some(tag => tag.toLowerCase().includes(searchQuery))
+            );
+        }
+
 
         // Category filter
         if (filters.category) {
@@ -216,7 +240,7 @@ const AllProductsPage = () => {
         }
 
         return filtered;
-    }, [products, filters, sortBy]);
+    }, [products, filters, sortBy, searchQuery]);
 
     const FilterSection = ({ title, section, children }) => (
         <div className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
@@ -523,7 +547,7 @@ const AllProductsPage = () => {
                     {/* Product Grid */}
                     <div className="p-4 sm:p-6">
                         {filteredProducts.length > 0 ? (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
+                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
                                 {filteredProducts.map((product, index) => (
                                     <div key={product.id || index}>
                                         <ProductCard product={product} />

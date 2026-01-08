@@ -120,7 +120,7 @@ export default function HeroSection() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <NavLink to='/all-products' className="group bg-amber-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center gap-3">
+                                <NavLink to='/all-collections' className="group bg-amber-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center gap-3">
                                     Explore Collections
                                 </NavLink>
 

@@ -1,32 +1,43 @@
 import React, { useState } from 'react';
 import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
 import { UseAppContext } from "../context/AppContext";
+import { toast } from 'react-toastify';
 
 
 // Product Card Component
 const ProductCard = ({ product }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
-    const { navigate, user, setUser, setShowUserLogin, assets } = UseAppContext()
+    const { navigate, user, setUser, setShowUserLogin, assets, products, addToCart } = UseAppContext()
+    const productData = products.find(p => p.id === product.id);
+    const [quantity, setQuantity] = useState(1);
+    const [selectedSize, setSelectedSize] = useState(productData.defaultSize);
 
     // const product = assets.productData[1];
 
     const handleQuickView = () => {
-        navigate(`/product-detail/${product.id}`);
+        navigate(`/collection-detail/${product.id}`);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    const handleCartButton = () => {
+        const itemToAdd = productData || product; // fallback
+        addToCart(itemToAdd, selectedSize, quantity);
+        console.log("ITEM ADDED TO CART", itemToAdd);
+        toast.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
+    };
+
     return (
-        <div className="flex items-center justify-center w-[250px]">
+        <div className="flex items-center justify-center w-[180px] sm:w-[250px]">
             {/* Product Card */}
             <div
-                className="group relative flex flex-col bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full h-[400px]"
+                className="group relative flex flex-col bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 w-full h-auto sm:h-[400px]"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {/* Image Container */}
                 {/* <div className="relative h-[60%] bg-gray-200 overflow-hidden"> */}
-                <div className="relative w-full aspect-3/4 bg-gray-200 overflow-hidden">
+                <div className="relative w-full aspect-[3/4] bg-gray-200 overflow-hidden sm:aspect-[3/4]">
 
                     <img
                         src={product.images.main}
@@ -85,11 +96,11 @@ const ProductCard = ({ product }) => {
                         </span>
                     </div>
 
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate group-hover:text-rose-600 transition-colors">
+                    <h3 className="text-xs sm:text-sm font-semibold text-gray-900 mb-1 truncate group-hover:text-rose-600 transition-colors">
                         {product.name}
                     </h3>
 
-                    <p className="text-[10px] text-gray-600 mb-1 line-clamp-2">
+                    <p className="text-[9px] sm:text-[10px] text-gray-600 mb-1 line-clamp-2">
                         {product.description[0]}
                     </p>
 
@@ -135,8 +146,8 @@ const ProductCard = ({ product }) => {
                                 ${product.pricing.original.toFixed(2)}
                             </span>
                         </div>
-                        <button className="bg-gray-900 text-white p-2 rounded-lg hover:bg-gray-800 transition-colors flex flex-row items-center gap-1">
-                            <span className='text-[10px]'>Add to Cart</span><ShoppingBag size={14} />
+                        <button onClick={handleCartButton} className="bg-gray-900 text-white p-2 rounded-lg hover:bg-gray-800 transition-colors flex flex-row items-center gap-1">
+                            <span className='hidden sm:block text-[10px]'>Add to Cart</span><ShoppingBag size={14} />
                         </button>
                     </div>
                 </div>

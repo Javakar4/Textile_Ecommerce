@@ -1,21 +1,23 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import HeroSection from '../components/HeroSection'
 import ShopByCatagory from '../components/ShopByCategory'
 import Testimonials from '../components/Testimonials'
 import CollectionsScroller from '../components/CollectionsScroller'
 import NewsLetter from '../components/NewsLetter'
-import Footer from '../components/Footer'
+import { UseAppContext } from '../context/AppContext'
 
 function Home() {
+
+    const {mensCollection, kidsCollection} = UseAppContext();
+
     return (
         <div className='mt-16'>
             <HeroSection />
             <ShopByCatagory />
-            <CollectionsScroller/>
-            <CollectionsScroller/>
+            <CollectionsScroller title={"Men's Collections"} desc={"Explore our premium selection crafted for style, comfort & confidence."} products={mensCollection} category={"MC"}/>
+            <CollectionsScroller title={"Kid's Collections"} desc={"Explore our premium selection crafted for style, comfort & confidence."} products={kidsCollection} category={"KC"}/>
             <Testimonials />
             <NewsLetter />
-            <Footer />
         </div>
     )
 }
