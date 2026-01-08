@@ -5,6 +5,8 @@ import ProductCard from './ProductCard'
 import ProductDetailPage from './ProductDetail'
 import AllProductsPage from '../pages/AllProductsPage'
 
+import Cart from '@components/cart/CartPage'
+
 const AppRoutes = () => {
 
     const publicRoutes = [
@@ -19,6 +21,10 @@ const AppRoutes = () => {
         {
             path: '/product-detail/:id',
             element: <ProductDetailPage />
+        },
+        {
+            path: '/cart',
+            element: <Cart />
         }
     ]
 

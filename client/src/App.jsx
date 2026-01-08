@@ -1,13 +1,13 @@
 import React from 'react'
 import Navbar from './components/Navbar'
-import AppRoutes from './components/AppRoutes'
+import Routes from './components/Routes'
 
 function App() {
   return (
     <div>
       <Navbar/>
       <div>
-      <AppRoutes />
+      <Routes />
       </div>
     </div>
   )
