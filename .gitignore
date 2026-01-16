@@ -1,0 +1,55 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+#lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+poetry.lock
+
+# Build output
+dist/
+build/
+public/build/
+public/dist/
+.next/
+out/
+coverage/
+tmp/
+temp/
+.cache/
+.eslintcache
+
+# Environment variables
+.env
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# MongoDB database files (if any local db)
+*.local
+
+# Misc
+*.tgz
+*.swp
+*.swo
+
+# React Native
+.expo/
+.expo-shared/

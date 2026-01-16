@@ -36,9 +36,14 @@ bower_components
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
 build/Release
+dist/
 
 # Dependency directories
 node_modules/
+package-lock.json
+yarn.lock
+.pnpm-lock.yaml
+.esy-lock.json
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
