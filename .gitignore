@@ -53,3 +53,12 @@ Thumbs.db
 # React Native
 .expo/
 .expo-shared/
+
+
+.dev.md
+
+
+#ai
+.zenflow/
+.zencoder
+.qodo

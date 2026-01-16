@@ -6,6 +6,7 @@ import ScrollToTop from './components/ScrollToTop'
 import Footer from './components/Footer'
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {RouterProvider} from "react-router-dom"
 
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
       <ToastContainer />
       <Navbar/>
       <div>
-      <Routes />
+      <RouterProvider router={Routes}/>
       </div>
       <Footer/>
     </div>
