@@ -1,9 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import {Outlet} from 'react-dom'
+import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-export default function ProtectedRoutes(){
-    
-    return (
-        <Outlet />
-    )
+export default function ProtectedRoutes() {
+    return <Outlet />;
 }

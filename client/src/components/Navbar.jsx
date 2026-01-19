@@ -203,9 +203,9 @@ function Navbar() {
 
                     <NavLink to="/about" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>About</NavLink>
                     <NavLink to="/contact" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>Contact</NavLink>
-                    {user && <NavLink to="/contact" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>Profile</NavLink>}
-                    {user && <NavLink to="/contact" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>WishList</NavLink>}
-                    {user && <NavLink to="/contact" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>My Orders</NavLink>}
+                    {user && <NavLink to="/profile" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>Profile</NavLink>}
+                    {user && <NavLink to="/wishlist" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>WishList</NavLink>}
+                    {user && <NavLink to="/my-orders" className={'hover:text-amber-700'} onClick={() => setOpen(false)}>My Orders</NavLink>}
 
 
                     {/* Mobile Cart */}

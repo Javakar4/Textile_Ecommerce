@@ -31,7 +31,6 @@ function CartPage() {
         toast.success("Item deleted from cart!");
     };
 
-
     return (
         <div className="mt-20 p-6 space-y-10">
 
@@ -45,7 +44,6 @@ function CartPage() {
 
                     {cartItems.length > 0 ? (
                         <>
-                            {/* 24-col grid headings */}
                             <CartItem
                                 cartItems={cartItems}
                                 handleIncrement={(id, size) => updateCartQuantity(id, size, "inc")}
@@ -104,7 +102,6 @@ function CartPage() {
                     You might also like
                 </h3>
 
-                {/* 👉 Render your related products slider / grid here */}
                 <p className="text-gray-500 text-sm">
                     (Related Products Component Goes Here)
                 </p>

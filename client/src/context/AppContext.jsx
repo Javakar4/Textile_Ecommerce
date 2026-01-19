@@ -5,6 +5,13 @@ export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
     const [user, setUser] = useState(true);
+    const [userData, setUserData] = useState({
+        name: "Edward",
+        image: assets.profileIcon,
+        email: "edward@example.com",
+        phone: "+1 234 567 890",
+        joined: "Jan 2024"
+    });
     const [admin, setAdmin] = useState(false);
     const [showUserLogin, setShowUserLogin] = useState(true);
     const products = assets.productData;
@@ -12,17 +19,24 @@ export const AppContextProvider = ({ children }) => {
     const kidsCollection = products.filter(product => product.category === 'KC');
     const [cartItems, setCartItems] = useState([]);
     const [orderItems, setOrderItems] = useState([]);
+    const [wishlistItems, setWishlistItems] = useState([
+        products[0], // Slim Fit Blazer Jacket
+        products[1], // Classic Black Slim Fit Blazer
+        products[4], // Kid's Collection item
+    ]);
     // console.log(cartItems);
     const [addresses, setAddresses] = useState([
         {
-            name: "",
-            phone: "",
-            address: "",
-            landmark: "",
-            city: "",
-            state: "",
-            zip: "",
-            country: "",
+            id: 1,
+            name: "Edward",
+            phone: "+1 234 567 890",
+            address: "123 Main St",
+            landmark: "Near Park",
+            city: "New York",
+            state: "NY",
+            zip: "10001",
+            country: "USA",
+            isDefault: true
         },
     ]);
 
@@ -125,13 +139,31 @@ export const AppContextProvider = ({ children }) => {
         setCartItems([]);
     };
 
+    const addToWishlist = (product) => {
+        setWishlistItems((prev) => {
+            const exists = prev.find(item => item.id === product.id);
+            if (exists) {
+                return prev; // Already in wishlist
+            }
+            return [...prev, product];
+        });
+    };
+
+    const removeFromWishlist = (productId) => {
+        setWishlistItems((prev) => prev.filter(item => item.id !== productId));
+    };
+
+    const isInWishlist = (productId) => {
+        return wishlistItems.some(item => item.id === productId);
+    };
 
 
     const value = {
-        user, setUser, admin, setAdmin, showUserLogin, setShowUserLogin,
+        user, setUser, userData, setUserData, admin, setAdmin, showUserLogin, setShowUserLogin,
         assets, products, mensCollection, kidsCollection, cartItems, setCartItems, addToCart, updateCartQuantity,
         subtotal, totalDiscount, estimatedTax, total, addOrderItem, orderItems, clearCart,
         addresses, setAddresses,
+        wishlistItems, addToWishlist, removeFromWishlist, isInWishlist,
     };
 
     return (

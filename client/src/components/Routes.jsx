@@ -8,9 +8,10 @@ import Login from "../pages/Login";
 import CartPage from "../pages/CartPage";
 import CheckoutPage from "../components/CheckoutPage";
 import OrdersPage from "../pages/OrdersPage";
-import Cart from "@components/cart/CartPage";
 import Layout from "@components/layouts/Layout";
 import ProtectedRoutes from "./ProtectedRoutes";
+import ProfilePage from "../pages/ProfilePage";
+import WishlistPage from "../pages/WishlistPage";
 
 
 let AppRoutes = createBrowserRouter([
@@ -29,6 +30,8 @@ let AppRoutes = createBrowserRouter([
           { path: "cart", element: <CartPage /> },
           { path: "cart/checkout", element: <CheckoutPage /> },
           { path: "my-orders", element: <OrdersPage /> },
+          { path: "profile", element: <ProfilePage /> },
+          { path: "wishlist", element: <WishlistPage /> },
         ],
       },
     ],
