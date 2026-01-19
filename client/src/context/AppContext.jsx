@@ -1,11 +1,9 @@
 import { createContext, useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import assets from '../assets/assets'
 
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
-    const navigate = useNavigate();
     const [user, setUser] = useState(true);
     const [admin, setAdmin] = useState(false);
     const [showUserLogin, setShowUserLogin] = useState(true);
@@ -80,10 +78,10 @@ export const AppContextProvider = ({ children }) => {
 
 
     const addToCart = (productData, selectedSize, quantity) => {
-        if (!showUserLogin) {
-            navigate("/login");
-            return;
-        }
+        // if (!showUserLogin) {
+        //     navigate("/login");
+        //     return;
+        // }
 
         setCartItems((prev) => {
             const existingIndex = prev.findIndex(
@@ -130,7 +128,7 @@ export const AppContextProvider = ({ children }) => {
 
 
     const value = {
-        navigate, user, setUser, admin, setAdmin, showUserLogin, setShowUserLogin,
+        user, setUser, admin, setAdmin, showUserLogin, setShowUserLogin,
         assets, products, mensCollection, kidsCollection, cartItems, setCartItems, addToCart, updateCartQuantity,
         subtotal, totalDiscount, estimatedTax, total, addOrderItem, orderItems, clearCart,
         addresses, setAddresses,

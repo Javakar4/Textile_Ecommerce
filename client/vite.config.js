@@ -9,7 +9,6 @@ const __dirname = path.dirname(__filename)
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  // ✅ Correct way to load env variables in Vite config
   const env = loadEnv(mode, process.cwd(), '')
 
   return {
@@ -32,10 +31,13 @@ export default defineConfig(({ mode }) => {
       alias: {
         '@': path.resolve(__dirname, './src'),
         '@components': path.resolve(__dirname, './src/components'),
-        '@assets': path.resolve(__dirname, './src/assets'),
-        '@hooks': path.resolve(__dirname, './src/hooks'),
-        '@utils': path.resolve(__dirname, './src/utils'),
-        '@config': path.resolve(__dirname, './src/config'),
+        '@assets': path.resolve(__dirname,     './src/assets'),
+        '@hooks': path.resolve(__dirname,      './src/hooks'),
+        '@utils': path.resolve(__dirname,      './src/utils'),
+        '@config': path.resolve(__dirname,     './src/config'),
+        '@context': path.resolve(__dirname,    './src/context'),
+        "@pages": path.resolve(__dirname,      './src/pages'),
+        "@layouts": path.resolve(__dirname,    './src/layouts'),
       },
     },
   }
