@@ -1,96 +1,17 @@
-const mysql = require('mysql2')
-const { createPool } = require('mysql2/promise');
-const config = require('./config/index.js');
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
+dotenv.config();
 
+const connectDB = async () => {
+    try {
+        await mongoose.connect("mongodb+srv://textile:textile1234@cluster0.mjdvu2r.mongodb.net/?appName=Cluster0");
 
-const connPool = createPool({
-
-    user : config.db.USERNAME,
-    host : config.db.HOST,
-    password : config.db.PASSWORD,
-    database: config.db.DB_NAME,
-    decimalNumbers: true,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0 ,
-    connectTimeout: 10000,
-})
-
-async function queryRunner(qry, params = []){
-
-    let conn;
-    try{
-        conn = await createConnection();
-        const [result, fields] = await conn.query(qry,params);
-
-        return result;
+        console.log("✅ MongoDB Connected");
+    } catch (err) {
+        console.error("❌ MongoDB connection failed", err);
+        process.exit(1);
     }
-    catch(err){
-        console.log("error in queryRunner",err);
-        throw new Error("Error on query runner",{cause:err} );
-    }
-    finally{
-        if(conn) await conn.release();
-    }
-}
+};
 
-async function createConnection(){
-    try{
-        // console.log(
-        //     {
-        //     user : config.db.USERNAME,
-        //     host : config.db.HOST,
-        //     password : config.db.PASSWORD,
-        //     database: config.db.DB_NAME,
-        //     decimalNumbers: true,
-        //     waitForConnections: true,
-        //     connectionLimit: 10,
-        //     queueLimit: 0 ,
-        //     connectTimeout : 10,
-        //     }
-        // )
-        let conn = await connPool.getConnection();
-        if(conn){
-            return conn;
-        }
-        else{
-            throw  new Error("Can't get a connection")
-        }
-    }catch{
-        throw  new Error("Can't get a connection")
-    }
-}
-
-async function transactionQueryRunner(qryParamsData = []){ //data format : [{qry, [params]}, ]
-
-    let conn;
-    try{
-        conn = await createConnection();
-        await conn.beginTransaction();
-
-
-        let transactionResult = []
-        for (const item of qryParamsData) {
-            const [result, fields] = await conn.query(item.qry, item.params);
-            transactionResult.push({ result });
-        }
-        await conn.commit();
-        return transactionResult;
-    }
-    catch(err){
-        if(conn) await conn.rollback();
-        throw  new Error("Error on transactionQueryRunner", {cause:err});
-    }finally{
-        if(conn) conn.release();
-    }
-
-}
-
-module.exports = {
-    queryRunner,
-    transactionQueryRunner
-}
-
-
-
+export default connectDB;

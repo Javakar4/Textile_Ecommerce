@@ -1,17 +1,17 @@
 
 // port of the app
-ex :PORT =2000
+ex: PORT = 2000
 
 // envirnment mode
 development / production
-NODE_ENV 
+NODE_ENV
 
 //database connection settings
-DB_USERNAME 
-DB_PASSWORD 
-DB_HOST 
-DB_PORT 
-DB_NAME 
+DB_USERNAME
+DB_PASSWORD
+DB_HOST
+DB_PORT
+DB_NAME
 
 
 //send grid api key to send otp email
@@ -19,7 +19,7 @@ SEND_GRID_KEY = your_send_grid_api_key_here
 SEND_GRID_FROM_ADDRESS = your_verified_sendgrid_email_here
 
 //otp
-OTP_EXPIRATION_MINUTES 
+OTP_EXPIRATION_MINUTES
 
 
 //jwt
