@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { ChevronRight, Package2, Clock, IndianRupee , MapPin, Phone, ChevronDown } from "lucide-react";
+import { ChevronRight, Package2, Clock, IndianRupee, MapPin, Phone, ChevronDown } from "lucide-react";
 
 export default function OrderItemCard({ order }) {
     const [showDetails, setShowDetails] = useState(false);
@@ -75,7 +75,7 @@ export default function OrderItemCard({ order }) {
                             <div className="text-right">
                                 <p className="text-sm text-gray-500 font-medium mb-1">Total Amount</p>
                                 <div className="flex items-center gap-1">
-                                    <IndianRupee  className="w-5 h-5 text-gray-700" />
+                                    <IndianRupee className="w-5 h-5 text-gray-700" />
                                     <span className="text-3xl font-black text-gray-900">{order.total.toFixed(2)}</span>
                                 </div>
                             </div>

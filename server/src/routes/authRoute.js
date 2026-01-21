@@ -1,13 +1,10 @@
-const express=require("express");
-const router=express.Router();
-const authController = require("../controllers/authController");
-// const {authenticateToken} = require("../middlewares/authenticator")
+import express from "express";
+import authController from "../controllers/authController.js";
 
-// router.use("")
+const router = express.Router();
 
-router.post("/sendOtp",authController.signUserAndSendOTP);//200
-router.post("/verifyOtpSignup",authController.verifyOTP); //200
-router.post("/login", authController.login); //
+router.post("/sendOtp", authController.signUserAndSendOTP);
+router.post("/verifyOtpSignup", authController.verifyOTP);
+router.post("/login", authController.login);
 
-
-module.exports=router;
+export default router;

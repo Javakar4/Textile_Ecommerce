@@ -1,14 +1,18 @@
-const productRoute = require('express').Router();
-const  productController  = require('../controllers/productController');
-const authenticateToken = require('../middlewares/authenticator');
+import express from "express";
+import {
+    createProduct,
+    getAllProducts,
+    getProductById,
+    updateProduct,
+    deleteProduct
+} from "../controllers/productController.js";
 
-// Route to create a new product (protected)
-productRoute.post('/create', authenticateToken, productController.createProduct);
-productRoute.get('/all', productController.getAllProducts);//200
-productRoute.get("/:id", productController.getProductById);//200
-productRoute.get("/search", productController.searchProducts);
-productRoute.get("/:id/related", productController.getRelatedProducts);
+const router = express.Router();
 
-// 
+router.get("/", getAllProducts);
+router.get("/:id", getProductById);
+router.post("/", createProduct);
+router.put("/:id", updateProduct);
+router.delete("/:id", deleteProduct);
 
-module.exports = productRoute;
+export default router;

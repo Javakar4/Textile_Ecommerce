@@ -1,159 +1,86 @@
-// controllers/productController.js
-const { rtnRes } = require("../utils/responseHandlerService");
-const { productService } = require("../services/productService");
+import * as productService from "../services/productService.js";
 
-module.exports = {
-
-  // 1. CREATE PRODUCT CONTROLLER
-  async createProduct(req, res) {
-    try {
-      const data = req.body;
-
-      // Basic validation
-      const required = ["title", "description",
-                        "price", "old_price", 
-                        "category_id", "thumbnail_url1", 
-                        "thumbnail_url2", "thumbnail_url3", 
-                        "stock", "status"];
-                        
-      for (const field of required) {
-        if (!data[field]) {
-          return rtnRes(res, 400, `${field} is required`);
-        }
-      }
-
-      const result = await productService.insertProduct(data);
-
-      if (!result.ok) {
-        return rtnRes(res, 500, result.message || "Failed to create product");
-      }
-
-      return rtnRes(res, 200, "Product created successfully", {
-        productId: result.productId
-      });
-
-    } catch (err) {
-      console.error("createProduct controller error:", err);
-      return rtnRes(res, 500, "Internal Server Error");
-    }
-  },
-  
-  // 2. GET ALL PRODUCTS CONTROLLER
-  async getAllProducts(req, res) {
-    try {
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 20;
-      const category = req.query.category;
-      const subcategory = req.query.subcategory || null;
-
-      // Category is required
-      if (!category) {
-        return rtnRes(res, 400, "category is required");
-      }
-
-      const filters = { category, subcategory };
-
-      const result = await productService.getAllProducts(filters, page, limit);
-
-      if (!result.ok) {
-        return rtnRes(res, 500, result.message);
-      }
-
-      return rtnRes(res, 200, "Products fetched successfully", {
-        products: result.data,
-        pagination: result.pagination
-      });
-
-    } catch (err) {
-      console.error("getAllProducts controller error:", err);
-      return rtnRes(res, 500, "Internal Server Error");
-    }
-  },
-  
-  // 3. GET PRODUCT BY ID CONTROLLER
-async getProductById(req, res) {
+/* CREATE PRODUCT */
+export const createProduct = async (req, res) => {
   try {
-    const productId = req.params.id;
-
-    if (!productId) {
-      return rtnRes(res, 400, "Product ID is required");
-    }
-
-    const result = await productService.getProductById(productId);
-
-    if (!result.ok) {
-      return rtnRes(res, 404, result.message);
-    }
-
-    return rtnRes(res, 200, "Product details fetched successfully", {
-      product: result.data
+    const product = await productService.createProduct(req.body);
+    res.status(201).json({
+      success: true,
+      message: "Product created successfully",
+      data: product
     });
-
-  } catch (err) {
-    console.error("getProductById controller error:", err);
-    return rtnRes(res, 500, "Internal Server Error");
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
   }
-},
+};
 
-  async searchProducts(req, res) {
+/* GET ALL PRODUCTS */
+export const getAllProducts = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 20;
-
-    // const category = req.query.category;
-    // if (!category) {
-    //   return rtnRes(res, 400, "category is required");
-    // }
-
-    const filters = {
-      category: req.query.category || null,
-      subcategory: req.query.subcategory || null,
-      search: req.query.search || null,
-      min_price: req.query.min_price || null,
-      max_price: req.query.max_price || null,
-      sort: req.query.sort || null
-    };
-
-    const result = await productService.searchProducts(filters, page, limit);
-
-    if (!result.ok) {
-      return rtnRes(res, 500, result.message);
-    }
-
-    return rtnRes(res, 200, "Products fetched successfully", {
-      products: result.data,
-      pagination: result.pagination
+    const products = await productService.getAllProducts(req.query);
+    res.status(200).json({
+      success: true,
+      data: products
     });
-
-  } catch (err) {
-    console.error("searchProducts controller error:", err);
-    return rtnRes(res, 500, "Internal Server Error");
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
   }
-},
+};
 
-// 4. GET RELATED PRODUCTS
-async getRelatedProducts(req, res) {
+/* GET SINGLE PRODUCT */
+export const getProductById = async (req, res) => {
   try {
-    const productId = req.params.id;
-
-    if (!productId) {
-      return rtnRes(res, 400, "Product ID is required");
-    }
-
-    const result = await productService.getRelatedProducts(productId);
-
-    if (!result.ok) {
-      return rtnRes(res, 404, result.message);
-    }
-
-    return rtnRes(res, 200, "Related products fetched successfully", {
-      related: result.data
+    const product = await productService.getProductById(req.params.id);
+    res.status(200).json({
+      success: true,
+      data: product
     });
-
-  } catch (err) {
-    console.error("getRelatedProducts controller error:", err);
-    return rtnRes(res, 500, "Internal Server Error");
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      message: error.message
+    });
   }
-}
+};
 
+/* UPDATE PRODUCT */
+export const updateProduct = async (req, res) => {
+  try {
+    const product = await productService.updateProduct(
+      req.params.id,
+      req.body
+    );
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: product
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+/* DELETE PRODUCT */
+export const deleteProduct = async (req, res) => {
+  try {
+    await productService.deleteProduct(req.params.id);
+    res.status(200).json({
+      success: true,
+      message: "Product deleted successfully"
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      message: error.message
+    });
+  }
 };
