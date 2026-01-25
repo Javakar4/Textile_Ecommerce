@@ -1,25 +1,24 @@
-const jwt = require("jsonwebtoken");
-const  {jwt:JWT} = require("../config/index.js");
-const  {rtnRes} = require("../utils/responseHandlerService.js");
+import jwt from "jsonwebtoken";
+import { rtnRes } from "../utils/responseHandlerService.js";
 
-
-function authenticateToken(req, res, next) {
+/**
+ * Middleware to authenticate JWT token from Authorization header.
+ */
+export const authenticateToken = (req, res, next) => {
   try {
     const authHeader = req.headers["authorization"];
 
     if (!authHeader) {
-      console.log(" No Authorization header");
       return rtnRes(res, 401, "Unauthorized: Token missing");
     }
 
     const token = authHeader.split(" ")[1]; // Bearer <token>
 
     if (!token) {
-      console.log(" Bearer token missing in Authorization header");
       return rtnRes(res, 401, "Unauthorized: Invalid token");
     }
 
-    jwt.verify(token,JWT.JWT_SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {
         console.log("JWT verification failed:", err.message);
         return rtnRes(res, 403, "Forbidden: Invalid token");
@@ -33,6 +32,6 @@ function authenticateToken(req, res, next) {
     console.log(" Auth Middleware Error:", err);
     return rtnRes(res, 500, "Internal Server Error");
   }
-}
+};
 
-module.exports = authenticateToken;
+export default authenticateToken;

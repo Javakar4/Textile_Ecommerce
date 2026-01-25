@@ -1,19 +1,15 @@
-const express = require('express');
+import express from "express";
+import * as cartController from "../controllers/cartController.js";
+import { authenticateToken } from "../middlewares/authenticator.js";
+
 const router = express.Router();
-const cartController = require('../controllers/cartController');
-const authenticateToken = require('../middlewares/authenticator');
 
-// Sync requires logged-in user
-router.post('/sync', authenticateToken, cartController.syncCart);
+// Cart operations require logged-in user
+router.get("/", authenticateToken, cartController.getCart);
+router.post("/add", authenticateToken, cartController.addToCart);
+router.post("/sync", authenticateToken, cartController.syncCart);
+router.put("/item", authenticateToken, cartController.updateItem);
+router.delete("/item", authenticateToken, cartController.removeItem);
+router.delete("/", authenticateToken, cartController.clearCart);
 
-// CRUD operations support both user (optional) and guest
-router.post('/add', authenticateToken, cartController.addToCart);
-router.get('/', authenticateToken, cartController.getCart);
-
-router.route('/item')
-.put(authenticateToken, cartController.updateItem)
-.delete(authenticateToken, cartController.removeItem);
-
-router.delete('/', authenticateToken, cartController.clearCart);     // Clear all
-
-module.exports = router;
+export default router;

@@ -1,134 +1,167 @@
-import { rtnRes } from "../utils/responseHandlerService.js";
 import { authService } from "../services/authService.js";
+import { rtnRes } from "../utils/responseHandlerService.js";
 
-const signUserAndSendOTP = async (req, res) => {
+/**
+ * Handle user signup.
+ */
+const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
-    // Validate
-    const validation = authService.validateSignupInput({
-      name,
-      email,
-      password,
-    });
-    if (!validation.ok) return rtnRes(res, 400, validation.message);
-
-    // Check duplicate username
-    if (await authService.existingUser(name)) {
-      return rtnRes(res, 409, "Username already taken");
-    }
-
-    // Check existing email and OTP state
-    const emailState =
-      await authService.emailExistingAndOtpExistingCheck(email);
-
-    if (emailState?.existingUser) {
-      if (emailState.isVerified) {
-        return rtnRes(res, 409, "Email already registered. Please login.");
-      }
-
-      // existing but not verified → resend OTP
-      const resend = await authService.resendOtpForExistingUser(
-        emailState.userId,
-        email,
-        req.ip
-      );
-
-      if (!resend.ok) {
-        return rtnRes(res, resend.statusCode || 500, resend.message);
-      }
-
+    if (!name || !email || !password) {
       return rtnRes(
         res,
-        200,
-        "Account found but not verified. OTP resent."
+        400,
+        "All fields (name, email, password) are required.",
       );
     }
 
-    // Create user
-    const passwordHash = await authService.hashPassword(password);
-    const storeUserResult = await authService.storeUser(
-      email,
-      name,
-      passwordHash
-    );
+    const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
+    const result = await authService.signup(name, email, password, ip);
 
-    if (!storeUserResult.isUserStored)
-      return rtnRes(res, 500, "Failed to register user");
+    if (!result.ok) {
+      return rtnRes(res, result.statusCode || 400, result.message);
+    }
 
-    // Send OTP
-    const otpResult = await authService.createAndSendOtp(
-      storeUserResult.userId,
-      email,
-      req.ip
-    );
-
-    if (!otpResult.ok) return rtnRes(res, 500, "Failed to send OTP");
-
-    return rtnRes(res, 200, "OTP successfully sent to your email");
-  } catch (err) {
-    console.error("signUserAndSendOTP:", err);
-    return rtnRes(res, 500, "Internal Server Error");
+    return rtnRes(res, 200, result.message);
+  } catch (error) {
+    console.error("Signup Controller Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred during signup.");
   }
 };
 
-const verifyOTP = async (req, res) => {
-  try {
-    const { email, otp } = req.body;
-
-    if (!email || !otp) {
-      return rtnRes(res, 400, "Email and OTP are required");
-    }
-
-    if (!/^[0-9]{6}$/.test(otp))
-      return rtnRes(res, 400, "Invalid OTP format");
-
-    const verifyResult = await authService.verifyOtpForEmail(email, otp);
-
-    if (!verifyResult.ok) {
-      return rtnRes(
-        res,
-        verifyResult.statusCode || 400,
-        verifyResult.message
-      );
-    }
-
-    return rtnRes(res, 200, "OTP verified and email marked as verified");
-  } catch (err) {
-    console.error("verifyOTP:", err);
-    return rtnRes(res, 500, "Internal Server Error");
-  }
-};
-
+/**
+ * Handle user login.
+ */
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
-      return rtnRes(res, 400, "Email and password are required");
+      return rtnRes(res, 400, "Email and password are required.");
     }
 
-    const loginResult = await authService.login(email, password);
-
-    if (!loginResult.ok) {
+    const result = await authService.login(email, password);
+    if (!result.ok) {
       return rtnRes(
         res,
-        loginResult.statusCode || 400,
-        loginResult.message
+        result.statusCode || 401,
+        result.message,
+        result.unverified ? { unverified: true } : null,
       );
     }
 
-    return rtnRes(res, 200, "Login successful", {
-      token: loginResult.token,
-    });
-  } catch (err) {
-    console.error("login:", err);
-    return rtnRes(res, 500, "Internal Server Error");
+    return rtnRes(res, 200, result.message, result.data);
+  } catch (error) {
+    console.error("Login Controller Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred during login.");
+  }
+};
+
+/**
+ * Handle OTP verification.
+ */
+const verifyOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    if (!email || !otp) {
+      return rtnRes(res, 400, "Email and OTP code are required.");
+    }
+
+    const result = await authService.verifyOtp(email, otp);
+    if (!result.ok) {
+      return rtnRes(res, result.statusCode || 400, result.message);
+    }
+
+    return rtnRes(res, 200, result.message);
+  } catch (error) {
+    console.error("Verify OTP Controller Error:", error);
+    return rtnRes(
+      res,
+      500,
+      "An internal server error occurred during OTP verification.",
+    );
+  }
+};
+
+/**
+ * Handle resending OTP.
+ */
+const resendOtp = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return rtnRes(res, 400, "Email is required to resend OTP.");
+    }
+
+    const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
+    const result = await authService.resendOtp(email, ip);
+
+    if (!result.ok) {
+      return rtnRes(res, result.statusCode || 400, result.message);
+    }
+
+    return rtnRes(res, 200, result.message);
+  } catch (error) {
+    console.error("Resend OTP Controller Error:", error);
+    return rtnRes(
+      res,
+      500,
+      "An internal server error occurred during resending OTP.",
+    );
+  }
+};
+
+/**
+ * Handle forgot password.
+ */
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return rtnRes(res, 400, "Email is required.");
+    }
+
+    const ip = req.ip || req.headers["x-forwarded-for"] || "unknown";
+    const result = await authService.forgotPassword(email, ip);
+
+    if (!result.ok) {
+      return rtnRes(res, result.statusCode || 400, result.message);
+    }
+
+    return rtnRes(res, 200, result.message);
+  } catch (error) {
+    console.error("Forgot Password Controller Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred.");
+  }
+};
+
+/**
+ * Handle reset password.
+ */
+const resetPassword = async (req, res) => {
+  try {
+    const { email, otp, newPassword } = req.body;
+    if (!email || !otp || !newPassword) {
+      return rtnRes(res, 400, "Email, OTP, and new password are required.");
+    }
+
+    const result = await authService.resetPassword(email, otp, newPassword);
+
+    if (!result.ok) {
+      return rtnRes(res, result.statusCode || 400, result.message);
+    }
+
+    return rtnRes(res, 200, result.message);
+  } catch (error) {
+    console.error("Reset Password Controller Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred.");
   }
 };
 
 export default {
-  signUserAndSendOTP,
-  verifyOTP,
+  signup,
   login,
+  verifyOtp,
+  resendOtp,
+  forgotPassword,
+  resetPassword,
 };

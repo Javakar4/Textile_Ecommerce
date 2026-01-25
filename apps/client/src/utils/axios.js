@@ -1,9 +1,9 @@
 import axios from "axios";
-import { toast } from "react-hot-toast";
-import apiEndpoints from "@config/apiEndpoints";
+import { toast } from "react-toastify";
+import apiEndpoints from "@config/constants";
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL || apiEndpoints.BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL || apiEndpoints.BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -32,7 +32,7 @@ api.interceptors.request.use(
     console.error("[API REQUEST ERROR]", error);
     toast.error("Request setup error");
     return Promise.reject(error);
-  }
+  },
 );
 
 // ✅ Response Interceptor
@@ -51,7 +51,7 @@ api.interceptors.response.use(
       toast.success(response.data.message);
     }
 
-    return response;
+    return response.data;
   },
   (error) => {
     let message = "Something went wrong";
@@ -89,7 +89,7 @@ api.interceptors.response.use(
       ...error,
       parsedMessage: message,
     });
-  }
+  },
 );
 
 export default api;

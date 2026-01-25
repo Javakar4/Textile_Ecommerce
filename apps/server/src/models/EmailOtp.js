@@ -1,14 +1,36 @@
 import mongoose from "mongoose";
 
 const emailOtpSchema = new mongoose.Schema(
-    {
-        userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        email: { type: String, index: true },
-        otpHash: { type: String },
-        ip: { type: String },
-        expiresAt: { type: Date },
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    { timestamps: true }
+
+    email: { 
+        type: String, 
+        required: true, 
+        index: true 
+    },
+
+    otpHash: { 
+        type: String,
+        required: true 
+    },
+
+    ip: { 
+        type: String 
+    },
+    expiresAt: { 
+        type: Date, 
+        required: true, 
+        index: {
+            expires: 0 
+        }
+    },
+  },
+  { timestamps: true },
 );
 
 export default mongoose.model("EmailOtp", emailOtpSchema);

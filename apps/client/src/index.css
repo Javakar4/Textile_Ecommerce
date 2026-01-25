@@ -29,9 +29,54 @@ body {
   -ms-overflow-style: none;
 }
 
+/* Toast Container Centering */
+.Toastify__toast-container--top-center {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  top: 1rem !important;
+}
 
-/* 
+/* Toast Styles */
+.Toastify__toast {  
+  border-radius: 0.5rem !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  color: #ffffff !important;
+  padding: 0.75rem 1rem !important;
+  min-height: 48px !important;
+  max-width: 400px !important;
+  display: flex !important;
+  align-items: center !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
 
-    
-    
-    */
+.Toastify__toast-body {
+  margin: 0 !important;
+  padding: 0 !important;
+  flex: 1 !important;
+  line-height: 1.4 !important;
+}
+
+.Toastify__toast--success {
+  background: #16a34a !important;
+  background-color: #16a34a !important;
+}
+
+.Toastify__toast--error {
+  background: #dc2626 !important;
+  background-color: #dc2626 !important;
+}
+
+.Toastify__toast--info {
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+}
+
+.Toastify__toast-icon {
+  margin-right: 0.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  font-size: 1.25rem !important;
+}
+

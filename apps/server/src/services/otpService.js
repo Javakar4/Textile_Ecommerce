@@ -1,72 +1,62 @@
+import sendgrid from "@sendgrid/mail";
 import crypto from "crypto";
-import sgMail from "@sendgrid/mail";
+import dotenv from "dotenv";
 
-import EmailOtp from "../models/EmailOtp.js";
-import config from "../config/index.js";
+dotenv.config();
 
-const OTP_CONFIG = config.otp;
-
-sgMail.setApiKey(OTP_CONFIG.SEND_GRID_KEY);
+sendgrid.setApiKey(process.env.SEND_GRID_KEY);
 
 export const otpService = {
+  /**
+   * Generates a 6-digit numeric OTP.
+   */
   generateOtp() {
-    const digits = "0123456789";
-    let otp = "";
-    for (let i = 0; i < 6; i++)
-      otp += digits[Math.floor(Math.random() * digits.length)];
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
     return { otp };
   },
 
+  /**
+   * Hashes the OTP for secure storage.
+   */
   hashOtp(otp) {
     return crypto.createHash("sha256").update(otp).digest("hex");
   },
 
-  async storeOtp(userId, email, otpHash, ip) {
-    if (!userId || !email || !otpHash) return { ok: false };
-
-    const expiresAt = new Date(
-      Date.now() + OTP_CONFIG.OTP_EXPIRATION_MINUTES * 60 * 1000
-    );
-
-    // Store OTP
-    await EmailOtp.create({
-      userId,
-      email,
-      otpHash,
-      ip,
-      expiresAt,
-    });
-
-    return { ok: true };
-  },
-
-  async getLastOtp(email) {
-    return await EmailOtp.findOne({ email })
-      .sort({ createdAt: -1 })
-      .lean();
-  },
-
-  async getOtpByEmailAndHash(email, otpHash) {
-    return await EmailOtp.findOne({ email, otpHash })
-      .sort({ createdAt: -1 })
-      .lean();
-  },
-
-  async sendOtp(otpCode, email) {
+  /**
+   * Sends the OTP via email using SendGrid.
+   */
+  async sendOtp(otp, email) {
     try {
       const msg = {
         to: email,
-        from: OTP_CONFIG.SEND_GRID_FROM_ADDRESS,
-        subject: "Your OTP Code",
-        text: `Your OTP code is ${otpCode}. It will expire in ${OTP_CONFIG.OTP_EXPIRATION_MINUTES} minutes.`,
-        html: `<p>Your OTP code is <strong>${otpCode}</strong>. It will expire in ${OTP_CONFIG.OTP_EXPIRATION_MINUTES} minutes.</p>`,
+        from: process.env.SEND_GRID_FROM_ADDRESS,
+        subject: "Your OTP for Textile Ecommerce Verification",
+        text: `Your OTP is: ${otp}. It will expire in ${process.env.OTP_EXPIRATION_MINUTES || 5} minutes.`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+            <h2 style="color: #b45309; text-align: center;">Textile Ecommerce</h2>
+            <p>Hello,</p>
+            <p>Your verification code for signup is:</p>
+            <div style="text-align: center; margin: 30px 0;">
+              <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1f2937; background: #fef3c7; padding: 10px 20px; border-radius: 5px;">${otp}</span>
+            </div>
+            <p>This OTP will expire in <strong>${process.env.OTP_EXPIRATION_MINUTES || 5} minutes</strong>.</p>
+            <p>If you did not request this code, please ignore this email.</p>
+            <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+            <p style="font-size: 12px; color: #6b7280; text-align: center;">© 2024 Textile Ecommerce. All rights reserved.</p>
+          </div>
+        `,
       };
 
-      await sgMail.send(msg);
+      await sendgrid.send(msg);
+      console.log(`OTP sent successfully to ${email}`);
       return { ok: true };
-    } catch (err) {
-      console.error("sendOtp error", err.message || err);
-      return { ok: false };
+    } catch (error) {
+      console.error(
+        "Error sending OTP via SendGrid:",
+        error.response ? error.response.body : error.message,
+      );
+      return { ok: false, message: "Failed to send OTP email" };
     }
   },
 };

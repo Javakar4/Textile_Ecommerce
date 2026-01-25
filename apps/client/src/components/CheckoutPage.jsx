@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { UseAppContext } from "../context/AppContext";
 import { useState } from "react";
 
 export default function CheckoutPage() {
-    const { navigate,cartItems, setCartItems, subtotal, totalDiscount, estimatedTax, total, addOrderItem, clearCart, addresses, setAddresses } = UseAppContext();
+    const { cartItems, setCartItems, subtotal, totalDiscount, estimatedTax, total, addOrderItem, clearCart, addresses, setAddresses } = UseAppContext();
+    const navigate = useNavigate();
 
 
     const [selectedIndex, setSelectedIndex] = useState(0); // Index of selected shipping address

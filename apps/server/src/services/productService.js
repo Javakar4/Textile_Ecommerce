@@ -1,12 +1,15 @@
 import Product from "../models/ProductSchema.js";
 
-
-/* CREATE */
+/**
+ * Create a new product.
+ */
 export const createProduct = async (data) => {
   return await Product.create(data);
 };
 
-/* READ ALL (FILTER + PAGINATION) */
+/**
+ * Get all products with filtering and pagination.
+ */
 export const getAllProducts = async (query) => {
   const {
     page = 1,
@@ -15,7 +18,7 @@ export const getAllProducts = async (query) => {
     size,
     minPrice,
     maxPrice,
-    search
+    search,
   } = query;
 
   const filter = {};
@@ -39,7 +42,9 @@ export const getAllProducts = async (query) => {
     .sort({ createdAt: -1 });
 };
 
-/* READ ONE */
+/**
+ * Get a single product by ID.
+ */
 export const getProductById = async (id) => {
   const product = await Product.findById(id)
     .populate("brandId", "name")
@@ -49,17 +54,21 @@ export const getProductById = async (id) => {
   return product;
 };
 
-/* UPDATE */
+/**
+ * Update a product.
+ */
 export const updateProduct = async (id, data) => {
   const product = await Product.findByIdAndUpdate(id, data, {
-    new: true
+    new: true,
   });
 
   if (!product) throw new Error("Product not found");
   return product;
 };
 
-/* DELETE */
+/**
+ * Delete a product.
+ */
 export const deleteProduct = async (id) => {
   const product = await Product.findByIdAndDelete(id);
   if (!product) throw new Error("Product not found");

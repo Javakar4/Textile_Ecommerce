@@ -1,16 +1,19 @@
 import React, { useContext, useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UseAppContext } from "../context/AppContext";
+import { useAuth } from "../hooks/useAuth";
 
 function Navbar() {
     const [open, setOpen] = useState(false);
     const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState()
     const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState()
-    const { navigate, user, setUser, setShowUserLogin, assets, cartItems } = UseAppContext()
+    const { assets, cartItems } = UseAppContext();
+    const { user, setShowUserLogin, logout: contextLogout } = useAuth();
+    const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
 
     const logout = async () => {
-        setUser(null);
+        contextLogout();
         navigate('/')
     }
 
@@ -134,7 +137,8 @@ function Navbar() {
                 </div>
 
                 {!user ? (
-                    <button onClick={() => setShowUserLogin(true)} className="cursor-pointer px-8 py-2 bg-amber-700 hover:bg-amber-700-dull transition text-white rounded-full">
+                    <button onClick={() => navigate("/auth")} 
+                    className="cursor-pointer px-8 py-2 bg-amber-700 hover:bg-amber-700-dull transition text-white rounded-full">
                         Login
                     </button>
                 ) : (
@@ -218,7 +222,7 @@ function Navbar() {
                     </div>
 
                     {!user ? (
-                        <button onClick={() => { setOpen(false); setShowUserLogin(true) }} className="cursor-pointer px-6 py-2 hover:bg-amber-700-dull bg-amber-700 transition text-white rounded-full shadow-md">
+                        <button onClick={() => { setOpen(false); navigate("/auth") }} className="cursor-pointer px-6 py-2 hover:bg-amber-700-dull bg-amber-700 transition text-white rounded-full shadow-md">
                             Login
                         </button>
                     ) : (

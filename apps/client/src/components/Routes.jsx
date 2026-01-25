@@ -4,7 +4,7 @@ import Home from "../pages/Home";
 import ProductCard from "./ProductCard";
 import ProductDetailPage from "./ProductDetail";
 import AllProductsPage from "../pages/AllProductsPage";
-import Login from "../pages/Login";
+import Auth from "../pages/Auth";
 import CartPage from "../pages/CartPage";
 import CheckoutPage from "../components/CheckoutPage";
 import OrdersPage from "../pages/OrdersPage";
@@ -20,7 +20,7 @@ let AppRoutes = createBrowserRouter([
     element: <Layout />,
     children: [
       { index: true, element: <Home /> },
-      { path: "login", element: <Login /> },
+      { path: "auth", element: <Auth /> },
       // { path: "register", element: <Register /> },
       { path: "all-collections", element: <AllProductsPage /> },
       { path: "collection-detail/:id", element: <ProductDetailPage /> },

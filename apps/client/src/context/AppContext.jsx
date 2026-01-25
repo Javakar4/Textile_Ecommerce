@@ -4,16 +4,7 @@ import assets from '../assets/assets'
 export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
-    const [user, setUser] = useState(true);
-    const [userData, setUserData] = useState({
-        name: "Edward",
-        image: assets.profileIcon,
-        email: "edward@example.com",
-        phone: "+1 234 567 890",
-        joined: "Jan 2024"
-    });
-    const [admin, setAdmin] = useState(false);
-    const [showUserLogin, setShowUserLogin] = useState(true);
+
     const products = assets.productData;
     const mensCollection = products.filter(product => product.category === 'MC');
     const kidsCollection = products.filter(product => product.category === 'KC');
@@ -159,7 +150,7 @@ export const AppContextProvider = ({ children }) => {
 
 
     const value = {
-        user, setUser, userData, setUserData, admin, setAdmin, showUserLogin, setShowUserLogin,
+
         assets, products, mensCollection, kidsCollection, cartItems, setCartItems, addToCart, updateCartQuantity,
         subtotal, totalDiscount, estimatedTax, total, addOrderItem, orderItems, clearCart,
         addresses, setAddresses,
