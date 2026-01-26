@@ -54,11 +54,12 @@ Thumbs.db
 .expo/
 .expo-shared/
 
-
+# md files
 .dev.md
 .req.md
 
 #ai
-.zenflow/
+.zenflow
 .zencoder
 .qodo
+.agent
