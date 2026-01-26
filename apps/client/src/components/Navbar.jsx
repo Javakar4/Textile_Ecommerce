@@ -128,13 +128,13 @@ function Navbar() {
                 </form>
 
 
-                <div className="relative cursor-pointer" onClick={() => navigate('/cart')}>
+                <NavLink className="relative cursor-pointer" onClick={() => navigate('/cart')} to={'/cart'}>
                     <svg width="18" height="18" viewBox="0 0 14 14" fill="none" className="text-amber-700" xmlns="http://www.w3.org/2000/svg">
                         <path d="M.583.583h2.333l1.564 7.81a1.17 1.17 0 0 0 1.166.94h5.67a1.17 1.17 0 0 0 1.167-.94l.933-4.893H3.5m2.333 8.75a.583.583 0 1 1-1.167 0 .583.583 0 0 1 1.167 0m6.417 0a.583.583 0 1 1-1.167 0 .583.583 0 0 1 1.167 0" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
 
                     <button className="absolute -top-2 -right-3 text-xs text-black bg-amber-700 w-[18px] h-[18px] rounded-full">{cartItems.length}</button>
-                </div>
+                </NavLink>
 
                 {!user ? (
                     <button onClick={() => navigate("/auth")} 
@@ -144,12 +144,38 @@ function Navbar() {
                 ) : (
                     <div className="relative group">
                         <img src={assets.profileIcon} alt="ProfileIcon" className="w-10" />
-                        <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow border border-gray-200 py-2.5 w-30 rounded-md text-sm z-40">
-                            <li onClick={() => navigate('profile')} className="p-1.5 pl-3 hover:bg-amber-700/10 cursor-pointer">Profile</li>
-                            <li onClick={() => navigate('my-orders')} className="p-1.5 pl-3 hover:bg-amber-700/10 cursor-pointer">My Orders</li>
-                            <li onClick={() => navigate('wishlist')} className="p-1.5 pl-3 hover:bg-amber-700/10 cursor-pointer">WishList</li>
-                            <li onClick={logout} className="p-1.5 pl-3 hover:bg-amber-700/10 cursor-pointer">LogOut</li>
+                        <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow-lg border border-gray-200 py-2 w-40 rounded-md text-sm z-40">
+
+                            <NavLink
+                                to="profile"
+                                className="block px-4 py-2 text-gray-700 hover:bg-amber-100 hover:text-amber-700 transition rounded"
+                            >
+                                Profile
+                            </NavLink>
+
+                            <NavLink
+                                to="my-orders"
+                                className="block px-4 py-2 text-gray-700 hover:bg-amber-100 hover:text-amber-700 transition rounded"
+                            >
+                                My Orders
+                            </NavLink>
+
+                            <NavLink
+                                to="wishlist"
+                                className="block px-4 py-2 text-gray-700 hover:bg-amber-100 hover:text-amber-700 transition rounded"
+                            >
+                                Wishlist
+                            </NavLink>
+
+                            <NavLink
+                                onClick={logout}
+                                className="block px-4 py-2 text-red-600 hover:bg-red-100 hover:text-red-700 transition rounded"
+                            >
+                                Logout
+                            </NavLink>
+
                         </ul>
+
                     </div>
                 )}
             </div>
