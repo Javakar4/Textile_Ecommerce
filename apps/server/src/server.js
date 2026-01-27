@@ -12,6 +12,9 @@ import productRoutes from "./routes/productRoute.js";
 import cartRoutes from "./routes/cartRoute.js";
 import profileRoutes from "./routes/profileRoutes.js";
 import orderRoutes from "./routes/orderRoute.js";
+import wishlistRoutes from "./routes/wishlistRoutes.js";
+import brandRoutes from "./routes/brandRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
 
 dotenv.config();
 
@@ -46,6 +49,10 @@ app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/orders", orderRoutes);
+app.use("/api/v1/wishlist", wishlistRoutes);
+app.use("/api/v1/brands", brandRoutes);
+app.use("/api/v1/categories", categoryRoutes);
+
 
 
 /* SENTRY ERROR HANDLER */
