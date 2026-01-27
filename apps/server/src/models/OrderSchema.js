@@ -2,33 +2,62 @@ import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema(
   {
-    orderId: { type: Number, required: true },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    orderId: {
+      type: Number,
+      required: true,
+      unique: true,
+      index: true
+    },
+
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
 
     items: [
       {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        productId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product"
+        },
+
+        productCode: String,
         name: String,
         category: String,
-        price: Number,
+
+        pricing: {
+          current: Number,
+          original: Number,
+          discount: Number
+        },
+
         quantity: Number,
         size: String,
-        image: String,
-      },
+        image: String
+      }
     ],
 
-    total: Number,
+    total: {
+      type: Number,
+      required: true
+    },
+
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "CARD", "UPI", "NET_BANKING"]
+    },
 
     paymentStatus: {
       type: String,
       enum: ["Pending", "Confirmed", "Failed"],
-      default: "Pending",
+      default: "Pending"
     },
 
     trackingStatus: {
       type: String,
       enum: ["Ordered", "Packed", "Shipped", "Delivered"],
-      default: "Ordered",
+      default: "Ordered"
     },
 
     shippingAddress: {
@@ -36,10 +65,10 @@ const orderSchema = new mongoose.Schema(
       phone: String,
       address: String,
       city: String,
-      pincode: String,
-    },
+      pincode: String
+    }
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 export default mongoose.model("Order", orderSchema);

@@ -22,7 +22,15 @@ const signup = async (req, res) => {
       return rtnRes(res, result.statusCode || 400, result.message);
     }
 
-    return rtnRes(res, 200, result.message);
+    return rtnRes(res, 200, result.message, {
+      warning: result.warning || false
+    });
+
+
+    if (!result.ok && result.message.includes("registered")) {
+      return rtnRes(res, 200, result.message);
+    }
+
   } catch (error) {
     console.error("Signup Controller Error:", error);
     return rtnRes(res, 500, "An internal server error occurred during signup.");

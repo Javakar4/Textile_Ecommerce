@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { ChevronRight, ShoppingCart, Heart, Truck, RotateCcw, Shield, Plus, Minus } from "lucide-react";
 import { UseAppContext } from "../context/AppContext";
 import { toast } from 'react-toastify';
 
 export default function ProductDetailPage() {
-
-    const { navigate, showUserLogin, assets, setCartItems, addToCart } = UseAppContext()
+    const navigate = useNavigate();
+    const { showUserLogin, assets, setCartItems, addToCart } = UseAppContext()
     const { id } = useParams();
     const productData = assets.productData.find((p) => p.id === id);
     const [quantity, setQuantity] = useState(1);
