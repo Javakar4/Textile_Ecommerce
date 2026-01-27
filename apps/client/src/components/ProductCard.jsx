@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
 import { UseAppContext } from "../context/AppContext";
 import { toast } from 'react-toastify';
@@ -6,9 +7,10 @@ import { toast } from 'react-toastify';
 
 // Product Card Component
 const ProductCard = ({ product }) => {
+    const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
-    const { navigate, user, setUser, setShowUserLogin, assets, products, addToCart } = UseAppContext()
+    const { user, setUser, setShowUserLogin, assets, products, addToCart } = UseAppContext()
     const productData = products.find(p => p.id === product.id);
     const [quantity, setQuantity] = useState(1);
     const [selectedSize, setSelectedSize] = useState(productData.defaultSize);

@@ -2,9 +2,12 @@ import React from "react";
 import CartItem from "../components/CartItem";
 import { UseAppContext } from "../context/AppContext";
 import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+
 
 function CartPage() {
-    const { cartItems, setCartItems, navigate, subtotal, totalDiscount, estimatedTax, total, updateCartQuantity } = UseAppContext();
+    const navigate = useNavigate();
+    const { cartItems, setCartItems, subtotal, totalDiscount, estimatedTax, total, updateCartQuantity } = UseAppContext();
 
     const handleIncrement = (id) => {
         setCartItems(prev =>

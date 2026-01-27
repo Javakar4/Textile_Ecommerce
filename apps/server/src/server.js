@@ -11,6 +11,7 @@ import authRoutes from "./routes/authRoute.js";
 import productRoutes from "./routes/productRoute.js";
 import cartRoutes from "./routes/cartRoute.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import orderRoutes from "./routes/orderRoute.js";
 
 dotenv.config();
 
@@ -44,6 +45,8 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/v1/profile", profileRoutes);
+app.use("/api/v1/orders", orderRoutes);
+
 
 /* SENTRY ERROR HANDLER */
 Sentry.setupExpressErrorHandler(app);

@@ -15,7 +15,7 @@ export const AppContextProvider = ({ children }) => {
         products[1], // Classic Black Slim Fit Blazer
         products[4], // Kid's Collection item
     ]);
-    // console.log(cartItems);
+    console.log(cartItems);
     const [addresses, setAddresses] = useState([
         {
             id: 1,
