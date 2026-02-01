@@ -12,6 +12,8 @@ import Layout from "@components/layouts/Layout";
 import ProtectedRoutes from "./ProtectedRoutes";
 import ProfilePage from "../pages/ProfilePage";
 import WishlistPage from "../pages/WishlistPage";
+import Contact from "../pages/Contact";
+import About from "../pages/About";
 
 
 let AppRoutes = createBrowserRouter([
@@ -21,6 +23,8 @@ let AppRoutes = createBrowserRouter([
         children: [
             { index: true, element: <Home /> },
             { path: "auth", element: <Auth /> },
+            { path: "contact", element: <Contact /> },
+            { path: "about", element: <About /> },
             // { path: "register", element: <Register /> },
             { path: "all-collections", element: <AllProductsPage /> },
             { path: "collection-detail/:id", element: <ProductDetailPage /> },
