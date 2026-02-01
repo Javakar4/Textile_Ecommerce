@@ -12,7 +12,7 @@ import {
 } from "../utils/cartUtils";
 import apiCartService from "../services/apiCartService";
 
-const CartContext = createContext();
+export const CartContext = createContext();
 
 const initialState = {
   cartItems: [],
@@ -171,9 +171,47 @@ export const CartProvider = ({ children }) => {
     }
   }, [state.isLoggedIn]);
 
+  /* -----------------------------
+     PRICE CALCULATIONS
+  ------------------------------*/
+
+  const subtotal = state.cartItems.reduce(
+    (s, i) => s + (i.pricing?.original || i.price || 0) * (i.quantity || 0),
+    0
+  );
+
+  const totalDiscount = state.cartItems.reduce(
+    (s, i) =>
+      s + ((i.pricing?.original || i.price || 0) - (i.pricing?.current || i.price || 0)) * (i.quantity || 0),
+    0
+  );
+
+  const taxRate = (category) => {
+    switch (category) {
+      case "KC":
+        return 0.08;
+      default:
+        return 0.05;
+    }
+  };
+
+  const estimatedTax = state.cartItems.reduce(
+    (s, i) =>
+      s +
+      ((i.pricing?.current || i.price || 0) * (i.quantity || 0)) *
+      taxRate(i.categoryId?.name || i.category),
+    0
+  );
+
+  const total = subtotal - totalDiscount + estimatedTax;
+
   const value = {
     cartItems: state.cartItems,
     isLoggedIn: state.isLoggedIn,
+    subtotal,
+    totalDiscount,
+    estimatedTax,
+    total,
     addToCart,
     updateItem,
     removeFromCart,
@@ -188,10 +226,4 @@ export const CartProvider = ({ children }) => {
   );
 };
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used within CartProvider");
-  }
-  return context;
-};
+

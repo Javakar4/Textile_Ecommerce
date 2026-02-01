@@ -1,4 +1,7 @@
 import Product from "../models/ProductSchema.js";
+import Category from "../models/CategorySchema.js";
+import mongoose from "mongoose";
+
 
 /**
  * Create a new product.
@@ -23,7 +26,36 @@ export const getAllProducts = async (query) => {
 
   const filter = {};
 
-  if (category) filter.categoryId = category;
+  if (category) {
+    let categoryIds = [];
+    
+    if (mongoose.Types.ObjectId.isValid(category)) {
+      // If it's a valid ObjectId, we start with it
+      categoryIds.push(new mongoose.Types.ObjectId(category));
+      // And find its children
+      const children = await Category.find({ parentId: category });
+      categoryIds.push(...children.map(child => child._id));
+    } else {
+      // Otherwise try to find by slug first then name
+      const categoryDoc = await Category.findOne({ 
+        $or: [{ slug: category }, { name: category }] 
+      });
+
+      if (categoryDoc) {
+        categoryIds.push(categoryDoc._id);
+        const children = await Category.find({ parentId: categoryDoc._id });
+        categoryIds.push(...children.map(child => child._id));
+      }
+    }
+
+    if (categoryIds.length > 0) {
+      filter.categoryId = { $in: categoryIds };
+    } else if (!mongoose.Types.ObjectId.isValid(category)) {
+      // If no category found and it wasn't an ID, return empty list
+      return [];
+    }
+  }
+
   if (size) filter.sizes = size;
   if (minPrice || maxPrice) {
     filter["pricing.current"] = {};

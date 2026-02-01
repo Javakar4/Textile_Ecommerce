@@ -1,17 +1,62 @@
-import { useState } from "react";
+import { useProductServices } from "../hooks/useProductServices";
 import { useParams, useNavigate } from "react-router-dom";
-import { ChevronRight, ShoppingCart, Heart, Truck, RotateCcw, Shield, Plus, Minus } from "lucide-react";
-import { UseAppContext } from "../context/AppContext";
+import { 
+    ChevronRight, 
+    Minus, 
+    Plus, 
+    ShoppingCart, 
+    Heart, 
+    Truck, 
+    RotateCcw, 
+    Shield 
+} from "lucide-react";
+import { useState, useEffect } from "react";
 import { toast } from 'react-toastify';
 
 export default function ProductDetailPage() {
     const navigate = useNavigate();
-    const { showUserLogin, assets, setCartItems, addToCart } = UseAppContext()
+    const { assets } = useApp();
+    const { addToCart } = useCart();
+    const { user } = useAuth();
+    const { addToWishlist } = useWishlist();
     const { id } = useParams();
-    const productData = assets.productData.find((p) => p.id === id);
+    
+    const { useProduct } = useProductServices();
+    const { data: productData, isLoading, error } = useProduct(id);
+
     const [quantity, setQuantity] = useState(1);
-    const [selectedSize, setSelectedSize] = useState(productData.defaultSize);
-    const [selectedImage, setSelectedImage] = useState(productData.images.main);
+    const [selectedSize, setSelectedSize] = useState("");
+    const [selectedImage, setSelectedImage] = useState("");
+
+    useEffect(() => {
+        if (productData) {
+            setSelectedSize(productData.defaultSize || productData.sizes?.[0] || "");
+            setSelectedImage(productData.images?.main || "");
+        }
+    }, [productData]);
+
+    if (isLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-700"></div>
+            </div>
+        );
+    }
+
+    if (error || !productData) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h2>
+                <p className="text-gray-600 mb-6">The product you are looking for might have been removed or is temporarily unavailable.</p>
+                <button 
+                    onClick={() => navigate("/all-collections")}
+                    className="bg-amber-700 text-white px-8 py-3 rounded-xl hover:bg-amber-800 transition"
+                >
+                    Back to Shop
+                </button>
+            </div>
+        );
+    }
 
     const incrementQuantity = () => {
         setQuantity((prev) => (prev < 20 ? prev + 1 : prev));
@@ -47,16 +92,11 @@ export default function ProductDetailPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-12">
                 {/* Breadcrumb */}
                 <nav className="flex items-center space-x-2 text-sm text-gray-600 mb-6 sm:mb-8">
-                    {productData.breadcrumb.map((item, index) => (
-                        <div key={index} className="flex items-center space-x-2">
-                            {item.url ? (
-                                <a href={item.url} className="hover:text-amber-700">{item.label}</a>
-                            ) : (
-                                <span className="text-gray-900 font-medium">{item.label}</span>
-                            )}
-                            {index < productData.breadcrumb.length - 1 && <ChevronRight className="w-3 h-3" />}
-                        </div>
-                    ))}
+                    <button onClick={() => navigate("/")} className="hover:text-amber-700">Home</button>
+                    <ChevronRight className="w-3 h-3" />
+                    <button onClick={() => navigate("/all-collections")} className="hover:text-amber-700">All Collections</button>
+                    <ChevronRight className="w-3 h-3" />
+                    <span className="text-gray-900 font-medium">{productData.name}</span>
                 </nav>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
@@ -92,14 +132,14 @@ export default function ProductDetailPage() {
                     <div className="space-y-6">
                         <div>
                             <div className="flex items-center gap-2 mb-3">
-                                {productData.badges.map((badge) => (
-                                    <span key={badge} className="bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full">
-                                        {badge}
+                                {productData.pricing?.discount > 0 && (
+                                    <span className="bg-red-100 text-red-700 text-xs font-semibold px-3 py-1 rounded-full">
+                                        {productData.pricing.discount}% OFF
                                     </span>
-                                ))}
-                                {productData.stock.available && (
-                                    <span className="bg-gray-100 text-gray-700 text-xs font-medium px-3 py-1 rounded-full">
-                                        {productData.stock.label}
+                                )}
+                                {productData.stock?.available && (
+                                    <span className="bg-green-100 text-green-700 text-xs font-medium px-3 py-1 rounded-full">
+                                        In Stock
                                     </span>
                                 )}
                             </div>
@@ -133,9 +173,16 @@ export default function ProductDetailPage() {
 
                             <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
                                 <span className="font-medium">Brand:</span>
-                                <a href={productData.brand.url} className="text-amber-700 hover:text-amber-800 font-medium">
-                                    {productData.brand.name}
-                                </a>
+                                <span className="text-amber-700 font-medium">
+                                    {productData.brandId?.name || "Premium Brand"}
+                                </span>
+                            </div>
+
+                            <div className="flex items-center gap-2 text-sm text-gray-600 mb-2">
+                                <span className="font-medium">Category:</span>
+                                <span className="text-gray-800 font-medium">
+                                    {productData.categoryId?.name}
+                                </span>
                             </div>
 
                             <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -148,18 +195,19 @@ export default function ProductDetailPage() {
                         <div className="border-t border-gray-200 pt-6">
                             <div className="flex items-baseline gap-3 mb-2">
                                 <span className="text-4xl font-bold text-amber-800">
-                                    ${productData.pricing.current.toFixed(2)}
+                                    ${productData.pricing?.current?.toFixed(2)}
                                 </span>
-                                <span className="text-2xl text-gray-400 line-through">
-                                    ${productData.pricing.original.toFixed(2)}
-                                </span>
-                                <span className="bg-red-100 text-red-700 text-sm font-bold px-3 py-1 rounded-full">
-                                    {productData.pricing.discount}% OFF
-                                </span>
+                                {productData.pricing?.original && (
+                                    <span className="text-2xl text-gray-400 line-through">
+                                        ${productData.pricing.original.toFixed(2)}
+                                    </span>
+                                )}
                             </div>
-                            <p className="text-sm text-green-600 font-medium">
-                                Save ${productData.pricing.savings.toFixed(2)} on this purchase
-                            </p>
+                            {productData.pricing?.original > productData.pricing?.current && (
+                                <p className="text-sm text-green-600 font-medium">
+                                    Save ${(productData.pricing.original - productData.pricing.current).toFixed(2)} on this purchase
+                                </p>
+                            )}
                         </div>
 
                         {/* Size */}
@@ -222,7 +270,13 @@ export default function ProductDetailPage() {
                                 <button onClick={handleCartButton} className="flex-1 bg-amber-700 text-white font-semibold py-4 rounded-xl hover:bg-amber-800 transition flex items-center justify-center gap-2">
                                     <ShoppingCart className="w-5 h-5" /> Add to Cart
                                 </button>
-                                <button className="bg-white border-2 border-gray-300 text-gray-700 font-semibold px-6 py-4 rounded-xl hover:border-amber-700 hover:text-amber-700 transition">
+                                <button 
+                                    onClick={() => {
+                                        addToWishlist(productData);
+                                        toast.success("Added to wishlist!");
+                                    }}
+                                    className="bg-white border-2 border-gray-300 text-gray-700 font-semibold px-6 py-4 rounded-xl hover:border-amber-700 hover:text-amber-700 transition"
+                                >
                                     <Heart className="w-5 h-5" />
                                 </button>
                             </div>
@@ -234,17 +288,18 @@ export default function ProductDetailPage() {
                         {/* Icons */}
                         <div className="border-t border-gray-200 pt-6">
                             <div className="grid grid-cols-3 gap-4 text-center">
-                                {productData.features.map((item) => {
-                                    const Icon = item.icon;
-                                    return (
-                                        <div key={item.label} className="flex flex-col items-center">
-                                            {item.icon === "Truck" && <Truck className="w-8 h-8 text-amber-700 mb-2" />}
-                                            {item.icon === "RotateCcw" && <RotateCcw className="w-8 h-8 text-amber-700 mb-2" />}
-                                            {item.icon === "Shield" && <Shield className="w-8 h-8 text-amber-700 mb-2" />}
-                                            <span className="text-xs text-gray-600 font-medium">{item.label}</span>
-                                        </div>
-                                    );
-                                })}
+                                <div className="flex flex-col items-center">
+                                    <Truck className="w-8 h-8 text-amber-700 mb-2" />
+                                    <span className="text-xs text-gray-600 font-medium">Fast Shipping</span>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                    <RotateCcw className="w-8 h-8 text-amber-700 mb-2" />
+                                    <span className="text-xs text-gray-600 font-medium">30 Day Return</span>
+                                </div>
+                                <div className="flex flex-col items-center">
+                                    <Shield className="w-8 h-8 text-amber-700 mb-2" />
+                                    <span className="text-xs text-gray-600 font-medium">Secure Payment</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -265,16 +320,18 @@ export default function ProductDetailPage() {
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
                         <h3 className="text-xl font-bold text-gray-900 mb-4">Specifications</h3>
                         <div className="space-y-3">
-                            {Object.entries(productData.specifications).map(([key, value]) => (
-                                <div key={key} className={`flex justify-between py-2 ${key !== 'productId' ? 'border-b border-gray-100' : ''}`}>
-                                    <span className="text-gray-600 font-medium">
-                                        {key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' ₹1')}
-                                    </span>
-                                    <span className={`text-gray-900 font-semibold ${key === 'productId' ? 'font-mono text-sm' : ''}`}>
-                                        {value}
-                                    </span>
-                                </div>
-                            ))}
+                            <div className="flex justify-between py-2 border-b border-gray-100">
+                                <span className="text-gray-600 font-medium">Material</span>
+                                <span className="text-gray-900 font-semibold">{productData.material}</span>
+                            </div>
+                            <div className="flex justify-between py-2 border-b border-gray-100">
+                                <span className="text-gray-600 font-medium">Sizes</span>
+                                <span className="text-gray-900 font-semibold">{productData.sizes?.join(", ")}</span>
+                            </div>
+                            <div className="flex justify-between py-2">
+                                <span className="text-gray-600 font-medium">SKU</span>
+                                <span className="text-gray-900 font-semibold font-mono text-sm">{productData.sku}</span>
+                            </div>
                         </div>
                     </div>
 
@@ -304,11 +361,11 @@ export default function ProductDetailPage() {
                 <div className="bg-linear-to-r from-amber-700 to-amber-800 rounded-2xl shadow-lg p-6 sm:p-8 text-white">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div>
-                            <h3 className="text-2xl font-bold mb-2">{productData.offer.title}</h3>
-                            <p className="text-amber-100">{productData.offer.description}</p>
+                            <h3 className="text-2xl font-bold mb-2">Special Offer</h3>
+                            <p className="text-amber-100">Get an extra 10% off on your first purchase. Use code: TEXTILE10</p>
                         </div>
                         <button className="bg-white text-amber-700 font-bold px-8 py-3 rounded-xl hover:bg-amber-50 transition">
-                            {productData.offer.ctaText}
+                            Apply Now
                         </button>
                     </div>
                 </div>

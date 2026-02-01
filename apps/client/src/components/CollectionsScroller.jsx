@@ -4,8 +4,20 @@ import assets from "../assets/assets";
 import ProductCard from "./ProductCard";
 import { NavLink } from "react-router-dom";
 
-function CollectionsScroller({title, desc, products, category}) {
+function CollectionsScroller({title, desc, products = [], category, isLoading}) {
     const [stopScroll, setStopScroll] = React.useState(false);
+
+    if (isLoading) {
+        return (
+            <div className="py-16 px-8 max-w-7xl mx-auto flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-stone-900"></div>
+            </div>
+        );
+    }
+
+    if (!products || products.length === 0) {
+        return null; // Or show a fallback
+    }
 
     // Duplicate cards for infinite scrolling
     const cards = [...products, ...products];
@@ -36,8 +48,8 @@ function CollectionsScroller({title, desc, products, category}) {
                         </p>
                     </div>
 
-                    <NavLink to={`/all-collections?category=${category}`} className="group bg-stone-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-amber-700 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg">
-                        View All Collections
+                    <NavLink to={`/all-collections?category=${category}`} className="group bg-stone-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-amber-700 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg text-center">
+                        View All {title}
                         <FaArrowRight className="text-lg transform transition-transform group-hover:translate-x-2" />
                     </NavLink>
                 </div>
@@ -56,30 +68,9 @@ function CollectionsScroller({title, desc, products, category}) {
                         className="marquee-inner gap-4"
                         style={{
                             animationPlayState: stopScroll ? "paused" : "running",
-                            animationDuration: `${assets.productData.length * 3000}ms`,
+                            animationDuration: `${products.length * 6}s`,
                         }}
                     >
-                        {/* {cards.map((product, index) => (
-                            // <div
-                            //     key={index}
-                            //     className="w-64 mx-4 h-[22rem] relative group rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 flex-shrink-0"
-                            // >
-                            //     <img
-                            //         src={card.images.main}
-                            //         alt={card.name}
-                            //         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                            //     />
-                            //     <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-black/70 via-black/30 to-transparent text-white">
-                            //         <h3 className="text-lg font-bold mb-1" style={{ fontFamily: "Playfair Display, serif" }}>
-                            //             {card.name}
-                            //         </h3>
-                            //         <p className="text-sm mb-3 opacity-90">{card.description[0]}</p>
-                            //         <button className="px-3 py-1.5 text-xs font-semibold bg-amber-600 hover:bg-amber-700 rounded-md transition">
-                            //             View Collection
-                            //         </button>
-                            //     </div>
-                            // </div>
-                        ))} */}
                         {cards.map((product, index) => (
                             <div key={index}>
                                 <ProductCard product={product} />

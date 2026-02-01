@@ -47,7 +47,7 @@ api.interceptors.response.use(
     });
 
     // Optional: show toast for successful responses
-    if (response.data?.message) {
+    if (response.data?.message && response.config.method!=="get") {
       toast.success(response.data.message);
     }
 

@@ -4,8 +4,10 @@ import AppRoutes from './components/Routes'
 import { ToastContainer, Zoom } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {RouterProvider} from "react-router-dom"
-import { AppContextProvider } from '@context/AppContext';
-import { AuthContextProvider } from '@context/AuthContext';
+import { AppContextProvider } from './context/AppContext';
+import { AuthContextProvider } from './context/AuthContext';
+import { WishlistProvider } from './context/WishlistContext';
+import { CartProvider } from './context/CartContext';
 
 function App() {
     return (
@@ -22,7 +24,11 @@ function App() {
 
       <AppContextProvider>
         <AuthContextProvider>
-            <RouterProvider router={AppRoutes}/>    
+          <CartProvider>
+            <WishlistProvider>
+              <RouterProvider router={AppRoutes}/>    
+            </WishlistProvider>
+          </CartProvider>
         </AuthContextProvider>
       </AppContextProvider>
     </>

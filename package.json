@@ -5,6 +5,7 @@
   "scripts": {
     "client": "pnpm --filter @apps/client dev",
     "server": "pnpm --filter @apps/server dev",
+    "server:seed": "pnpm --filter @apps/server seed",
     "lint": "pnpm -r lint",
     "admin": "pnpm --filter @apps/admin dev",
     "all": "pnpm -r run dev",

@@ -38,11 +38,11 @@ export default function CartItem({ cartItems, handleIncrement, handleDecrement, 
                                         <div className="hidden sm:flex flex-col">
                                             <span className="truncate font-medium">{item.name}</span>
                                             <span className="text-xs text-gray-400">
-                                                <s>${item.pricing.original}</s>
-                                                <span className="text-green-600 ml-1">${item.pricing.current}</span>
+                                                <s>${item.pricing?.original?.toFixed(2)}</s>
+                                                <span className="text-green-600 ml-1">${item.pricing?.current?.toFixed(2)}</span>
                                             </span>
                                             <span className="text-xs text-amber-700">
-                                                Save ${item.pricing.savings} ({item.pricing.discount}%)
+                                                Save ${item.pricing?.savings?.toFixed(2)} ({item.pricing?.discount}%)
                                             </span>
                                         </div>
                                     </td>
@@ -52,7 +52,7 @@ export default function CartItem({ cartItems, handleIncrement, handleDecrement, 
                                     <td className="px-4 py-3">{item.size}</td>
 
                                     {/* Price */}
-                                    <td className="px-4 py-3">${item.pricing.current}</td>
+                                    <td className="px-4 py-3">${item.pricing?.current?.toFixed(2)}</td>
 
                                     {/* Quantity controls */}
                                     <td className="px-4 py-3">

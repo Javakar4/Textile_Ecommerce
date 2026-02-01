@@ -63,6 +63,27 @@ const apiEndpoints = {
     UPDATE: `/api/v1/profile`,
     ADDRESS: `/api/v1/profile/address`,
   },
+  BRANDS: {
+    BASE: `/api/v1/brands`,
+  },
+  CATEGORIES: {
+    BASE: `/api/v1/categories`,
+  },
+  ORDERS: {
+    BASE: `/api/v1/orders`,
+    CREATE: `/api/v1/orders/create`,
+    PAYMENT: `/api/v1/orders/payment`,
+    TRACKING: `/api/v1/orders/tracking`,
+  },
+  PRODUCTS: {
+    BASE: `/api/products`,
+  },
+  WISHLIST: {
+    BASE: `/api/v1/wishlist`,
+    ADD: `/api/v1/wishlist/add`,
+    REMOVE: `/api/v1/wishlist/remove`, // Append ID
+    CLEAR: `/api/v1/wishlist/clear`,
+  },
 };
 
 export default apiEndpoints;

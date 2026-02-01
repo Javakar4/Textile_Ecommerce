@@ -1,8 +1,27 @@
-import { UseAppContext } from "../context/AppContext";
+import { useOrderServices } from "../hooks/useOrderServices";
 import OrderItemCard from "../components/OrderItemCard";
 
 export default function OrdersPage() {
-    const { orderItems } = UseAppContext();
+    const { useMyOrders } = useOrderServices();
+    const { data: orderItems, isLoading, isError, error } = useMyOrders();
+
+    if (isLoading) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-10 mt-20 min-h-[60vh] flex items-center justify-center">
+                <div className="text-gray-500 animate-pulse font-medium text-lg">Fetching your orders...</div>
+            </div>
+        );
+    }
+
+    if (isError) {
+        return (
+            <div className="max-w-7xl mx-auto px-4 py-10 mt-20 min-h-[60vh] flex items-center justify-center">
+                <div className="text-red-500 font-medium">Error: {error.message || "Failed to load orders"}</div>
+            </div>
+        );
+    }
+
+    const orders = orderItems || [];
 
     return (
         <div className="max-w-7xl mx-auto px-4 py-10 mt-20 min-h-[100vh]">
@@ -17,23 +36,20 @@ export default function OrdersPage() {
             </div>
 
             {/* Empty State */}
-            {orderItems.length === 0 ? (
-                <div className="bg-white border border-gray-200 rounded-xl p-10 text-center">
+            {orders.length === 0 ? (
+                <div className="bg-white border border-gray-200 rounded-xl p-10 text-center shadow-sm">
                     <p className="text-gray-500 text-sm">
                         You haven’t placed any orders yet.
                     </p>
                 </div>
             ) : (
                 <div className="space-y-6">
-                    {orderItems
-                        .slice()
-                        .reverse()
-                        .map((order) => (
-                            <OrderItemCard
-                                key={order.id}
-                                order={order}
-                            />
-                        ))}
+                    {orders.map((order) => (
+                        <OrderItemCard
+                            key={order._id || order.orderId}
+                            order={order}
+                        />
+                    ))}
                 </div>
             )}
         </div>

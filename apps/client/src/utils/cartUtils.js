@@ -5,7 +5,7 @@
 
 export const addItem = (cartItems, newItem) => {
   const existingItemIndex = cartItems.findIndex(
-    (item) => item.product_id === newItem.product_id
+    (item) => item._id === newItem._id
   );
 
   if (existingItemIndex > -1) {
@@ -28,7 +28,7 @@ export const updateQuantity = (cartItems, productId, qty) => {
   if (qty < 1) return cartItems; 
 
   return cartItems.map((item) => {
-    if (item.product_id === productId) {
+    if (item._id === productId) {
       return { ...item, quantity: qty };
     }
     return item;
@@ -36,7 +36,7 @@ export const updateQuantity = (cartItems, productId, qty) => {
 };
 
 export const removeItem = (cartItems, productId) => {
-  return cartItems.filter((item) => item.product_id !== productId);
+  return cartItems.filter((item) => item._id !== productId);
 };
 
 export const clearItems = () => {

@@ -1,20 +1,26 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, X, ChevronUp, ChevronDown, Star, Search } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { UseAppContext } from "../context/AppContext";
-import { useSearchParams } from "react-router-dom";
+import { useProductServices } from '../hooks/useProductServices';
+import { useApp } from '../hooks/useApp';
+import { useSearchParams } from 'react-router-dom';
+import { useCategoryServices } from '../hooks/useCategoryServices';
+import { useBrandServices } from '../hooks/useBrandServices';
 
 const AllProductsPage = () => {
-    const { assets } = UseAppContext();
-    const products = assets.productData || [];
+    const { assets } = useApp();
     const [searchParams] = useSearchParams();
     const categoryParam = searchParams.get("category");
-    const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+    const searchQueryParam = searchParams.get("search") || "";
+
+    const { useProducts } = useProductServices();
+    const { useCategories } = useCategoryServices();
+    const { useBrands } = useBrandServices();
 
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
     const [sortBy, setSortBy] = useState('featured');
     const [filters, setFilters] = useState({
-        category: '',
+        category: categoryParam || '',
         collections: '',
         priceRanges: [],
         materials: [],
@@ -24,6 +30,15 @@ const AllProductsPage = () => {
         tags: [],
         inStockOnly: false
     });
+
+    const { data: productsData, isLoading, error } = useProducts({
+        category: filters.category,
+        search: searchQueryParam
+    });
+    const products = productsData || [];
+
+    const { data: categories = [] } = useCategories();
+    const { data: authoritativeBrands = [] } = useBrands();
     useEffect(() => {
         if (categoryParam) {
             setFilters(prev => ({
@@ -44,17 +59,15 @@ const AllProductsPage = () => {
 
     // Extract unique values from products for filter options
     const filterOptions = useMemo(() => {
-        const categories = [...new Set(products.map(p => p.category).filter(Boolean))];
+        const categories = [...new Set(products.map(p => p.categoryId?.name).filter(Boolean))];
         const materials = [...new Set(products.map(p => p.material).filter(Boolean))];
-        const brands = [...new Set(products.map(p => p.brand?.name || p.brand).filter(Boolean))];
+        const brands = [...new Set(products.map(p => p.brandId?.name).filter(Boolean))];
 
         // Get all unique collections from products
         const collectionsSet = new Set();
         products.forEach(p => {
             if (Array.isArray(p.collections)) {
                 p.collections.forEach(col => collectionsSet.add(col));
-            } else if (p.collection) {
-                collectionsSet.add(p.collection);
             }
         });
         const collections = Array.from(collectionsSet);
@@ -111,33 +124,8 @@ const AllProductsPage = () => {
     const filteredProducts = useMemo(() => {
         let filtered = [...products];
 
-        // 🔍 SEARCH FILTER (ADD HERE)
-        if (searchQuery) {
-            filtered = filtered.filter(p =>
-                p.name?.toLowerCase().includes(searchQuery)
-                // p.category?.toLowerCase().includes(searchQuery) ||
-                // p.brand?.name?.toLowerCase().includes(searchQuery) ||
-                // p.brand?.toLowerCase().includes(searchQuery) ||
-                // p.tags?.some(tag => tag.toLowerCase().includes(searchQuery))
-            );
-        }
-
-
-        // Category filter
-        if (filters.category) {
-            filtered = filtered.filter(p => p.category === filters.category);
-        }
-
-        // Collection filter
-        if (filters.collections) {
-            filtered = filtered.filter(p => {
-                if (Array.isArray(p.collections)) {
-                    return p.collections.includes(filters.collections);
-                }
-                return p.collection === filters.collections;
-            });
-        }
-
+        // 🔍 SEARCH FILTER - Client side sorting/minor filtering if needed, 
+        // but core category and search are handled by backend.
 
         // Price range filter
         if (filters.priceRanges.length > 0) {
@@ -179,7 +167,7 @@ const AllProductsPage = () => {
         // Brand filter
         if (filters.brands.length > 0) {
             filtered = filtered.filter(p => {
-                const brandName = p.brand?.name || p.brand;
+                const brandName = p.brandId?.name;
                 return filters.brands.includes(brandName);
             });
         }
@@ -240,7 +228,7 @@ const AllProductsPage = () => {
         }
 
         return filtered;
-    }, [products, filters, sortBy, searchQuery]);
+    }, [products, filters, sortBy, searchQueryParam]);
 
     const FilterSection = ({ title, section, children }) => (
         <div className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
@@ -395,18 +383,18 @@ const AllProductsPage = () => {
                     </FilterSection>
 
                     {/* Brand Filter */}
-                    {filterOptions.brands.length > 0 && (
+                    {authoritativeBrands.length > 0 && (
                         <FilterSection title="Brand" section="brand">
                             <div className="space-y-2 max-h-48 overflow-y-auto">
-                                {filterOptions.brands.map(brand => (
-                                    <label key={brand} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
+                                {authoritativeBrands.map(brand => (
+                                    <label key={brand._id} className="flex items-center cursor-pointer hover:bg-gray-50 p-1 rounded">
                                         <input
                                             type="checkbox"
-                                            checked={filters.brands.includes(brand)}
-                                            onChange={() => toggleFilter('brands', brand)}
-                                            className="w-4 h-4 text-amber-700 rounded focus:ring-2 focus:ring-amber-500 border-danger"
+                                            checked={filters.brands.includes(brand.name)}
+                                            onChange={() => toggleFilter('brands', brand.name)}
+                                            className="w-4 h-4 text-amber-700 rounded focus:ring-2 focus:ring-amber-500"
                                         />
-                                        <span className="ml-2 text-sm text-gray-700">{brand}</span>
+                                        <span className="ml-2 text-sm text-gray-700">{brand.name}</span>
                                     </label>
                                 ))}
                             </div>
@@ -479,24 +467,18 @@ const AllProductsPage = () => {
                                 >
                                     All Products
                                 </button>
-                                <button
-                                    onClick={() => setFilters(prev => ({ ...prev, category: "MC" }))}
-                                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${filters.category === "MC"
-                                        ? 'bg-amber-700 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    Men's Collection
-                                </button>
-                                <button
-                                    onClick={() => setFilters(prev => ({ ...prev, category: "KC" }))}
-                                    className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${filters.category === "KC"
-                                        ? 'bg-amber-700 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    Kids' Collection
-                                </button>
+                                {categories.filter(cat => !cat.parentId).map(parent => (
+                                    <button
+                                        key={parent._id}
+                                        onClick={() => setFilters(prev => ({ ...prev, category: parent.slug }))}
+                                        className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${filters.category === parent.slug
+                                            ? 'bg-amber-700 text-white'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                            }`}
+                                    >
+                                        {parent.name}
+                                    </button>
+                                ))}
                             </div>
 
                             {/* Right Side - Collections Dropdown and Sort */}
@@ -546,7 +528,24 @@ const AllProductsPage = () => {
 
                     {/* Product Grid */}
                     <div className="p-4 sm:p-6">
-                        {filteredProducts.length > 0 ? (
+                        {isLoading ? (
+                            <div className="flex flex-col items-center justify-center py-20">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-700 mb-4"></div>
+                                <p className="text-gray-600">Loading products...</p>
+                            </div>
+                        ) : error ? (
+                            <div className="flex flex-col items-center justify-center py-20 text-center">
+                                <X size={48} className="text-red-500 mb-4" />
+                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Error loading products</h3>
+                                <p className="text-gray-600 mb-6">{error.message || "Something went wrong"}</p>
+                                <button
+                                    onClick={() => window.location.reload()}
+                                    className="bg-amber-700 hover:bg-amber-600 text-white font-medium py-2 px-6 rounded-lg transition-colors"
+                                >
+                                    Retry
+                                </button>
+                            </div>
+                        ) : filteredProducts.length > 0 ? (
                             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
                                 {filteredProducts.map((product, index) => (
                                     <div key={product.id || index}>

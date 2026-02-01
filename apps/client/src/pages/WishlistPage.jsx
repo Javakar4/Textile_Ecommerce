@@ -1,11 +1,14 @@
 import React from 'react';
-import { UseAppContext } from '../context/AppContext';
+import { useWishlist } from '../hooks/useWishlist';
+import { useCart } from '../hooks/useCart';
+import { useApp } from '../hooks/useApp';
 import { FaHeart, FaTrash, FaShoppingCart, FaHeartBroken } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const WishlistPage = () => {
-    const { wishlistItems, removeFromWishlist, addToCart, navigate } = UseAppContext();
+    const { wishlistItems, removeFromWishlist } = useWishlist();
+    const { addToCart } = useCart();
     const navigateHook = useNavigate();
 
     const handleRemoveFromWishlist = (productId, productName) => {
@@ -51,16 +54,17 @@ const WishlistPage = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {wishlistItems.map((product) => {
                         const discount = calculateDiscount(product.pricing?.original, product.pricing?.current);
+                        const productId = product._id || product.id;
                         
                         return (
                             <div 
-                                key={product.id} 
+                                key={productId} 
                                 className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 group"
                             >
                                 {/* Product Image */}
                                 <div 
                                     className="relative overflow-hidden cursor-pointer bg-gray-50"
-                                    onClick={() => handleProductClick(product.id)}
+                                    onClick={() => handleProductClick(productId)}
                                 >
                                     <img 
                                         src={product.images?.main || product.image} 
@@ -78,24 +82,24 @@ const WishlistPage = () => {
                                 <div className="p-5">
                                     <div 
                                         className="cursor-pointer mb-3"
-                                        onClick={() => handleProductClick(product.id)}
+                                        onClick={() => handleProductClick(productId)}
                                     >
                                         <h3 className="text-lg font-bold text-gray-800 mb-1 hover:text-amber-700 transition-colors">
                                             {product.name}
                                         </h3>
                                         <p className="text-sm text-gray-500 capitalize">
-                                            {product.category === 'MC' ? "Men's Collection" : "Kid's Collection"}
+                                            {product.categoryId?.name || "Textile Collection"}
                                         </p>
                                     </div>
 
                                     {/* Pricing */}
                                     <div className="flex items-center gap-2 mb-4">
                                         <span className="text-2xl font-bold text-amber-700">
-                                            ₹{product.pricing?.current || product.price}
+                                            ${product.pricing?.current?.toFixed(2) || product.price?.toFixed(2)}
                                         </span>
                                         {product.pricing?.original && product.pricing.original !== product.pricing.current && (
                                             <span className="text-sm text-gray-400 line-through">
-                                                ₹{product.pricing.original}
+                                                ${product.pricing.original.toFixed(2)}
                                             </span>
                                         )}
                                     </div>
@@ -109,7 +113,7 @@ const WishlistPage = () => {
                                             <FaShoppingCart size={14} /> Add to Cart
                                         </button>
                                         <button
-                                            onClick={() => handleRemoveFromWishlist(product.id, product.name)}
+                                            onClick={() => handleRemoveFromWishlist(productId, product.name)}
                                             className="bg-red-50 text-red-600 py-2.5 px-4 rounded-lg hover:bg-red-100 transition-all duration-200 font-medium border border-red-200 hover:border-red-300"
                                             title="Remove from wishlist"
                                         >

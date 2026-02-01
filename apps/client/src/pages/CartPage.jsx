@@ -1,36 +1,30 @@
 import React from "react";
 import CartItem from "../components/CartItem";
-import { UseAppContext } from "../context/AppContext";
-import { toast } from 'react-toastify';
+import { useCart } from "../hooks/useCart";
+import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 
 
 function CartPage() {
     const navigate = useNavigate();
-    const { cartItems, setCartItems, subtotal, totalDiscount, estimatedTax, total, updateCartQuantity } = UseAppContext();
+    const { cartItems, setCart, subtotal, totalDiscount, estimatedTax, total, updateItem, removeFromCart } = useCart();
 
     const handleIncrement = (id) => {
-        setCartItems(prev =>
-            prev.map(item =>
-                item.id === id && item.quantity < 10
-                    ? { ...item, quantity: item.quantity + 1 }
-                    : item
-            )
-        );
+        const item = cartItems.find(i => i.id === id);
+        if (item && item.quantity < 10) {
+            updateItem(id, item.quantity + 1);
+        }
     };
 
     const handleDecrement = (id) => {
-        setCartItems(prev =>
-            prev.map(item =>
-                item.id === id && item.quantity > 1
-                    ? { ...item, quantity: item.quantity - 1 }
-                    : item
-            )
-        );
+        const item = cartItems.find(i => i.id === id);
+        if (item && item.quantity > 1) {
+            updateItem(id, item.quantity - 1);
+        }
     };
 
     const handleRemove = (id) => {
-        setCartItems(prev => prev.filter(item => item.id !== id));
+        removeFromCart(id);
         toast.success("Item deleted from cart!");
     };
 
@@ -49,8 +43,14 @@ function CartPage() {
                         <>
                             <CartItem
                                 cartItems={cartItems}
-                                handleIncrement={(id, size) => updateCartQuantity(id, size, "inc")}
-                                handleDecrement={(id, size) => updateCartQuantity(id, size, "dec")}
+                                handleIncrement={(id, size) => {
+                                    const item = cartItems.find(i => i.id === id && i.size === size);
+                                    if(item) updateItem(id, item.quantity + 1);
+                                }}
+                                handleDecrement={(id, size) => {
+                                    const item = cartItems.find(i => i.id === id && i.size === size);
+                                    if(item) updateItem(id, Math.max(1, item.quantity - 1));
+                                }}
                                 handleRemove={handleRemove}
                             />
                         </>

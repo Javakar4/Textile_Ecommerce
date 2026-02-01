@@ -1,13 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { UseAppContext } from "../context/AppContext";
+import { useApp } from "../hooks/useApp";
+import { useCart } from "../hooks/useCart";
 import { useAuth } from "../hooks/useAuth";
+import { useWishlist } from "../hooks/useWishlist";
+import { useCategoryServices } from "../hooks/useCategoryServices";
 
 function Navbar() {
+    const { useCategories } = useCategoryServices();
+    const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
+    const categoriesData = categories;
     const [open, setOpen] = useState(false);
     const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState()
     const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState()
-    const { assets, cartItems } = UseAppContext();
+    const { assets } = useApp();
+    const { cartItems } = useCart();
+    const { wishlistItems } = useWishlist();
     const { user, setShowUserLogin, logout: contextLogout } = useAuth();
     const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
@@ -48,20 +56,22 @@ function Navbar() {
                         <span>Collections</span> ▾
                     </div>
 
-                    <div className="hidden group-hover:block absolute top-6  bg-white shadow border border-gray-200 py-2 w-40 rounded-md text-sm z-40">
-                        <NavLink
-                            to="/all-collections?category=MC"
-                            className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                        >
-                            Men&apos;s Collections
-                        </NavLink>
-
-                        <NavLink
-                            to="/all-collections?category=KC"
-                            className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                        >
-                            Kid&apos;s Collections
-                        </NavLink>
+                    <div className="hidden group-hover:block absolute top-6  bg-white shadow border border-gray-200 py-2 w-48 rounded-md text-sm z-40">
+                        {isLoadingCategories ? (
+                            <div className="px-4 py-2 text-stone-500">Loading...</div>
+                        ) : categoriesData.filter(cat => !cat.parentId).length > 0 ? (
+                            categoriesData.filter(cat => !cat.parentId).map((cat) => (
+                                <NavLink
+                                    key={cat._id}
+                                    to={`/all-collections?category=${cat.slug}`}
+                                    className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
+                                >
+                                    {cat.name}
+                                </NavLink>
+                            ))
+                        ) : (
+                            <div className="px-4 py-2 text-stone-500">No collections</div>
+                        )}
                     </div>
                 </div>
 
@@ -72,26 +82,21 @@ function Navbar() {
                     </div>
 
                     <div className="hidden group-hover:block absolute top-6 bg-white shadow border border-gray-200 py-2 w-40 rounded-md text-sm z-40">
-                        <NavLink
-                            to="/categories/category1"
-                            className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                        >
-                            Category 1
-                        </NavLink>
-
-                        <NavLink
-                            to="/categories/category2"
-                            className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                        >
-                            Category 2
-                        </NavLink>
-
-                        <NavLink
-                            to="/categories/category3"
-                            className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                        >
-                            Category 3
-                        </NavLink>
+                        {isLoadingCategories ? (
+                            <div className="px-4 py-2 text-stone-500">Loading...</div>
+                        ) : categoriesData.length > 0 ? (
+                            categoriesData.map((cat) => (
+                                <NavLink
+                                    key={cat._id}
+                                    to={`/all-collections?category=${cat._id}`}
+                                    className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
+                                >
+                                    {cat.name}
+                                </NavLink>
+                            ))
+                        ) : (
+                            <div className="px-4 py-2 text-stone-500">No categories</div>
+                        )}
                     </div>
                 </div>
 
@@ -207,8 +212,22 @@ function Navbar() {
 
                         {mobileCollectionsOpen && (
                             <div className="flex flex-col mt-2 ml-4 gap-2 animate-fadeSlide text-base ">
-                                <NavLink to="/all-collections?category=MC" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Men's Collections</NavLink>
-                                <NavLink to="/all-collections?category=KC" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Kid's Collections</NavLink>
+                                {isLoadingCategories ? (
+                                    <div className="text-stone-500">Loading...</div>
+                                ) : categoriesData.filter(cat => !cat.parentId).length > 0 ? (
+                                    categoriesData.filter(cat => !cat.parentId).map((cat) => (
+                                        <NavLink 
+                                            key={cat._id}
+                                            to={`/all-collections?category=${cat.slug}`} 
+                                            onClick={() => setOpen(false)} 
+                                            className={'hover:text-amber-700'}
+                                        >
+                                            {cat.name}
+                                        </NavLink>
+                                    ))
+                                ) : (
+                                    <div className="text-stone-500">No collections</div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -224,9 +243,22 @@ function Navbar() {
 
                         {mobileCategoriesOpen && (
                             <div className="flex flex-col mt-2 ml-4 gap-2 animate-fadeSlide text-base">
-                                <NavLink to="/categories/category1" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Category 1</NavLink>
-                                <NavLink to="/categories/category2" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Category 2</NavLink>
-                                <NavLink to="/categories/category3" onClick={() => setOpen(false)} className={'hover:text-amber-700'}>Category 3</NavLink>
+                                {isLoadingCategories ? (
+                                    <div className="text-stone-500">Loading...</div>
+                                ) : categoriesData.length > 0 ? (
+                                    categoriesData.map((cat) => (
+                                        <NavLink
+                                            key={cat._id}
+                                            to={`/all-collections?category=${cat._id}`}
+                                            onClick={() => setOpen(false)}
+                                            className={'hover:text-amber-700'}
+                                        >
+                                            {cat.name}
+                                        </NavLink>
+                                    ))
+                                ) : (
+                                    <div className="text-stone-500">No categories</div>
+                                )}
                             </div>
                         )}
                     </div>
@@ -242,7 +274,7 @@ function Navbar() {
                     <div className="relative flex items-center gap-3 cursor-pointer py-2 hover:text-amber-700" onClick={() => setOpen(false)}>
                         <span className="text-3xl">🛒</span>
                         <span className="absolute -top-1 left-5 text-xs w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-md">
-                            3
+                            {cartItems.length}
                         </span>
                         <span className="text-lg">Cart</span>
                     </div>

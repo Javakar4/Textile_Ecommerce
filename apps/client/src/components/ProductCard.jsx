@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
-import { UseAppContext } from "../context/AppContext";
+import { useCart } from "../hooks/useCart";
+import { useAuth } from "../hooks/useAuth";
+import { useWishlist } from "../hooks/useWishlist";
+import { useApp } from "../hooks/useApp";
 import { toast } from 'react-toastify';
 
 
@@ -9,21 +12,22 @@ import { toast } from 'react-toastify';
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const [isHovered, setIsHovered] = useState(false);
-    const [isFavorite, setIsFavorite] = useState(false);
-    const { user, setUser, setShowUserLogin, assets, products, addToCart } = UseAppContext()
-    const productData = products.find(p => p.id === product.id);
+    const { user, setUser, setShowUserLogin } = useAuth();
+    const { addToCart } = useCart();
+    const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+    const isFavorite = isInWishlist(product._id);
     const [quantity, setQuantity] = useState(1);
-    const [selectedSize, setSelectedSize] = useState(productData.defaultSize);
+    const [selectedSize, setSelectedSize] = useState(product.defaultSize);
 
     // const product = assets.productData[1];
 
     const handleQuickView = () => {
-        navigate(`/collection-detail/${product.id}`);
+        navigate(`/collection-detail/${product._id}`);
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     const handleCartButton = () => {
-        const itemToAdd = productData || product; // fallback
+        const itemToAdd = product; // Use product prop directly
         addToCart(itemToAdd, selectedSize, quantity);
         console.log("ITEM ADDED TO CART", itemToAdd);
         toast.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
@@ -42,19 +46,19 @@ const ProductCard = ({ product }) => {
                 <div className="relative w-full aspect-[3/4] bg-gray-200 overflow-hidden sm:aspect-[3/4]">
 
                     <img
-                        src={product.images.main}
+                        src={product.images?.main}
                         alt={product.name}
                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <img
-                        src={product.images.thumbnails[1]}
+                        src={product.images?.thumbnails?.[1] || product.images?.main}
                         alt={`${product.name} alternate`}
                         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"
                             }`}
                     />
 
                     {/* Discount Badge */}
-                    {product.pricing.discount > 0 && (
+                    {product.pricing?.discount > 0 && (
                         <div className="absolute top-2 left-2">
                             <span className="bg-rose-600 text-white text-[10px] font-bold px-1 py-px rounded">
                                 -{product.pricing.discount}%
@@ -65,7 +69,15 @@ const ProductCard = ({ product }) => {
                     {/* Favorite Button */}
                     <div className="absolute top-2 right-2">
                         <button
-                            onClick={() => setIsFavorite(!isFavorite)}
+                            onClick={() => {
+                                if (isFavorite) {
+                                    removeFromWishlist(product._id);
+                                    toast.info("Removed from wishlist");
+                                } else {
+                                    addToWishlist(product);
+                                    toast.success("Added to wishlist");
+                                }
+                            }}
                             className="bg-white/90 backdrop-blur-sm p-1.5 rounded-full hover:bg-white transition-colors"
                         >
                             <Heart
@@ -91,10 +103,10 @@ const ProductCard = ({ product }) => {
                 <div className="p-3 flex flex-col h-[40%]">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-[9px] text-gray-500 uppercase tracking-wider font-medium">
-                            {product.brand.name}
+                            {product.brandId?.name || "Premium Brand"}
                         </span>
                         <span className="text-[9px] text-gray-400 uppercase">
-                            {product.category}
+                            {product.categoryId?.name}
                         </span>
                     </div>
 
@@ -114,7 +126,7 @@ const ProductCard = ({ product }) => {
                                     key={i}
                                     size={12}
                                     className={
-                                        i < Math.floor(product.rating.score)
+                                        i < Math.floor(product.rating?.score || 0)
                                             ? "fill-yellow-400 text-yellow-400"
                                             : "text-gray-300"
                                     }
@@ -122,13 +134,13 @@ const ProductCard = ({ product }) => {
                             ))}
                         </div>
                         <span className="text-[9px] text-gray-600">
-                            {product.rating.score} ({product.rating.count})
+                            {product.rating?.score || 0} ({product.rating?.count || 0})
                         </span>
                     </div>
 
                     {/* Tags Preview */}
                     <div className="flex flex-wrap gap-1 mb-1">
-                        {product.tags.slice(0, 2).map((tag, index) => (
+                        {product.tags?.slice(0, 2).map((tag, index) => (
                             <span
                                 key={index}
                                 className="text-[8px] bg-gray-100 text-gray-700 px-1 py-px rounded-full"
@@ -142,10 +154,10 @@ const ProductCard = ({ product }) => {
                     <div className="mt-auto flex items-center justify-between">
                         <div className="flex items-baseline gap-1">
                             <span className="text-sm font-bold text-gray-900">
-                                ${product.pricing.current.toFixed(2)}
+                                ${product.pricing?.current?.toFixed(2) || "0.00"}
                             </span>
                             <span className="text-[10px] text-gray-400 line-through">
-                                ${product.pricing.original.toFixed(2)}
+                                ${product.pricing?.original?.toFixed(2) || "0.00"}
                             </span>
                         </div>
                         <button onClick={handleCartButton} className="bg-gray-900 text-white p-2 rounded-lg hover:bg-gray-800 transition-colors flex flex-row items-center gap-1">

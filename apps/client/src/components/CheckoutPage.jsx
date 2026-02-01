@@ -1,305 +1,203 @@
 import { useNavigate } from "react-router-dom";
-import { UseAppContext } from "../context/AppContext";
-import { useState } from "react";
+import { useCart } from "../hooks/useCart";
+import { useProfileServices } from "../hooks/useProfileServices";
+import { useOrderServices } from "../hooks/useOrderServices";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 export default function CheckoutPage() {
-    const { cartItems, setCartItems, subtotal, totalDiscount, estimatedTax, total, addOrderItem, clearCart, addresses, setAddresses } = UseAppContext();
+    const { addresses, isLoadingProfile } = useProfileServices();
+    const { createOrder, isCreatingOrder } = useOrderServices();
+    const { cartItems, subtotal, totalDiscount, estimatedTax, total, clear } = useCart();
     const navigate = useNavigate();
 
+    const [selectedIndex, setSelectedIndex] = useState(0);
 
-    const [selectedIndex, setSelectedIndex] = useState(0); // Index of selected shipping address
+    // Filter out invalid/empty addresses from the list if any
+    const validAddresses = addresses || [];
 
-    // Check if selected address is fully filled (required fields)
+    // Check if selected address is fully filled
     const selectedComplete = () => {
-        const addr = addresses[selectedIndex];
-        return addr?.name && addr?.phone && addr?.address && addr?.city && addr?.state && addr?.zip;
+        const addr = validAddresses[selectedIndex];
+        return addr?.name && addr?.phone && addr?.address && addr?.city && addr?.state && addr?.pincode;
     };
 
-    const handleChange = (index, e) => {
-        const copy = [...addresses];
-        copy[index][e.target.name] = e.target.value;
-        setAddresses(copy);
-    };
-
-    const addNewAddress = () => {
-        if (!selectedComplete()) return;
-        if (addresses.length >= 2) return; // Limit to 2 addresses
-        setAddresses([
-            ...addresses,
-            { name: "", phone: "", address: "", landmark: "", city: "", state: "", zip: "", country: "" },
-        ]);
-        setSelectedIndex(addresses.length); // Auto-select new address
-    };
-
-    const saveAddress = (index) => {
-        const addr = addresses[index];
-        if (!addr.name || !addr.phone || !addr.address || !addr.city || !addr.state || !addr.zip) {
-            alert("Please fill all required fields before saving.");
-            return;
-        }
-        alert(`Address ${index === 0 ? "Primary" : index} saved successfully!`);
-    };
-
-    const removeAddress = (index) => {
-        if (index === 0) return; // Cannot remove primary
-        const copy = addresses.filter((_, i) => i !== index);
-        setAddresses(copy);
-        if (selectedIndex === index) setSelectedIndex(0); // Reset selection if removed
-    };
-
-    const handlePlaceOrder = () => {
+    const handlePlaceOrder = async () => {
         if (!selectedComplete()) {
-            alert("Please complete the selected shipping address.");
+            toast.error("Please complete the selected shipping address.");
             return;
         }
 
-        const selectedAddress = addresses[selectedIndex];
+        const selectedAddress = validAddresses[selectedIndex];
 
-        const newOrder = {
-            id: Date.now(),
+        // Map items to backend schema
+        const orderItems = cartItems.map(item => ({
+            productId: item.productId || item._id, // Handle different ID fields
+            name: item.name,
+            quantity: item.quantity,
+            size: item.size || "M", // Default size if missing
+            image: item.image,
+            pricing: {
+                current: item.pricing?.current || item.price,
+                original: item.pricing?.original || item.price,
+                discount: (item.pricing?.original || item.price) - (item.pricing?.current || item.price)
+            }
+        }));
 
-            // Order data
-            items: cartItems,
-            shippingAddress: selectedAddress,
+        const orderData = {
+            items: orderItems,
             total,
-
-            // ✅ Order status
-            trackingStatus: "Ordered",     // Ordered | Shipping | Delivered
-            paymentStatus: "Confirmed",    // Confirmed | Failed | Pending
-
-            // Meta
-            createdAt: new Date().toISOString(),
+            paymentMethod: "COD", // Defaulting to COD for now
+            shippingAddress: {
+                name: selectedAddress.name,
+                phone: selectedAddress.phone,
+                address: selectedAddress.address,
+                city: selectedAddress.city,
+                state: selectedAddress.state,
+                pincode: selectedAddress.pincode || selectedAddress.zip
+            }
         };
 
-        // ✅ Save order
-        addOrderItem(newOrder);
-
-        // ✅ Clear cart
-        clearCart();
-
-        // ✅ Navigate after everything is done
-        // navigate(`/order-success/${newOrder.id}`);
-        navigate(`/my-orders`);
+        try {
+            const res = await createOrder(orderData);
+            if (res.ok) {
+                clear();
+                navigate(`/my-orders`);
+            }
+        } catch (error) {
+            console.error("Order placement failed:", error);
+        }
     };
 
-
+    if (isLoadingProfile) {
+        return <div className="min-h-screen flex items-center justify-center">Loading checkout...</div>;
+    }
 
     return (
         <div className="max-w-5xl mx-auto mt-20 px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
             {/* LEFT — Shipping Section */}
             <div className="lg:col-span-2 space-y-8">
-                {addresses.map((addr, index) => (
-                    <div
-                        key={index}
-                        className="bg-white rounded-2xl shadow-lg p-6 border border-amber-200"
-                    >
-                        <div className="flex justify-between items-center mb-6">
-                            <div className="flex items-center gap-4">
-                                <input
-                                    type="radio"
-                                    name="selectedAddress"
-                                    checked={selectedIndex === index}
-                                    onChange={() => setSelectedIndex(index)}
-                                    className="accent-amber-900 w-5 h-5"
-                                />
-                                <h2 className="text-xl font-semibold text-amber-700">
-                                    {index === 0 ? "Shipping Address" : `Additional Address ${index}`}
-                                </h2>
-                            </div>
-                            {index === 0 ? (
-                                <span className="text-sm text-gray-500">Required</span>
-                            ) : (
-                                <button
-                                    onClick={() => removeAddress(index)}
-                                    className="text-red-600 text-sm hover:underline"
-                                >
-                                    Remove
-                                </button>
-                            )}
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">
-                                    Full Name <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    name="name"
-                                    value={addr.name}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="John Doe"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">
-                                    Phone <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    name="phone"
-                                    value={addr.phone}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="+1 234 567 890"
-                                />
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <label className="text-sm font-medium text-gray-700">
-                                    Street Address <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    name="address"
-                                    value={addr.address}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="123 Main St"
-                                />
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <label className="text-sm font-medium text-gray-700">
-                                    Near Famous Area / Landmark
-                                </label>
-                                <input
-                                    name="landmark"
-                                    value={addr.landmark}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="Near Central Park"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">
-                                    City <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    name="city"
-                                    value={addr.city}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="New York"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">
-                                    State <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    name="state"
-                                    value={addr.state}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="NY"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">
-                                    ZIP <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    name="zip"
-                                    value={addr.zip}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="10001"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="text-sm font-medium text-gray-700">
-                                    Country
-                                </label>
-                                <input
-                                    name="country"
-                                    value={addr.country}
-                                    onChange={(e) => handleChange(index, e)}
-                                    className="mt-1 border border-gray-300 rounded-lg p-3 w-full focus:ring-2 focus:ring-gray-300 focus:outline-none"
-                                    placeholder="USA"
-                                />
-                            </div>
-                        </div>
-
-                        <button
-                            onClick={() => saveAddress(index)}
-                            className="mt-6 w-full bg-amber-700 text-white py-3 rounded-lg hover:bg-amber-900 transition font-medium"
+                <h2 className="text-2xl font-bold text-gray-800 mb-4">Select Shipping Address</h2>
+                
+                {validAddresses.length === 0 ? (
+                    <div className="bg-white rounded-2xl shadow-lg p-6 border border-amber-200 text-center">
+                        <p className="text-gray-600 mb-4">No addresses found in your profile.</p>
+                        <button 
+                            onClick={() => navigate('/profile')}
+                            className="bg-amber-700 text-white px-6 py-2 rounded-lg hover:bg-amber-900 transition"
                         >
-                            Save / Update Address
+                            Add Address in Profile
                         </button>
                     </div>
-                ))}
+                ) : (
+                    validAddresses.map((addr, index) => (
+                        <div
+                            key={addr._id || index}
+                            className={`bg-white rounded-2xl shadow-lg p-6 border transition-all ${
+                                selectedIndex === index ? "border-amber-700 ring-2 ring-amber-100" : "border-gray-200"
+                            }`}
+                            onClick={() => setSelectedIndex(index)}
+                        >
+                            <div className="flex justify-between items-center mb-4">
+                                <div className="flex items-center gap-4">
+                                    <input
+                                        type="radio"
+                                        name="selectedAddress"
+                                        checked={selectedIndex === index}
+                                        onChange={() => setSelectedIndex(index)}
+                                        className="accent-amber-900 w-5 h-5"
+                                    />
+                                    <h2 className="text-xl font-semibold text-amber-700">
+                                        {addr.isDefault ? "Default Address" : `Address ${index + 1}`}
+                                    </h2>
+                                </div>
+                            </div>
 
-                {/* Add New Address */}
-                <button
-                    onClick={addNewAddress}
-                    disabled={addresses.length >= 2 || !selectedComplete()}
-                    className={`border border-dashed rounded-lg py-3 w-full mt-4 transition
-                        ${addresses.length < 2 && selectedComplete()
-                            ? "hover:bg-gray-50 cursor-pointer"
-                            : "opacity-50 cursor-not-allowed"
-                        }`}
-                >
-                    + Add New Address
-                </button>
-
-                {addresses.length >= 2 && (
-                    <p className="text-xs text-gray-500 mt-2">
-                        Maximum of 2 addresses allowed.
-                    </p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-gray-700">
+                                <p><span className="font-medium">Name:</span> {addr.name}</p>
+                                <p><span className="font-medium">Phone:</span> {addr.phone}</p>
+                                <p className="md:col-span-2"><span className="font-medium">Address:</span> {addr.address}</p>
+                                {addr.landmark && <p className="md:col-span-2"><span className="font-medium">Landmark:</span> {addr.landmark}</p>}
+                                <p><span className="font-medium">City:</span> {addr.city}</p>
+                                <p><span className="font-medium">State:</span> {addr.state}</p>
+                                <p><span className="font-medium">Pincode:</span> {addr.pincode || addr.zip}</p>
+                                <p><span className="font-medium">Country:</span> {addr.country || "India"}</p>
+                            </div>
+                        </div>
+                    ))
                 )}
+
+                <button
+                    onClick={() => navigate('/profile')}
+                    className="border border-dashed border-amber-700 text-amber-900 rounded-lg py-3 w-full mt-4 hover:bg-amber-50 transition font-medium"
+                >
+                    + Manage Addresses
+                </button>
             </div>
 
             {/* RIGHT — Order Summary */}
             <div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-24">
                 <h3 className="text-lg font-semibold mb-4 text-gray-800">Order Summary</h3>
 
-                <div className="space-y-2 text-sm mb-4">
+                <div className="space-y-4 text-sm mb-4 max-h-[300px] overflow-y-auto pr-2">
                     {cartItems.map((i) => (
-                        <div key={i.id} className="flex justify-between">
-                            <span className="text-gray-700">
-                                {i.name} × {i.quantity}
+                        <div key={i.id || i._id} className="flex gap-3">
+                            <img src={i.image} alt={i.name} className="w-12 h-12 rounded object-cover" />
+                            <div className="flex-1">
+                                <p className="font-medium text-gray-800 line-clamp-1">{i.name}</p>
+                                <p className="text-gray-500">{i.quantity} × ${(i.pricing?.current || i.price).toFixed(2)}</p>
+                            </div>
+                            <span className="text-gray-700 font-medium">
+                                ${((i.pricing?.current || i.price) * i.quantity).toFixed(2)}
                             </span>
-                            <span className="text-gray-700">${(i.pricing.original * i.quantity).toFixed(2)}</span>
                         </div>
                     ))}
                 </div>
 
-                <hr className="my-3" />
+                <hr className="my-4" />
 
-                <div className="flex justify-between text-sm mb-2 text-gray-700">
-                    <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                <div className="space-y-2">
+                    <div className="flex justify-between text-sm text-gray-700">
+                        <span>Subtotal</span>
+                        <span>${subtotal?.toFixed(2)}</span>
+                    </div>
+
+                    {totalDiscount > 0 && (
+                        <div className="flex justify-between text-sm text-green-600">
+                            <span>Discount</span>
+                            <span>- ${totalDiscount?.toFixed(2)}</span>
+                        </div>
+                    )}
+
+                    <div className="flex justify-between text-sm text-gray-500">
+                        <span>Estimated Tax</span>
+                        <span>${estimatedTax?.toFixed(2)}</span>
+                    </div>
+
+                    <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t text-gray-900">
+                        <span>Total</span>
+                        <span>${total?.toFixed(2)}</span>
+                    </div>
                 </div>
 
-                <div className="flex justify-between text-sm text-green-600 mb-2">
-                    <span>Discount</span>
-                    <span>- ${totalDiscount.toFixed(2)}</span>
-                </div>
-
-                <div className="flex justify-between text-sm mb-4 text-gray-500">
-                    <span>Estimated Tax</span>
-                    <span>${estimatedTax.toFixed(2)}</span>
-                </div>
-
-                <div className="flex justify-between font-bold text-base mb-6 text-gray-800">
-                    <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-100 mb-6">
+                    <p className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">Payment Method</p>
+                    <p className="text-sm text-amber-900 font-medium flex items-center gap-2">
+                        <span className="w-2 h-2 bg-amber-600 rounded-full animate-pulse"></span>
+                        Cash on Delivery (COD)
+                    </p>
                 </div>
 
                 <button
                     onClick={handlePlaceOrder}
-                    disabled={!selectedComplete()}
-                    className={`w-full py-3 rounded-lg transition font-medium
-                        ${selectedComplete()
-                            ? "bg-amber-700 text-white hover:bg-amber-900"
-                            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                    disabled={!selectedComplete() || isCreatingOrder || cartItems.length === 0}
+                    className={`w-full py-4 rounded-xl transition-all duration-300 font-bold text-lg shadow-lg
+                        ${selectedComplete() && !isCreatingOrder && cartItems.length > 0
+                            ? "bg-amber-700 text-white hover:bg-amber-800 hover:shadow-xl transform hover:-translate-y-0.5"
+                            : "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"
                         }`}
                 >
-                    Place Order
+                    {isCreatingOrder ? "Placing Order..." : "Confirm & Place Order"}
                 </button>
             </div>
         </div>

@@ -42,7 +42,7 @@ export default function OrderItemCard({ order }) {
 
                             <div>
                                 <div className="flex items-center gap-2 mb-2">
-                                    <h3 className="text-2xl font-bold text-gray-900">#{order.id}</h3>
+                                    <h3 className="text-2xl font-bold text-gray-900">#{order.orderId || order._id}</h3>
                                     <div className={`px-7 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r ${getStatusColor(order.trackingStatus)} shadow-md`}>
                                         {order.trackingStatus}
                                     </div>
@@ -75,8 +75,7 @@ export default function OrderItemCard({ order }) {
                             <div className="text-right">
                                 <p className="text-sm text-gray-500 font-medium mb-1">Total Amount</p>
                                 <div className="flex items-center gap-1">
-                                    <IndianRupee className="w-5 h-5 text-gray-700" />
-                                    <span className="text-3xl font-black text-gray-900">{order.total.toFixed(2)}</span>
+                                    <span className="text-3xl font-black text-gray-900">${order.total?.toFixed(2)}</span>
                                 </div>
                             </div>
                         </div>
@@ -107,7 +106,7 @@ export default function OrderItemCard({ order }) {
                             <div className="grid gap-4">
                                 {order.items.map((item, index) => (
                                     <div
-                                        key={item.id}
+                                        key={item._id || item.productId || index}
                                         className="group flex items-center gap-4 p-4 bg-gradient-to-br from-gray-50 to-white 
                                                    rounded-2xl border-2 border-gray-100 hover:border-indigo-200 
                                                    hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
@@ -136,7 +135,7 @@ export default function OrderItemCard({ order }) {
                                                     Size: {item.size}
                                                 </span>
                                                 <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold">
-                                                    ₹{item.pricing.current} each
+                                                    ${item.pricing?.current?.toFixed(2)} each
                                                 </span>
                                             </div>
                                         </div>
@@ -146,7 +145,7 @@ export default function OrderItemCard({ order }) {
                                             <p className="text-sm text-gray-500 mb-1">Subtotal</p>
                                             <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 
                                                          bg-clip-text text-transparent">
-                                                ₹{(item.pricing.current * item.quantity).toFixed(2)}
+                                                ${(item.pricing?.current * item.quantity).toFixed(2)}
                                             </p>
                                         </div>
                                     </div>
