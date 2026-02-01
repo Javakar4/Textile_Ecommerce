@@ -8,7 +8,9 @@
     "lint": "pnpm -r lint",
     "admin": "pnpm --filter @apps/admin dev",
     "all": "pnpm -r run dev",
+    "client:server": "pnpm --filter @apps/client dev && pnpm --filter @apps/server dev",
     "build:client": "pnpm --filter @apps/client build",
     "build:admin": "pnpm --filter @apps/admin build"
   }
 }
+
