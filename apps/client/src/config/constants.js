@@ -49,6 +49,7 @@ const apiEndpoints = {
     RESEND_OTP: `/api/v1/auth/resend-otp`,
     FORGOT_PASSWORD: `/api/v1/auth/forgot-password`,
     RESET_PASSWORD: `/api/v1/auth/reset-password`,
+    GOOGLE_AUTH_ENDPOINT: `/api/v1/auth/google`,
   },
   CART: {
     ADD: `/api/v1/cart/add`,

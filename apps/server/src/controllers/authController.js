@@ -165,6 +165,33 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const googleCallback = async (req, res) => {
+  try {
+    if (!req.user) {
+       return rtnRes(res, 401, "Google authentication failed.");
+    }
+
+    const result = await authService.googleLogin(req.user);
+
+    if (!result.ok) {
+     // Redirect to client with error
+      return res.redirect(`http://localhost:3000/login?error=${encodeURIComponent(result.message)}`);
+    }
+    
+    // Redirect to client with token
+    // NOTE: Sending token in URL fragment or query param is standard for simple OAuth redirection flows 
+    // but should be handled carefully. 
+    // Ideally we would set a cookie or use a postMessage approach if opening a popup.
+    // Assuming redirection to a route that handles the token.
+    const token = result.data.token;
+    res.redirect(`http://localhost:3000/auth/callback?token=${token}`);
+
+  } catch (error) {
+    console.error("Google Callback Controller Error:", error);
+    res.redirect(`http://localhost:3000/login?error=Server error`);
+  }
+};
+
 export default {
   signup,
   login,
@@ -172,4 +199,5 @@ export default {
   resendOtp,
   forgotPassword,
   resetPassword,
+  googleCallback,
 };

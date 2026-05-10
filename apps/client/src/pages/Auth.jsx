@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import useAuthService from "../hooks/useAuthService";
 import Loader from "../components/common/Loader";
+import endPoints  from "@config/constants";
 
 export default function Auth() {
   const [isSignup, setIsSignup] = useState(false);
@@ -217,7 +218,11 @@ export default function Auth() {
           {!isSignup && !showOtp && !showForgotPassword && !showResetPassword && (
             <button
               type="button"
-              className="w-full mt-8 bg-gray-500/10 flex items-center justify-center h-12 rounded-full"
+              onClick={() => {
+                // Redirect to server OAuth endpoint
+                window.location.href = `${endPoints.BASE_URL}${endPoints.AUTH.GOOGLE_AUTH_ENDPOINT}`;
+              }}
+              className="w-full mt-8 bg-gray-500/10 flex items-center justify-center h-12 rounded-full hover:bg-gray-500/20 transition-colors"
             >
               <img
                 src="https://raw.githubusercontent.com/prebuiltui/prebuiltui/main/assets/login/googleLogo.svg"
