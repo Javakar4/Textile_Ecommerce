@@ -3,7 +3,7 @@ import authService from "../services/authService";
 // import { UseAppContext } from "../context/AppContext";
 import { useAuth } from "./useAuth";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 const useAuthService = () => {
   const { setUser, setShowUserLogin, setUserAddresses, logout } = useAuth();
@@ -39,9 +39,9 @@ const useAuthService = () => {
         setUserAddresses(addresses);
         setShowUserLogin(false);
         navigate("/");
-        // toast.success("Login successful");
+        // toastUtils.success("Login successful");
       } else {
-        // toast.error(res.message);
+        // toastUtils.error(res.message);
       }
     },
   });

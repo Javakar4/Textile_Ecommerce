@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import brandService from "../services/brandService";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 export const useBrandServices = () => {
   const queryClient = useQueryClient();

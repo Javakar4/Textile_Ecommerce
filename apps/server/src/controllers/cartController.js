@@ -1,5 +1,6 @@
 import * as cartService from "../services/cartService.js";
 import { rtnRes } from "../utils/responseHandlerService.js";
+import { emitEvent } from "../config/socket.js";
 
 /**
  * Sync guest cart
@@ -18,6 +19,7 @@ export const syncCart = async (req, res) => {
       return rtnRes(res, 500, result.message || "Sync failed");
     }
 
+    emitEvent("cart_updated", { userId });
     return rtnRes(res, 200, "Cart synced successfully");
   } catch (err) {
     console.error("syncCart error:", err);
@@ -75,6 +77,7 @@ export const addToCart = async (req, res) => {
       return rtnRes(res, 500, result.message || "Add to cart failed");
     }
 
+    emitEvent("cart_updated", { userId });
     return rtnRes(res, 200, "Item added to cart");
   } catch (err) {
     console.error("addToCart error:", err);
@@ -127,6 +130,7 @@ export const updateItem = async (req, res) => {
       return rtnRes(res, 500, result.message || "Update failed");
     }
 
+    emitEvent("cart_updated", { userId });
     return rtnRes(res, 200, "Cart updated");
   } catch (err) {
     console.error("updateItem error:", err);
@@ -152,6 +156,7 @@ export const removeItem = async (req, res) => {
       return rtnRes(res, 500, result.message || "Remove failed");
     }
 
+    emitEvent("cart_updated", { userId });
     return rtnRes(res, 200, "Item removed");
   } catch (err) {
     console.error("removeItem error:", err);
@@ -173,6 +178,7 @@ export const clearCart = async (req, res) => {
       return rtnRes(res, 500, result.message || "Clear failed");
     }
 
+    emitEvent("cart_updated", { userId });
     return rtnRes(res, 200, "Cart cleared");
   } catch (err) {
     console.error("clearCart error:", err);

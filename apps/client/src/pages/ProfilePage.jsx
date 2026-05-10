@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useProfileServices } from '../hooks/useProfileServices';
 import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaPlus, FaTrash, FaCheck, FaSignOutAlt } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import toastUtils from "../utils/toastUtils";
 
 const ProfilePage = () => {
     const { user: authUser, logout } = useAuth();
@@ -37,7 +37,7 @@ const ProfilePage = () => {
     const handleLogout = () => {
         logout();
         navigate('/')
-        toast.success("Logged out successfully");
+        toastUtils.success("Logged out successfully");
     };
 
     const handleAddAddress = async (e) => {

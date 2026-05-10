@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+import toastUtils from "./toastUtils";
 import apiEndpoints from "@config/constants";
 
 const api = axios.create({
@@ -30,7 +30,7 @@ api.interceptors.request.use(
   },
   (error) => {
     console.error("[API REQUEST ERROR]", error);
-    toast.error("Request setup error");
+    toastUtils.error("Request setup error");
     return Promise.reject(error);
   },
 );
@@ -48,7 +48,7 @@ api.interceptors.response.use(
 
     // Optional: show toast for successful responses
     if (response.data?.message && response.config.method!=="get") {
-      toast.success(response.data.message);
+      toastUtils.success(response.data.message);
     }
 
     return response.data;
@@ -63,6 +63,11 @@ api.interceptors.response.use(
         error.response.data?.error ||
         `Request failed with status ${error.response.status}`;
 
+      if (error.response.status === 503) {
+        window.location.href = "/maintenance";
+        return new Promise(() => {}); // Stop further processing
+      }
+
       console.error("[API RESPONSE ERROR]", {
         url: error.config?.url,
         method: error.config?.method,
@@ -72,7 +77,13 @@ api.interceptors.response.use(
     }
     // Request sent but no response
     else if (error.request) {
-      message = "No response from server. Please check your connection.";
+      if (error.code === "ECONNABORTED") {
+        message = "Request timed out. Please try again.";
+      } else if (error.message === "Network Error") {
+        message = "Network error. Please check your internet connection or server status.";
+      } else {
+        message = "Server unreachable. Please check your connection.";
+      }
       console.error("[API NO RESPONSE]", error.request);
     }
     // Something else happened
@@ -82,7 +93,7 @@ api.interceptors.response.use(
     }
 
     // show toast for errors
-    toast.error(message);
+    toastUtils.error(message);
 
     // Return error with parsed message for component usage
     return Promise.reject({

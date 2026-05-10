@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import categoryService from "../services/categoryService";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 export const useCategoryServices = () => {
   const queryClient = useQueryClient();

@@ -1,6 +1,7 @@
 import Order from "../models/OrderSchema.js";
 import Cart from "../models/CartSchema.js"; // assuming you have this
 import mongoose from "mongoose";
+import { emitEvent } from "../config/socket.js";
 
 /**
  * Create Order (Checkout)
@@ -50,6 +51,8 @@ export const createOrder = async (req, res) => {
             { $set: { items: [] } }
         );
 
+        emitEvent("order_created", { userId });
+        emitEvent("cart_updated", { userId });
         return res.status(201).json({
             success: true,
             message: "Order placed successfully",

@@ -1,16 +1,14 @@
 import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth2";
 import User from "../models/UserSchema.js";
-import dotenv from "dotenv";
-
-dotenv.config();
+import { config } from "./config.js";
 
 passport.use(
   new GoogleStrategy(
     {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `${process.env.SERVER_BASE_URL}/api/v1/auth/google/callback`,
+      clientID: config.GOOGLE_CLIENT_ID,
+      clientSecret: config.GOOGLE_CLIENT_SECRET,
+      callbackURL: `${config.BACKEND_URL}/api/v1/auth/google/callback`,
       passReqToCallback: true,
     },
     async function (request, accessToken, refreshToken, profile, done) {
@@ -24,12 +22,16 @@ passport.use(
         // Check if user exists with the same email
         const existingUser = await User.findOne({ email: profile.emails[0]?.value });
         if (existingUser) {
-          // Verify if this is desired behavior: link account or error
-          // For now, we update the user with googleId
-          existingUser.googleId = profile.id;
-          // If avatar is missing, update it
+          // Link Google ID if not already linked
+          if (!existingUser.googleId) {
+            existingUser.googleId = profile.id;
+          }
+          // Update missing info
           if (!existingUser.avatar) {
              existingUser.avatar = profile.photos[0]?.value;
+          }
+          if (!existingUser.fullName) {
+             existingUser.fullName = profile.displayName;
           }
           await existingUser.save();
           return done(null, existingUser);
@@ -37,10 +39,11 @@ passport.use(
 
         const newUser = new User({
           googleId: profile.id,
-          username: profile.displayName,
+          username: profile.emails[0]?.value.split('@')[0] + "_" + Math.floor(Math.random() * 10000),
+          fullName: profile.displayName,
           email: profile.emails[0]?.value,
           avatar: profile.photos[0]?.value,
-          // passwordHash is not required as per schema update
+          isEmailVerified: true, // Google emails are already verified
         });
 
         await newUser.save();

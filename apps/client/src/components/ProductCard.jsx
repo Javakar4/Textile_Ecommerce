@@ -5,7 +5,7 @@ import { useCart } from "../hooks/useCart";
 import { useAuth } from "../hooks/useAuth";
 import { useWishlist } from "../hooks/useWishlist";
 import { useApp } from "../hooks/useApp";
-import { toast } from 'react-toastify';
+import toastUtils from "../utils/toastUtils";
 
 
 // Product Card Component
@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
         const itemToAdd = product; // Use product prop directly
         addToCart(itemToAdd, selectedSize, quantity);
         console.log("ITEM ADDED TO CART", itemToAdd);
-        toast.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
+        toastUtils.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
     };
 
     return (
@@ -72,10 +72,10 @@ const ProductCard = ({ product }) => {
                             onClick={() => {
                                 if (isFavorite) {
                                     removeFromWishlist(product._id);
-                                    toast.info("Removed from wishlist");
+                                    toastUtils.success("Removed from wishlist");
                                 } else {
                                     addToWishlist(product);
-                                    toast.success("Added to wishlist");
+                                    toastUtils.success("Added to wishlist");
                                 }
                             }}
                             className="bg-white/90 backdrop-blur-sm p-1.5 rounded-full hover:bg-white transition-colors"
