@@ -15,6 +15,7 @@ const JWT_EXPIRES = process.env.JWT_EXPIRATION_HOURS
 const OTP_EXP_MINS = parseInt(process.env.OTP_EXPIRATION_MINUTES) || 5;
 
 export const authService = {
+  
   async signup(name, email, password, ip) {
     const existingUser = await User.findOne({ email });
     const existingUsername = await User.findOne({ username: name });
@@ -222,6 +223,39 @@ export const authService = {
     return {
       ok: true,
       message: "Login successful.",
+      data: {
+        token,
+        user: {
+          id: user._id,
+          email: user.email,
+          fullName: user.fullName,
+          role: user.role,
+          avatar: user.avatar,
+        },
+        userAddress: addresses,
+      },
+    };
+  },
+
+  async googleLogin(user) {
+    if (user.status !== "active") {
+      return {
+        ok: false,
+        statusCode: 403,
+        message: "Account is inactive. Please contact support.",
+      };
+    }
+
+    const addresses = await Address.find({ userId: user._id });
+    const token = jwt.sign(
+      { userId: user._id, role: user.role, email: user.email },
+      JWT_SECRET,
+      { expiresIn: JWT_EXPIRES },
+    );
+
+    return {
+      ok: true,
+      message: "Google login successful.",
       data: {
         token,
         user: {

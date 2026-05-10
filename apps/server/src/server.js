@@ -16,7 +16,10 @@ import wishlistRoutes from "./routes/wishlistRoutes.js";
 import brandRoutes from "./routes/brandRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 
+import passport from "passport";
+import "./config/passport.js";
 dotenv.config();
+
 
 // Connect to Database
 connectDB();
@@ -44,6 +47,7 @@ Sentry.init({
 app.use(express.static("uploads"));
 
 /* ROUTES */
+app.use(passport.initialize()); // Initialize passport
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);

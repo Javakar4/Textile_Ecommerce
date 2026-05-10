@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
     },
     passwordHash: {
       type: String,
-      required: true,
+      required: false,
     },
     fullName: {
       type: String,
@@ -47,10 +47,14 @@ const userSchema = new mongoose.Schema(
       enum: ["active", "inactive"],
       default: "active",
     },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+
   },
   { timestamps: true },
 );
 
-const User = mongoose.models.User || mongoose.model("User", userSchema);
-
-export default User;
+export default mongoose.models.User || mongoose.model("User", userSchema);

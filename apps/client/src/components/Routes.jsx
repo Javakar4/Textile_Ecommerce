@@ -5,6 +5,7 @@ import ProductCard from "./ProductCard";
 import ProductDetailPage from "./ProductDetail";
 import AllProductsPage from "../pages/AllProductsPage";
 import Auth from "../pages/Auth";
+import AuthCallback from "../pages/AuthCallback";
 import CartPage from "../pages/CartPage";
 import CheckoutPage from "../components/CheckoutPage";
 import OrdersPage from "../pages/OrdersPage";
@@ -23,6 +24,7 @@ let AppRoutes = createBrowserRouter([
         children: [
             { index: true, element: <Home /> },
             { path: "auth", element: <Auth /> },
+            { path: "auth/callback", element: <AuthCallback /> },
             { path: "contact", element: <Contact /> },
             { path: "about", element: <About /> },
             // { path: "register", element: <Register /> },
