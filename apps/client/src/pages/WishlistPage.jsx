@@ -4,7 +4,7 @@ import { useCart } from '../hooks/useCart';
 import { useApp } from '../hooks/useApp';
 import { FaHeart, FaTrash, FaShoppingCart, FaHeartBroken } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import toastUtils from "../utils/toastUtils";
 
 const WishlistPage = () => {
     const { wishlistItems, removeFromWishlist } = useWishlist();
@@ -13,14 +13,14 @@ const WishlistPage = () => {
 
     const handleRemoveFromWishlist = (productId, productName) => {
         removeFromWishlist(productId);
-        toast.success(`${productName} removed from wishlist`);
+        toastUtils.success(`${productName} removed from wishlist`);
     };
 
     const handleAddToCart = (product) => {
         // Add to cart with default size (first available size)
         const defaultSize = product.sizes?.[0] || 'M';
         addToCart(product, defaultSize, 1);
-        toast.success(`${product.name} added to cart`);
+        toastUtils.success(`${product.name} added to cart`);
     };
 
     const handleProductClick = (productId) => {

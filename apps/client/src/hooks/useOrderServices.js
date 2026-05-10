@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import orderService from "../services/orderService";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 export const useOrderServices = () => {
   const queryClient = useQueryClient();
@@ -38,14 +38,14 @@ export const useOrderServices = () => {
     mutationFn: (data) => orderService.createOrder(data),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Order created successfully");
+        toastUtils.success("Order created successfully");
         queryClient.invalidateQueries({ queryKey: ["myOrders"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to create order");
+      toastUtils.error(err.message || "Failed to create order");
     },
   });
 
@@ -54,15 +54,15 @@ export const useOrderServices = () => {
     mutationFn: (data) => orderService.updatePaymentStatus(data),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Payment status updated");
+        toastUtils.success("Payment status updated");
         queryClient.invalidateQueries({ queryKey: ["myOrders"] });
         queryClient.invalidateQueries({ queryKey: ["order"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to update payment status");
+      toastUtils.error(err.message || "Failed to update payment status");
     },
   });
 

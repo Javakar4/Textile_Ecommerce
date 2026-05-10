@@ -1,5 +1,6 @@
 import { authService } from "../services/authService.js";
 import { rtnRes } from "../utils/responseHandlerService.js";
+import { config } from "../config/config.js";
 
 /**
  * Handle user signup.
@@ -175,20 +176,16 @@ const googleCallback = async (req, res) => {
 
     if (!result.ok) {
      // Redirect to client with error
-      return res.redirect(`http://localhost:3000/login?error=${encodeURIComponent(result.message)}`);
+      return res.redirect(`${config.CLIENT_BASE_URL}/auth?error=${encodeURIComponent(result.message)}`);
     }
     
     // Redirect to client with token
-    // NOTE: Sending token in URL fragment or query param is standard for simple OAuth redirection flows 
-    // but should be handled carefully. 
-    // Ideally we would set a cookie or use a postMessage approach if opening a popup.
-    // Assuming redirection to a route that handles the token.
     const token = result.data.token;
-    res.redirect(`http://localhost:3000/auth/callback?token=${token}`);
+    res.redirect(`${config.CLIENT_BASE_URL}/auth/callback?token=${token}`);
 
   } catch (error) {
     console.error("Google Callback Controller Error:", error);
-    res.redirect(`http://localhost:3000/login?error=Server error`);
+    res.redirect(`${config.CLIENT_BASE_URL}/auth?error=Server error`);
   }
 };
 

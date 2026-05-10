@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import wishlistService from "../services/wishlistService";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 export const useWishlistServices = () => {
   const queryClient = useQueryClient();
@@ -24,14 +24,14 @@ export const useWishlistServices = () => {
     mutationFn: (productId) => wishlistService.addToWishlist(productId),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Added to wishlist");
+        toastUtils.success("Added to wishlist");
         queryClient.invalidateQueries({ queryKey: ["wishlist"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to add to wishlist");
+      toastUtils.error(err.message || "Failed to add to wishlist");
     },
   });
 
@@ -40,14 +40,14 @@ export const useWishlistServices = () => {
     mutationFn: (productId) => wishlistService.removeFromWishlist(productId),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Removed from wishlist");
+        toastUtils.success("Removed from wishlist");
         queryClient.invalidateQueries({ queryKey: ["wishlist"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to remove from wishlist");
+      toastUtils.error(err.message || "Failed to remove from wishlist");
     },
   });
 
@@ -56,14 +56,14 @@ export const useWishlistServices = () => {
     mutationFn: () => wishlistService.clearWishlist(),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Wishlist cleared");
+        toastUtils.success("Wishlist cleared");
         queryClient.invalidateQueries({ queryKey: ["wishlist"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to clear wishlist");
+      toastUtils.error(err.message || "Failed to clear wishlist");
     },
   });
 

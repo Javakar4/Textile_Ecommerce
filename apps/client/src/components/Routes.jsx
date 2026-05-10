@@ -15,8 +15,13 @@ import ProfilePage from "../pages/ProfilePage";
 import WishlistPage from "../pages/WishlistPage";
 import Contact from "../pages/ContactPage";
 import About from "../pages/AboutPage";
+import MaintenancePage from "../pages/MaintenancePage";
 
 let AppRoutes = createBrowserRouter([
+    {
+        path: "/maintenance",
+        element: <MaintenancePage />,
+    },
     {
         path: "/",
         element: <Layout />,

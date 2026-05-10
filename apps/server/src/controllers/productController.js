@@ -1,5 +1,6 @@
 import * as productService from "../services/productService.js";
 import { rtnRes } from "../utils/responseHandlerService.js";
+import { emitEvent } from "../config/socket.js";
 
 /**
  * Controller to create a product.
@@ -7,6 +8,7 @@ import { rtnRes } from "../utils/responseHandlerService.js";
 export const createProduct = async (req, res) => {
   try {
     const product = await productService.createProduct(req.body);
+    emitEvent("product_updated");
     return rtnRes(res, 201, "Product created successfully", product);
   } catch (error) {
     return rtnRes(res, 400, error.message);
@@ -43,6 +45,7 @@ export const getProductById = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const product = await productService.updateProduct(req.params.id, req.body);
+    emitEvent("product_updated");
     return rtnRes(res, 200, "Product updated successfully", product);
   } catch (error) {
     return rtnRes(res, 400, error.message);
@@ -55,6 +58,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
   try {
     await productService.deleteProduct(req.params.id);
+    emitEvent("product_updated");
     return rtnRes(res, 200, "Product deleted successfully");
   } catch (error) {
     return rtnRes(res, 400, error.message);

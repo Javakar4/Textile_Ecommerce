@@ -7,7 +7,7 @@ import { config } from "../config/config.js";
  */
 export const authenticateToken = (req, res, next) => {
   try {
-    const authHeader = req.headers["Authorization"];
+    const authHeader = req.headers["authorization"];
     console.log(req.headers);
     console.log(authHeader);
 

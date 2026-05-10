@@ -11,7 +11,7 @@ import {
     Shield 
 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { toast } from 'react-toastify';
+import toastUtils from "../utils/toastUtils";
 
 export default function ProductDetailPage() {
     const navigate = useNavigate();
@@ -77,7 +77,7 @@ export default function ProductDetailPage() {
     const handleCartButton = () => {
         addToCart(productData, selectedSize, quantity);
         console.log("ITEM ADDED TO CART");
-        toast.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
+        toastUtils.success("Item added to cart!", { position: "top-right", autoClose: 3000, hideProgressBar: false, closeOnClick: true, pauseOnHover: true, draggable: true, progress: undefined, theme: "light" });
     };
 
     const handleBuyButton = () => {
@@ -273,7 +273,7 @@ export default function ProductDetailPage() {
                                 <button 
                                     onClick={() => {
                                         addToWishlist(productData);
-                                        toast.success("Added to wishlist!");
+                                        toastUtils.success("Added to wishlist!");
                                     }}
                                     className="bg-white border-2 border-gray-300 text-gray-700 font-semibold px-6 py-4 rounded-xl hover:border-amber-700 hover:text-amber-700 transition"
                                 >

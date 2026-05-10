@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { wishlistService } from "../services/wishlistService.js";
+import { emitEvent } from "../config/socket.js";
 
 const rtnRes = (res, code, message, data = null) =>
     res.status(code).json({ success: code < 400, message, data });
@@ -29,6 +30,7 @@ export const addToWishlist = async (req, res) => {
         const result = await wishlistService.addToWishlist(userId, productId);
         if (!result.ok) return rtnRes(res, 400, result.message);
 
+        emitEvent("wishlist_updated", { userId });
         return rtnRes(res, 200, "Product added to wishlist");
     } catch (err) {
         console.error("addToWishlist error:", err);
@@ -48,6 +50,7 @@ export const removeFromWishlist = async (req, res) => {
         const result = await wishlistService.removeFromWishlist(userId, productId);
         if (!result.ok) return rtnRes(res, 404, result.message);
 
+        emitEvent("wishlist_updated", { userId });
         return rtnRes(res, 200, "Product removed from wishlist");
     } catch (err) {
         console.error("removeFromWishlist error:", err);
@@ -60,6 +63,7 @@ export const clearWishlist = async (req, res) => {
         const userId = req.user?.userId;
         await wishlistService.clearWishlist(userId);
 
+        emitEvent("wishlist_updated", { userId });
         return rtnRes(res, 200, "Wishlist cleared");
     } catch (err) {
         console.error("clearWishlist error:", err);

@@ -3,7 +3,7 @@ import { useCart } from "../hooks/useCart";
 import { useProfileServices } from "../hooks/useProfileServices";
 import { useOrderServices } from "../hooks/useOrderServices";
 import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 export default function CheckoutPage() {
     const { addresses, isLoadingProfile } = useProfileServices();
@@ -24,7 +24,7 @@ export default function CheckoutPage() {
 
     const handlePlaceOrder = async () => {
         if (!selectedComplete()) {
-            toast.error("Please complete the selected shipping address.");
+            toastUtils.error("Please complete the selected shipping address.");
             return;
         }
 

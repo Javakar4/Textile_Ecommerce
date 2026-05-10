@@ -1,7 +1,9 @@
 import crypto from "node:crypto";
+import dotenv from "dotenv";
 if (!global.crypto) {
   global.crypto = crypto;
 }
+dotenv.config();
 import express from "express";
 import http from "http";
 import cors from "cors";
@@ -22,7 +24,8 @@ import categoryRoutes from "./routes/categoryRoutes.js";
 
 import passport from "passport";
 import "./config/passport.js";
-dotenv.config();
+import { initSocket } from "./config/socket.js";
+import maintenanceMode from "./middlewares/maintenance.js";
 
 
 // Connect to Database
@@ -33,6 +36,7 @@ const app = express();
 /* MIDDLEWARES */
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(maintenanceMode); // Add maintenance mode check
 app.use(
   cors({
     origin: ["http://localhost:3000"],
@@ -71,6 +75,7 @@ app.use((err, req, res, next) => {
 });
 
 const server = http.createServer(app);
+initSocket(server);
 const PORT = config.PORT;
 
 server.listen(PORT, () => {

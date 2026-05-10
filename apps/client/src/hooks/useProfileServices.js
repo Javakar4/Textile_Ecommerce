@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import profileService from "../services/profileService";
-import { toast } from "react-toastify";
+import toastUtils from "../utils/toastUtils";
 
 export const useProfileServices = () => {
   const queryClient = useQueryClient();
@@ -28,14 +28,14 @@ export const useProfileServices = () => {
     mutationFn: (data) => profileService.updateProfile(data),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Profile updated successfully");
+        toastUtils.success("Profile updated successfully");
         queryClient.invalidateQueries({ queryKey: ["profile"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to update profile");
+      toastUtils.error(err.message || "Failed to update profile");
     },
   });
 
@@ -44,10 +44,10 @@ export const useProfileServices = () => {
     mutationFn: (data) => profileService.addAddress(data),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Address added successfully");
+        toastUtils.success("Address added successfully");
         queryClient.invalidateQueries({ queryKey: ["profile"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
   });
@@ -57,10 +57,10 @@ export const useProfileServices = () => {
     mutationFn: (id) => profileService.removeAddress(id),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Address removed successfully");
+        toastUtils.success("Address removed successfully");
         queryClient.invalidateQueries({ queryKey: ["profile"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
   });
@@ -70,10 +70,10 @@ export const useProfileServices = () => {
     mutationFn: (id) => profileService.setDefaultAddress(id),
     onSuccess: (res) => {
       if (res.ok) {
-        toast.success("Default address updated");
+        toastUtils.success("Default address updated");
         queryClient.invalidateQueries({ queryKey: ["profile"] });
       } else {
-        toast.error(res.message);
+        toastUtils.error(res.message);
       }
     },
   });
