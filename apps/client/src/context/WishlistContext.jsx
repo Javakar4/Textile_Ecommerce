@@ -1,9 +1,11 @@
 import { createContext, useEffect, useState } from "react";
 import { useWishlistServices } from "../hooks/useWishlistServices";
+import { useAuth } from "../hooks/useAuth";
 
 export const WishlistContext = createContext();
 
 export const WishlistProvider = ({ children }) => {
+    const { user } = useAuth();
     const { 
         useWishlist, 
         addToWishlist: addToWishlistApi, 
@@ -12,15 +14,17 @@ export const WishlistProvider = ({ children }) => {
         isRemovingFromWishlist
     } = useWishlistServices();
 
-    const { data: remoteWishlist, isLoading: isLoadingWishlist } = useWishlist();
+    const { data: remoteWishlist, isLoading: isLoadingWishlist } = useWishlist(!!user);
     const [wishlistItems, setWishlistItems] = useState([]);
 
     // Keep local state in sync with remote data
     useEffect(() => {
-        if (remoteWishlist) {
+        if (user && remoteWishlist) {
             setWishlistItems(remoteWishlist);
+        } else if (!user) {
+            setWishlistItems([]);
         }
-    }, [remoteWishlist]);
+    }, [remoteWishlist, user]);
 
     const addToWishlist = async (product) => {
         // Optimistic update

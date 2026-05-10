@@ -1,4 +1,5 @@
 import React from "react";
+
 export const constants = {
   cartMock: [
     {
@@ -82,7 +83,7 @@ const apiEndpoints = {
   WISHLIST: {
     BASE: `/api/v1/wishlist`,
     ADD: `/api/v1/wishlist/add`,
-    REMOVE: `/api/v1/wishlist/remove`, // Append ID
+    REMOVE: `/api/v1/wishlist/remove`,
     CLEAR: `/api/v1/wishlist/clear`,
   },
 };

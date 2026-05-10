@@ -13,12 +13,12 @@ export const AuthContextProvider = ({ children }) => {
     const logout = () => {
         localStorage.removeItem("authToken");
         setUser(null);
-        // Optional: clear other local storage if needed
     };
 
     const checkTokenExpiration = () => {
+        console.log("token expiration check ")
         const token = localStorage.getItem("authToken");
-        
+
         // No token found
         if (!token) {
             setUser(null);
@@ -43,13 +43,13 @@ export const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         checkTokenExpiration();
         // Check every 2 minutes (120000 ms)
-        const interval = setInterval(checkTokenExpiration, 120000);
+        const interval = setInterval(checkTokenExpiration, 60000);
         return () => clearInterval(interval);
     }, []);
 
     const value = {
         user, setUser,
-        userAddresses,setUserAddresses,
+        userAddresses, setUserAddresses,
         admin, setAdmin,
         showUserLogin, setShowUserLogin,
         logout

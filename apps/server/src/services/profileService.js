@@ -1,4 +1,4 @@
-import User from "../models/userSchema.js";
+import User from "../models/UserSchema.js";
 import Address from "../models/AddressSchema.js";
 
 const profileService = {

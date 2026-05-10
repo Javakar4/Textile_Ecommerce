@@ -1,10 +1,14 @@
+import crypto from "node:crypto";
+if (!global.crypto) {
+  global.crypto = crypto;
+}
 import express from "express";
 import http from "http";
 import cors from "cors";
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import morgan from "morgan";
 import * as Sentry from "@sentry/node";
+import { config } from "./config/config.js";
 
 import connectDB from "./db.js";
 import authRoutes from "./routes/authRoute.js";
@@ -67,7 +71,7 @@ app.use((err, req, res, next) => {
 });
 
 const server = http.createServer(app);
-const PORT = process.env.PORT || 4000;
+const PORT = config.PORT;
 
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

@@ -4,15 +4,13 @@ import User from "../models/UserSchema.js";
 import EmailOtp from "../models/EmailOtp.js";
 import Address from "../models/AddressSchema.js";
 import { otpService } from "./otpService.js";
-import dotenv from "dotenv";
+import { config } from "../config/config.js";
 
-dotenv.config();
-
-const JWT_SECRET = process.env.JWT_SECRET_KEY || "fallback_secret";
-const JWT_EXPIRES = process.env.JWT_EXPIRATION_HOURS
-  ? `${process.env.JWT_EXPIRATION_HOURS}h`
+const JWT_SECRET = config.JWT_SECRET_KEY || "fallback_secret";
+const JWT_EXPIRES = config.JWT_EXPIRATION_HOURS
+  ? `${config.JWT_EXPIRATION_HOURS}h`
   : "48h";
-const OTP_EXP_MINS = parseInt(process.env.OTP_EXPIRATION_MINUTES) || 5;
+const OTP_EXP_MINS = parseInt(config.OTP_EXPIRATION_MINUTES) || 5;
 
 export const authService = {
   
