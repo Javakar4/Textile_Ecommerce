@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
-import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
+import { config } from "../config/config.js";
 import connectDB from "../db.js";
 
 // Models
@@ -15,13 +15,6 @@ import Wishlist from "../models/WishListSchema.js";
 import Payment from "../models/PaymentSchema.js";
 import verifySeed from "./verifySeed.js";
 
-import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, "../../.env") });
 
 const seedData = async () => {
   try {

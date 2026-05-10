@@ -1,9 +1,9 @@
 import React, { useMemo } from "react";
-import HeroSection from "../components/HeroSection";
-import ShopByCatagory from "../components/ShopByCategory";
-import Testimonials from "../components/Testimonials";
-import CollectionsScroller from "../components/CollectionsScroller";
-import NewsLetter from "../components/NewsLetter";
+import HeroSection from "../components/home/HeroSection";
+import ShopByCatagory from "../components/home/ShopByCategory";
+import Testimonials from "../components/home/Testimonials";
+import CollectionsScroller from "../components/home/CollectionsScroller";
+import NewsLetter from "../components/home/NewsLetter";
 import { useProductServices } from "../hooks/useProductServices";
 import { useCategoryServices } from "../hooks/useCategoryServices";
 
@@ -21,13 +21,24 @@ const DynamicCollection = React.memo(({ parentCategory, allCategories }) => {
 
   
   if (childCategories.length === 0) return null;
-
   
+  
+  
+
+  const childCategoryIds = useMemo(
+    () => childCategories.map(cat => cat._id),
+  [childCategories]);
+
+
   const { data: products = [], isLoading } = useProducts({
-    category: childCategories[0]._id,
+    categories: childCategoryIds,
     limit: 3,
   });
 
+if (true) {
+    console.log(products);
+    // childCategories.map(cat => console.log(cat.name));
+  }
   
   if (!isLoading && products.length === 0) return null;
 

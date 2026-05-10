@@ -54,6 +54,18 @@ const orderService = {
     }
   },
 
+  updateTrackingStatus: async (data) => {
+    try {
+      const response = await api.patch(apiEndpoints.ORDERS.TRACKING, data);
+      return { ok: true, data: response.data };
+    } catch (error) {
+      console.error("Update tracking status error:", error);
+      return {
+        ok: false,
+        message: error.response?.data?.message || "Failed to update tracking status",
+      };
+    }
+  },
 };
 
 

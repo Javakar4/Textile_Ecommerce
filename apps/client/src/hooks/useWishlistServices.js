@@ -6,7 +6,7 @@ export const useWishlistServices = () => {
   const queryClient = useQueryClient();
 
   // -- GET WISHLIST QUERY --
-  const useWishlist = () =>
+  const useWishlist = (enabled = true) =>
     useQuery({
       queryKey: ["wishlist"],
       queryFn: async () => {
@@ -16,6 +16,7 @@ export const useWishlistServices = () => {
         }
         return response.data;
       },
+      enabled,
     });
 
   // -- ADD TO WISHLIST MUTATION --

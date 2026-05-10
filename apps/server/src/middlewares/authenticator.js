@@ -1,12 +1,15 @@
 import jwt from "jsonwebtoken";
 import { rtnRes } from "../utils/responseHandlerService.js";
+import { config } from "../config/config.js";
 
 /**
  * Middleware to authenticate JWT token from Authorization header.
  */
 export const authenticateToken = (req, res, next) => {
   try {
-    const authHeader = req.headers["authorization"];
+    const authHeader = req.headers["Authorization"];
+    console.log(req.headers);
+    console.log(authHeader);
 
     if (!authHeader) {
       return rtnRes(res, 401, "Unauthorized: Token missing");
@@ -18,7 +21,7 @@ export const authenticateToken = (req, res, next) => {
       return rtnRes(res, 401, "Unauthorized: Invalid token");
     }
 
-    jwt.verify(token, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    jwt.verify(token, config.JWT_SECRET_KEY, (err, decoded) => {
       if (err) {
         console.log("JWT verification failed:", err.message);
         return rtnRes(res, 403, "Forbidden: Invalid token");

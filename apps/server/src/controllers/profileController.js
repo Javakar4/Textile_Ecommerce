@@ -1,4 +1,4 @@
-import User from "../models/userSchema.js";
+import User from "../models/UserSchema.js";
 import { rtnRes } from "../utils/responseHandlerService.js";
 import ProfileService from "../services/profileService.js";
 // import User from "../models/userSchema.js"
