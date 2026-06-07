@@ -1,6 +1,6 @@
 import React from 'react'
 // import AppRoutes from './components/AppRoutes'
-import AppRoutes from './components/Routes'
+import AppRoutes from './components/routes/Routes'
 import { Toaster } from "react-hot-toast";
 import { RouterProvider } from "react-router-dom"
 import { SocketProvider } from './context/SocketContext';

@@ -1,7 +1,7 @@
 import React from 'react';
-import Navbar from '@components/Navbar';
-import ScrollToTop from '@components/ScrollToTop';
-import Footer from '@components/Footer';
+import Navbar from '@components/layouts/Navbar';
+import ScrollToTop from '@components/common/ScrollToTop';
+import Footer from '@components/layouts/Footer';
 import { Outlet, useLocation } from 'react-router-dom';
 
 export default function Layout() {

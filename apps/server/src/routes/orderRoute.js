@@ -9,6 +9,9 @@ router.post("/create", authenticateToken, orderController.createOrder);
 router.get("/", authenticateToken, orderController.getMyOrders);
 router.get("/:orderId", authenticateToken, orderController.getOrderById);
 
+// Payment callback (public, called by PhonePe)
+router.all("/payment/callback", orderController.paymentCallback);
+
 // Admin-only routes (optional)
 // You can add admin middleware if needed
 router.patch("/payment", authenticateToken, orderController.updatePaymentStatus);

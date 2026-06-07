@@ -26,7 +26,7 @@ import passport from "passport";
 import "./config/passport.js";
 import { initSocket } from "./config/socket.js";
 import maintenanceMode from "./middlewares/maintenance.js";
-
+import paymentService from "./services/paymentService.js"
 
 // Connect to Database
 connectDB();

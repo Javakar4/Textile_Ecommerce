@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Heart, Eye, ShoppingBag, Star } from 'lucide-react';
-import { useCart } from "../hooks/useCart";
-import { useAuth } from "../hooks/useAuth";
-import { useWishlist } from "../hooks/useWishlist";
-import { useApp } from "../hooks/useApp";
-import toastUtils from "../utils/toastUtils";
+import { useCart } from "../../hooks/useCart";
+import { useAuth } from "../../hooks/useAuth";
+import { useWishlist } from "../../hooks/useWishlist";
+import { useApp } from "../../hooks/useApp";
+import toastUtils from "../../utils/toastUtils";
 
 
 // Product Card Component
@@ -114,9 +114,11 @@ const ProductCard = ({ product }) => {
                         {product.name}
                     </h3>
 
-                    <p className="text-[9px] sm:text-[10px] text-gray-600 mb-1 line-clamp-2">
-                        {product.description[0]}
-                    </p>
+                    {product.description?.[0] && (
+                        <p className="text-[9px] sm:text-[10px] text-gray-600 mb-1 line-clamp-2">
+                            {product.description[0]}
+                        </p>
+                    )}
 
                     {/* Rating */}
                     <div className="flex items-center gap-1 mb-1">

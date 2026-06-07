@@ -1,5 +1,5 @@
 import React from "react";
-import CartItem from "../components/CartItem";
+import CartItem from "../components/cart/CartItem";
 import { useCart } from "../hooks/useCart";
 import { useAuth } from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
