@@ -1,7 +1,7 @@
 import React from "react";
 import { FaArrowRight } from "react-icons/fa";
 import assets from "../../assets/assets";
-import ProductCard from "../ProductCard";
+import ProductCard from "../product/ProductCard";
 import { NavLink } from "react-router-dom";
 
 function CollectionsScroller({title, desc, products = [], category, isLoading}) {

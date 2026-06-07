@@ -12,6 +12,7 @@ export default function CheckoutPage() {
     const navigate = useNavigate();
 
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [paymentMethod, setPaymentMethod] = useState("COD");
 
     // Filter out invalid/empty addresses from the list if any
     const validAddresses = addresses || [];
@@ -47,7 +48,7 @@ export default function CheckoutPage() {
         const orderData = {
             items: orderItems,
             total,
-            paymentMethod: "COD", // Defaulting to COD for now
+            paymentMethod: paymentMethod,
             shippingAddress: {
                 name: selectedAddress.name,
                 phone: selectedAddress.phone,
@@ -60,9 +61,14 @@ export default function CheckoutPage() {
 
         try {
             const res = await createOrder(orderData);
-            if (res.ok) {
-                clear();
-                navigate(`/my-orders`);
+            if (res.ok || res.success) {
+                // Determine if there is a redirect URL for online payment
+                if (res.redirectUrl) {
+                    window.location.href = res.redirectUrl;
+                } else {
+                    clear();
+                    navigate(`/my-orders`);
+                }
             }
         } catch (error) {
             console.error("Order placement failed:", error);
@@ -180,12 +186,32 @@ export default function CheckoutPage() {
                     </div>
                 </div>
 
-                <div className="mt-6 p-4 bg-amber-50 rounded-xl border border-amber-100 mb-6">
-                    <p className="text-xs font-bold text-amber-800 uppercase tracking-wider mb-1">Payment Method</p>
-                    <p className="text-sm text-amber-900 font-medium flex items-center gap-2">
-                        <span className="w-2 h-2 bg-amber-600 rounded-full animate-pulse"></span>
-                        Cash on Delivery (COD)
-                    </p>
+                <div className="mt-6 space-y-4">
+                    <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">Payment Method</p>
+                    
+                    <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'COD' ? 'bg-amber-50 border-amber-500' : 'bg-white border-gray-200'}`}>
+                        <input 
+                            type="radio" 
+                            name="paymentMethod" 
+                            value="COD" 
+                            checked={paymentMethod === 'COD'} 
+                            onChange={() => setPaymentMethod('COD')}
+                            className="accent-amber-700 w-5 h-5"
+                        />
+                        <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
+                    </label>
+                    
+                    <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'Online' ? 'bg-amber-50 border-amber-500' : 'bg-white border-gray-200'}`}>
+                        <input 
+                            type="radio" 
+                            name="paymentMethod" 
+                            value="Online" 
+                            checked={paymentMethod === 'Online'} 
+                            onChange={() => setPaymentMethod('Online')}
+                            className="accent-amber-700 w-5 h-5"
+                        />
+                        <span className="text-gray-800 font-medium">Online Payment (UPI/Cards)</span>
+                    </label>
                 </div>
 
                 <button

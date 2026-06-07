@@ -21,6 +21,30 @@ export const config = {
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     
     MAINTENANCE_MODE: process.env.MAINTENANCE_MODE === 'true',
+
+     
 }
 
 
+export const pgConfig = {
+   SANDBOX:{
+     authURL :"https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token",
+     checkoutURL: "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/pay",
+     PG_MERCHANT_ID: process.env.PG_MERCHANT_ID,
+     PG_MERCHANT_KEY: process.env.PG_MERCHANT_KEY,  
+     PG_ID:1
+   },
+
+   PRODUCTION:{
+     authURL :"https://api.phonepe.com/apis/pg/v1/oauth/token",
+     checkoutURL: "https://api.phonepe.com/apis/pg/checkout/v2/pay",
+     PG_MERCHANT_ID: process.env.PG_MERCHANT_ID,
+     PG_MERCHANT_KEY: process.env.PG_MERCHANT_KEY,  
+     PG_ID:1
+   }
+}
+
+// Validate required PhonePe credentials at startup
+if (!process.env.PG_MERCHANT_ID || !process.env.PG_MERCHANT_KEY) {
+  console.warn('⚠️  Missing PhonePe credentials: PG_MERCHANT_ID and/or PG_MERCHANT_KEY are not set. Payment features will not work.');
+}

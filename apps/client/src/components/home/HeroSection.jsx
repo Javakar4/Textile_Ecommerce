@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import assets from "../../assets/assets";
+import { heroImages } from "../../assets/assets";
 import { NavLink } from "react-router-dom";
+import { constants } from "../../config/constants";
 
 export default function HeroSection() {
     useEffect(() => {
@@ -120,26 +121,26 @@ export default function HeroSection() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                                <NavLink to='/all-collections' className="group bg-amber-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center gap-3">
+                                <NavLink to='/all-collections' className="group bg-amber-700 text-white px-10 py-3 rounded-full font-semibold hover:bg-amber-800 transition-all duration-300 transform hover:scale-105 shadow-xl text-center">
                                     Explore Collections
                                 </NavLink>
 
-                                <NavLink to='/contact' className="bg-white text-amber-700 px-10 py-3 rounded-full font-semibold border-2 border-amber-700 hover:bg-amber-50 transition-all duration-300 hover:scale-105">
+                                <NavLink to='/contact' className="bg-white text-amber-700 px-10 py-3 rounded-full font-semibold border-2 border-amber-700 hover:bg-amber-50 transition-all duration-300 hover:scale-105 text-center">
                                     Contact Us
                                 </NavLink>
                             </div>
 
                             {/* STATS */}
                             <div className="flex items-center gap-6 justify-center lg:justify-start pt-2">
-                                {["25+", "5000+", "100%"].map((value, i) => (
+                                {constants.heroStats.map((stat, i) => (
                                     <React.Fragment key={i}>
                                         <div className="text-center">
-                                            <p className="text-3xl font-bold text-stone-900 font-serif">{value}</p>
+                                            <p className="text-3xl font-bold text-stone-900 font-serif">{stat.value}</p>
                                             <p className="text-sm text-stone-600">
-                                                {i === 0 ? "Years Experience" : i === 1 ? "Happy Customers" : "Quality Assured"}
+                                                {stat.label}
                                             </p>
                                         </div>
-                                        {i < 2 && <div className="w-px h-10 bg-stone-300"></div>}
+                                        {i < constants.heroStats.length - 1 && <div className="w-px h-10 bg-stone-300"></div>}
                                     </React.Fragment>
                                 ))}
                             </div>
@@ -157,7 +158,7 @@ export default function HeroSection() {
 
                                     <div className="clip-shirt-img relative overflow-hidden w-48 h-48 sm:w-56 sm:h-56 mx-auto mt-4 rounded-xl border-4 border-amber-500/50 shadow-xl animate-clothFlutter">
 
-                                        {[assets.heroImage1, assets.heroImage2, assets.heroImage3, assets.heroImage4].map((src, i) => (
+                                        {heroImages.map((src, i) => (
                                             <img
                                                 key={i}
                                                 src={src}
@@ -173,7 +174,7 @@ export default function HeroSection() {
                                     <p className="text-stone-700 text-center mt-1">Trendy | Unique | Stylish</p>
                                 </div>
 
-                                <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-amber-700 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg rotate-[-5deg] animate-tagFloat">
+                                <div className="absolute -bottom-9 left-1/2 -translate-x-1/2 bg-amber-700 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg rotate-[-5deg] animate-tagFloat whitespace-nowrap text-center">
                                     NEW ARRIVALS
                                 </div>
                             </div>

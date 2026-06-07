@@ -1,5 +1,5 @@
 import { useOrderServices } from "../hooks/useOrderServices";
-import OrderItemCard from "../components/OrderItemCard";
+import OrderItemCard from "../components/profile/OrderItemCard";
 
 export default function OrdersPage() {
     const { useMyOrders } = useOrderServices();

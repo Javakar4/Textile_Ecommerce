@@ -6,7 +6,7 @@ import { emitEvent } from "../config/socket.js";
 
 const getUserProfile = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const userId = req.user?.userId || req.user?.id;
     const result = await ProfileService.getProfile(userId);
     rtnRes(res, result.statusCode || 200, result.message, result.data);
   } catch (error) {
@@ -17,7 +17,7 @@ const getUserProfile = async (req, res) => {
 
 const updateUserProfile = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const userId = req.user?.userId || req.user?.id;
     const result = await ProfileService.updateProfile(userId, req.body);
     if (result.statusCode < 400 || !result.statusCode) emitEvent("profile_updated", { userId });
     rtnRes(res, result.statusCode || 200, result.message, result.data);
@@ -29,7 +29,7 @@ const updateUserProfile = async (req, res) => {
 
 const addAddress = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const userId = req.user?.userId || req.user?.id;
     const result = await ProfileService.addAddress(userId, req.body);
     if (result.statusCode < 400 || !result.statusCode) emitEvent("profile_updated", { userId });
     rtnRes(res, result.statusCode || 200, result.message, result.data);
@@ -41,7 +41,7 @@ const addAddress = async (req, res) => {
 
 const removeAddress = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const userId = req.user?.userId || req.user?.id;
     const { id: addressId } = req.params;
     const result = await ProfileService.removeAddress(userId, addressId);
     if (result.statusCode < 400 || !result.statusCode) emitEvent("profile_updated", { userId });
@@ -54,7 +54,7 @@ const removeAddress = async (req, res) => {
 
 const setDefaultAddress = async (req, res) => {
   try {
-    const { id: userId } = req.user;
+    const userId = req.user?.userId || req.user?.id;
     const { id: addressId } = req.params;
     const result = await ProfileService.setDefaultAddress(userId, addressId);
     if (result.statusCode < 400 || !result.statusCode) emitEvent("profile_updated", { userId });

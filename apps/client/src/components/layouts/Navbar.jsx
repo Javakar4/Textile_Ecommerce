@@ -1,24 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useApp } from "../hooks/useApp";
-import { useCart } from "../hooks/useCart";
-import { useAuth } from "../hooks/useAuth";
-import { useWishlist } from "../hooks/useWishlist";
-import { useCategoryServices } from "../hooks/useCategoryServices";
+import { useApp } from "../../hooks/useApp";
+import { useCart } from "../../hooks/useCart";
+import { useAuth } from "../../hooks/useAuth";
+import { useWishlist } from "../../hooks/useWishlist";
+import { useCategoryServices } from "../../hooks/useCategoryServices";
+
 
 function Navbar() {
     const { useCategories } = useCategoryServices();
     const { data: categories = [], isLoading: isLoadingCategories } = useCategories();
     const categoriesData = categories;
     const [open, setOpen] = useState(false);
-    const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState()
-    const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState()
+    const [mobileCollectionsOpen, setMobileCollectionsOpen] = useState(false)
+    const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false)
     const { assets } = useApp();
     const { cartItems } = useCart();
     const { wishlistItems } = useWishlist();
     const { user, setShowUserLogin, logout: contextLogout } = useAuth();
     const navigate = useNavigate();
     const [searchText, setSearchText] = useState("");
+
+    useEffect(() => {
+        if (open) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [open]);
 
     const logout = async () => {
         contextLogout();
@@ -44,73 +56,78 @@ function Navbar() {
             </NavLink>
 
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-8 uppercase">
+            <div className="hidden md:flex items-center gap-4 lg:gap-8 uppercase text-sm lg:text-base">
                 <NavLink to="/" className="hover:text-amber-700 transition duration-200 font-semibold">
                     Home
                 </NavLink>
 
                 {/* Desktop: Collections */}
-                {/* Desktop: Collections */}
                 <div className="group relative cursor-pointer">
-                    <div className="flex items-center hover:text-amber-700 transition duration-200">
-                        <span>Collections</span> ▾
+                    <div className="flex items-center gap-1 hover:text-amber-700 transition duration-200 font-semibold">
+                        <span>Collections</span>
+                        <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
 
-                    <div className="hidden group-hover:block absolute top-6  bg-white shadow border border-gray-200 py-2 w-48 rounded-md text-sm z-40">
-                        {isLoadingCategories ? (
-                            <div className="px-4 py-2 text-stone-500">Loading...</div>
-                        ) : categoriesData.filter(cat => !cat.parentId).length > 0 ? (
-                            categoriesData.filter(cat => !cat.parentId).map((cat) => (
-                                <NavLink
-                                    key={cat._id}
-                                    to={`/all-collections?category=${cat.slug}`}
-                                    className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                                >
-                                    {cat.name}
-                                </NavLink>
-                            ))
-                        ) : (
-                            <div className="px-4 py-2 text-stone-500">No collections</div>
-                        )}
+                    <div className="absolute top-full left-0 pt-6 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 z-40">
+                        <div className="bg-white shadow-xl border border-gray-100 py-2 w-56 rounded-xl text-sm flex flex-col overflow-hidden">
+                            {isLoadingCategories ? (
+                                <div className="px-5 py-3 text-stone-500">Loading...</div>
+                            ) : categoriesData.filter(cat => !cat.parentId).length > 0 ? (
+                                categoriesData.filter(cat => !cat.parentId).map((cat) => (
+                                    <NavLink
+                                        key={cat._id}
+                                        to={`/all-collections?category=${cat.slug}`}
+                                        className="block px-5 py-3 hover:bg-amber-50 hover:text-amber-700 transition-colors font-medium"
+                                    >
+                                        {cat.name}
+                                    </NavLink>
+                                ))
+                            ) : (
+                                <div className="px-5 py-3 text-stone-500">No collections</div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
                 {/* Desktop: Categories */}
                 <div className="group relative cursor-pointer">
-                    <div className="flex items-center hover:text-amber-700 transition duration-200">
-                        <span>Categories</span> ▾
+                    <div className="flex items-center gap-1 hover:text-amber-700 transition duration-200 font-semibold">
+                        <span>Categories</span>
+                        <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
                     </div>
 
-                    <div className="hidden group-hover:block absolute top-6 bg-white shadow border border-gray-200 py-2 w-40 rounded-md text-sm z-40">
-                        {isLoadingCategories ? (
-                            <div className="px-4 py-2 text-stone-500">Loading...</div>
-                        ) : categoriesData.length > 0 ? (
-                            categoriesData.map((cat) => (
-                                <NavLink
-                                    key={cat._id}
-                                    to={`/all-collections?category=${cat._id}`}
-                                    className="block px-4 py-2 hover:bg-gray-100 hover:text-amber-700"
-                                >
-                                    {cat.name}
-                                </NavLink>
-                            ))
-                        ) : (
-                            <div className="px-4 py-2 text-stone-500">No categories</div>
-                        )}
+                    <div className="absolute top-full left-0 pt-6 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 z-40">
+                        <div className="bg-white shadow-xl border border-gray-100 py-2 w-56 rounded-xl text-sm flex flex-col overflow-hidden">
+                            {isLoadingCategories ? (
+                                <div className="px-5 py-3 text-stone-500">Loading...</div>
+                            ) : categoriesData.length > 0 ? (
+                                categoriesData.map((cat) => (
+                                    <NavLink
+                                        key={cat._id}
+                                        to={`/all-collections?category=${cat._id}`}
+                                        className="block px-5 py-3 hover:bg-amber-50 hover:text-amber-700 transition-colors font-medium"
+                                    >
+                                        {cat.name}
+                                    </NavLink>
+                                ))
+                            ) : (
+                                <div className="px-5 py-3 text-stone-500">No categories</div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
 
-                <NavLink to="/about" className="hover:text-amber-700 transition duration-200">
+                <NavLink to="/about" className="hover:text-amber-700 transition duration-200 font-semibold">
                     About
                 </NavLink>
-                <NavLink to="/contact" className="hover:text-amber-700 transition duration-200">
+                <NavLink to="/contact" className="hover:text-amber-700 transition duration-200 font-semibold">
                     Contact
                 </NavLink>
 
                 <form
                     onSubmit={handleSearch}
-                    className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full"
+                    className="hidden md:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full"
                 >
                     <input
                         value={searchText}
@@ -142,50 +159,47 @@ function Navbar() {
                 </NavLink>
 
                 {!user ? (
-                    <button onClick={() => navigate("/auth")} 
-                    className="cursor-pointer px-8 py-2 bg-amber-700 hover:bg-amber-700-dull transition text-white rounded-full">
+                    <button onClick={() => navigate("/auth")}
+                        className="cursor-pointer px-8 py-2 bg-amber-700 hover:bg-amber-700-dull transition text-white rounded-full">
                         Login
                     </button>
                 ) : (
                     <div className="relative group">
-                        <img src={assets.profileIcon} alt="ProfileIcon" className="w-10" />
-                        <ul className="hidden group-hover:block absolute top-10 right-0 bg-white shadow-lg border border-gray-200 py-2 w-40 rounded-md text-sm z-40">
-
-                            <NavLink
-                                to="profile"
-                                className="block px-4 py-2 text-gray-700 hover:bg-amber-100 hover:text-amber-700 transition rounded"
-                            >
-                                Profile
-                            </NavLink>
-
-                            <NavLink
-                                to="my-orders"
-                                className="block px-4 py-2 text-gray-700 hover:bg-amber-100 hover:text-amber-700 transition rounded"
-                            >
-                                My Orders
-                            </NavLink>
-
-                            <NavLink
-                                to="wishlist"
-                                className="block px-4 py-2 text-gray-700 hover:bg-amber-100 hover:text-amber-700 transition rounded"
-                            >
-                                Wishlist
-                            </NavLink>
-
-                            <NavLink
-                                onClick={logout}
-                                className="block px-4 py-2 text-red-600 hover:bg-red-100 hover:text-red-700 transition rounded"
-                            >
-                                Logout
-                            </NavLink>
-
-                        </ul>
+                        <img src={assets.profileIcon} alt="ProfileIcon" className="w-10 cursor-pointer" />
+                        <div className="absolute top-full right-0 pt-4 invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-300 z-40">
+                            <ul className="bg-white shadow-xl border border-gray-100 py-2 w-48 rounded-xl text-sm flex flex-col overflow-hidden">
+                                <NavLink
+                                    to="profile"
+                                    className="block px-5 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors font-medium"
+                                >
+                                    Profile
+                                </NavLink>
+                                <NavLink
+                                    to="my-orders"
+                                    className="block px-5 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors font-medium"
+                                >
+                                    My Orders
+                                </NavLink>
+                                <NavLink
+                                    to="wishlist"
+                                    className="block px-5 py-3 text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors font-medium"
+                                >
+                                    Wishlist
+                                </NavLink>
+                                <NavLink
+                                    onClick={logout}
+                                    className="block px-5 py-3 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors font-medium cursor-pointer"
+                                >
+                                    Logout
+                                </NavLink>
+                            </ul>
+                        </div>
 
                     </div>
                 )}
             </div>
 
-            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="lg:hidden">
+            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="md:hidden">
                 {/* Menu Icon SVG */}
                 <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="21" height="1.5" rx=".75" fill="#426287" />
@@ -196,7 +210,7 @@ function Navbar() {
 
             {/* Mobile Menu */}
             {open && (
-                <div className="bg-white/90 absolute top-[60px] left-0 w-full text-black shadow-lg py-5 flex flex-col gap-5 px-6 text-lg lg:hidden z-40 animate-fadeSlide border-t border-[--color-secondary]/40 backdrop-blur-md">
+                <div className="bg-white/95 absolute top-[60px] left-0 w-full max-h-[calc(100vh-60px)] overflow-y-auto text-black shadow-lg py-5 pb-10 flex flex-col gap-5 px-6 text-lg md:hidden z-[100] animate-fadeSlide border-t border-[--color-secondary]/40 backdrop-blur-md">
                     <NavLink to="/" onClick={() => setOpen(false)} className="hover:text-amber-700 transition duration-200">
                         Home
                     </NavLink>
@@ -207,7 +221,18 @@ function Navbar() {
                             onClick={() => setMobileCollectionsOpen(!mobileCollectionsOpen)}
                             className="w-full flex justify-between items-center hover:text-amber-700"
                         >
-                            Collections ▾
+
+                            <span>Collections</span>
+                            <svg
+                                width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                                style={{
+                                    transition: 'transform 0.25s ease',
+                                    transform: mobileCollectionsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    verticalAlign: 'middle'
+                                }}
+                            >
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+                            </svg>
                         </button>
 
                         {mobileCollectionsOpen && (
@@ -216,10 +241,10 @@ function Navbar() {
                                     <div className="text-stone-500">Loading...</div>
                                 ) : categoriesData.filter(cat => !cat.parentId).length > 0 ? (
                                     categoriesData.filter(cat => !cat.parentId).map((cat) => (
-                                        <NavLink 
+                                        <NavLink
                                             key={cat._id}
-                                            to={`/all-collections?category=${cat.slug}`} 
-                                            onClick={() => setOpen(false)} 
+                                            to={`/all-collections?category=${cat.slug}`}
+                                            onClick={() => setOpen(false)}
                                             className={'hover:text-amber-700'}
                                         >
                                             {cat.name}
@@ -238,7 +263,17 @@ function Navbar() {
                             onClick={() => setMobileCategoriesOpen(!mobileCategoriesOpen)}
                             className="w-full flex justify-between items-center hover:text-amber-700"
                         >
-                            Categories ▾
+                            <span>Categories</span>
+                            <svg
+                                width="20" height="20" viewBox="0 0 24 24" fill="currentColor"
+                                style={{
+                                    transition: 'transform 0.25s ease',
+                                    transform: mobileCategoriesOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                                    verticalAlign: 'middle'
+                                }}
+                            >
+                                <path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z" />
+                            </svg>
                         </button>
 
                         {mobileCategoriesOpen && (

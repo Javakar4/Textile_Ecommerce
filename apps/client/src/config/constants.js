@@ -1,6 +1,11 @@
 import React from "react";
 
 export const constants = {
+  heroStats: [
+    { value: "25+", label: "Years Experience" },
+    { value: "5000+", label: "Happy Customers" },
+    { value: "100%", label: "Quality Assured" },
+  ],
   cartMock: [
     {
       name: "Organic Cotton Canvas",

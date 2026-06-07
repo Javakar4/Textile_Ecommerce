@@ -18,8 +18,7 @@ const orderSchema = new mongoose.Schema(
     items: [
       {
         productId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Product"
+          type: String
         },
 
         productCode: String,
@@ -45,12 +44,12 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["COD", "CARD", "UPI", "NET_BANKING"]
+      enum: ["COD", "CARD", "UPI", "NET_BANKING", "Online"]
     },
 
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Confirmed", "Failed"],
+      enum: ["Pending", "Initiated", "Confirmed", "Failed"],
       default: "Pending"
     },
 

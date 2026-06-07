@@ -14,7 +14,7 @@ export const useWishlistServices = () => {
         if (!response.ok) {
           throw new Error(response.message);
         }
-        return response.data;
+        return response.data?.data || [];
       },
       enabled,
     });

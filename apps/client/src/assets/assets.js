@@ -4,10 +4,10 @@ import { ChevronRight, ShoppingCart, Heart, Truck, RotateCcw, Shield, Plus, Minu
 
 
 import profileIcon from './profile-icon.png'
-import heroImage1 from './pic1.jpg'
-import heroImage2 from './pic2.jpg'
-import heroImage3 from './pic3.jpg'
-import heroImage4 from './pic4.jpg'
+import heroImage1 from './heroImages/pic1.jpg'
+import heroImage2 from './heroImages/pic2.jpg'
+import heroImage3 from './heroImages/pic3.jpg'
+import heroImage4 from './heroImages/pic4.jpg'
 
 
 
@@ -40,7 +40,7 @@ const testimonials = [
     }
 ];
 
-
+export const heroImages = [heroImage1, heroImage2, heroImage3, heroImage4]
 
 
 // Product-Card

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, X, ChevronUp, ChevronDown, Star, Search } from 'lucide-react';
-import ProductCard from '../components/ProductCard';
+import ProductCard from '../components/product/ProductCard';
 import { useProductServices } from '../hooks/useProductServices';
 import { useApp } from '../hooks/useApp';
 import { useSearchParams } from 'react-router-dom';
