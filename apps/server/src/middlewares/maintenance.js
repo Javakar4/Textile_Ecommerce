@@ -1,9 +1,11 @@
 import { config } from "../config/config.js";
 import { rtnRes } from "../utils/responseHandlerService.js";
 import jwt from "jsonwebtoken";
+import settingsService from "../services/settingsService.js";
 
 export const maintenanceMode = (req, res, next) => {
-  if (config.MAINTENANCE_MODE) {
+  const isMaintenance = settingsService.get("maintenanceMode", config.MAINTENANCE_MODE);
+  if (isMaintenance) {
     // Try to get user from token for admin bypass
     const authHeader = req.headers["authorization"];
     const token = authHeader && authHeader.split(" ")[1];

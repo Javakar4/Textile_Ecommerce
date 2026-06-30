@@ -34,6 +34,13 @@ export const createOrder = async (req, res) => {
             });
         }
 
+        if (paymentMethod !== "Online") {
+            return res.status(400).json({
+                success: false,
+                message: "Only online payments are accepted"
+            });
+        }
+
         // Generate unique orderId (simple & safe)
         const orderId = Date.now();
 
@@ -43,7 +50,7 @@ export const createOrder = async (req, res) => {
             items,
             total,
             paymentMethod,
-            paymentStatus: paymentMethod === "COD" ? "Pending" : "Initiated",
+            paymentStatus: "Initiated",
             shippingAddress
         });
 
@@ -125,13 +132,6 @@ export const getOrderById = async (req, res) => {
     try {
         const { orderId } = req.params;
         const userId = req.user?.userId;
-
-        // if (!mongoose.Types.ObjectId.isValid(orderId)) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Invalid order id"
-        //     });
-        // }
 
         const order = await Order.findOne({
             orderId: Number(orderId),
@@ -252,5 +252,119 @@ export const paymentCallback = async (req, res) => {
     } catch (err) {
         console.error("paymentCallback error:", err);
         return res.redirect(`${config.CLIENT_BASE_URL}/payment/callback?status=ERROR`);
+    }
+};
+
+
+export const webhookCallback = async (req, res) => {
+    try {
+        let body = req.body;
+        
+        // Sometimes PhonePe sends a base64 encoded response string
+        if (body.response) {
+            try {
+                const decoded = Buffer.from(body.response, 'base64').toString('utf-8');
+                body = JSON.parse(decoded);
+            } catch (e) {
+                console.error("Failed to decode webhook response:", e);
+            }
+        }
+
+        const event = body.event;
+        const payload = body.payload || body;
+
+        let merchantOrderIdRaw = payload.merchantOrderId || payload.originalMerchantOrderId;
+        let state = payload.state;
+        
+        if (!merchantOrderIdRaw) {
+            console.error("Webhook missing merchantOrderId/originalMerchantOrderId:", body);
+            return res.status(400).json({ success: false, message: "Missing order id" });
+        }
+
+        // Extract numeric orderId from TX_12345 or Refund-12345
+        const orderIdStr = merchantOrderIdRaw.toString().replace(/\D/g, "");
+        const orderId = Number(orderIdStr);
+
+        const order = await Order.findOne({ orderId });
+        
+        if (!order) {
+            console.error(`Order not found for webhook: ${orderIdStr}`);
+            return res.status(404).json({ success: false, message: "Order not found" });
+        }
+
+        // Determine the new status based on event or state
+        if (event) {
+            switch(event) {
+                case "checkout.order.completed":
+                    order.paymentStatus = "Confirmed";
+                    break;
+                case "checkout.order.failed":
+                    order.paymentStatus = "Failed";
+                    break;
+                case "pg.refund.completed":
+                    order.paymentStatus = "Refunded";
+                    break;
+                case "pg.refund.failed":
+                    order.paymentStatus = "Refund_Failed";
+                    break;
+                default:
+                    console.log("Unhandled webhook event:", event);
+            }
+        } else {
+            // Fallback to checking state if no event is present
+            if (payload.originalMerchantOrderId) {
+                if (state === "COMPLETED") order.paymentStatus = "Refunded";
+                else if (state === "FAILED") order.paymentStatus = "Refund_Failed";
+            } else if (payload.merchantOrderId) {
+                if (state === "COMPLETED") order.paymentStatus = "Confirmed";
+                else if (state === "FAILED") order.paymentStatus = "Failed";
+            }
+        }
+
+        await order.save();
+        return res.status(200).json({ success: true });
+    } catch (err) {
+        console.error("webhookCallback error:", err);
+        return res.status(500).json({ success: false, message: "Webhook processing failed" });
+    }
+};
+
+/**
+ * Get all orders (Admin only)
+ */
+export const getAllOrders = async (req, res) => {
+    try {
+        const { paymentStatus, trackingStatus, search } = req.query;
+        const query = {};
+
+        if (paymentStatus) query.paymentStatus = paymentStatus;
+        if (trackingStatus) query.trackingStatus = trackingStatus;
+
+        if (search) {
+            const numericSearch = Number(search);
+            if (!isNaN(numericSearch)) {
+                query.orderId = numericSearch;
+            } else {
+                query.$or = [
+                    { "shippingAddress.name": { $regex: search, $options: "i" } },
+                    { "shippingAddress.phone": { $regex: search, $options: "i" } }
+                ];
+            }
+        }
+
+        const orders = await Order.find(query)
+            .populate("userId", "username email fullName")
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            data: orders
+        });
+    } catch (err) {
+        console.error("getAllOrders error:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch orders"
+        });
     }
 };

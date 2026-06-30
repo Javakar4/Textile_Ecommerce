@@ -1,6 +1,6 @@
 import express from "express";
 import * as orderController from "../controllers/orderController.js";
-import { authenticateToken } from "../middlewares/authenticator.js";
+import { authenticateToken, requireAdmin } from "../middlewares/authenticator.js";
 
 const router = express.Router();
 
@@ -12,9 +12,12 @@ router.get("/:orderId", authenticateToken, orderController.getOrderById);
 // Payment callback (public, called by PhonePe)
 router.all("/payment/callback", orderController.paymentCallback);
 
-// Admin-only routes (optional)
-// You can add admin middleware if needed
-router.patch("/payment", authenticateToken, orderController.updatePaymentStatus);
-router.patch("/tracking", authenticateToken, orderController.updateTrackingStatus);
+// S2S Webhook (public, called by PhonePe)
+router.post("/webhook", orderController.webhookCallback);
+
+// Admin-only routes
+router.get("/admin/all", authenticateToken, requireAdmin, orderController.getAllOrders);
+router.patch("/payment", authenticateToken, requireAdmin, orderController.updatePaymentStatus);
+router.patch("/tracking", authenticateToken, requireAdmin, orderController.updateTrackingStatus);
 
 export default router;

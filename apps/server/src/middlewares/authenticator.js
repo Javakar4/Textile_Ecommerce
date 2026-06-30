@@ -37,4 +37,12 @@ export const authenticateToken = (req, res, next) => {
   }
 };
 
+export const requireAdmin = (req, res, next) => {
+  if (req.user && req.user.role === "admin") {
+    next();
+  } else {
+    return rtnRes(res, 403, "Forbidden: Admin access required");
+  }
+};
+
 export default authenticateToken;

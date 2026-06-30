@@ -1,11 +1,13 @@
 import React from "react";
 
 export const constants = {
+  
   heroStats: [
     { value: "25+", label: "Years Experience" },
     { value: "5000+", label: "Happy Customers" },
     { value: "100%", label: "Quality Assured" },
   ],
+
   cartMock: [
     {
       name: "Organic Cotton Canvas",
@@ -41,6 +43,7 @@ export const constants = {
         "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=200&h=200&fit=crop",
     },
   ],
+
 };
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
@@ -57,6 +60,7 @@ const apiEndpoints = {
     RESET_PASSWORD: `/api/v1/auth/reset-password`,
     GOOGLE_AUTH_ENDPOINT: `/api/v1/auth/google`,
   },
+  
   CART: {
     ADD: `/api/v1/cart/add`,
     GET: `/api/v1/cart/`,
@@ -65,26 +69,32 @@ const apiEndpoints = {
     CLEAR: `/api/v1/cart/`,
     SYNC: `/api/v1/cart/sync`,
   },
+
   PROFILE: {
     GET: `/api/v1/profile`,
     UPDATE: `/api/v1/profile`,
     ADDRESS: `/api/v1/profile/address`,
   },
+
   BRANDS: {
     BASE: `/api/v1/brands`,
   },
+
   CATEGORIES: {
     BASE: `/api/v1/categories`,
   },
+
   ORDERS: {
     BASE: `/api/v1/orders`,
     CREATE: `/api/v1/orders/create`,
     PAYMENT: `/api/v1/orders/payment`,
     TRACKING: `/api/v1/orders/tracking`,
   },
+
   PRODUCTS: {
     BASE: `/api/products`,
   },
+
   WISHLIST: {
     BASE: `/api/v1/wishlist`,
     ADD: `/api/v1/wishlist/add`,

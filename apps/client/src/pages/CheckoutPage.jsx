@@ -12,7 +12,7 @@ export default function CheckoutPage() {
     const navigate = useNavigate();
 
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [paymentMethod, setPaymentMethod] = useState("COD");
+    const [paymentMethod, setPaymentMethod] = useState("Online");
 
     // Filter out invalid/empty addresses from the list if any
     const validAddresses = addresses || [];
@@ -188,19 +188,6 @@ export default function CheckoutPage() {
 
                 <div className="mt-6 space-y-4">
                     <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">Payment Method</p>
-                    
-                    <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'COD' ? 'bg-amber-50 border-amber-500' : 'bg-white border-gray-200'}`}>
-                        <input 
-                            type="radio" 
-                            name="paymentMethod" 
-                            value="COD" 
-                            checked={paymentMethod === 'COD'} 
-                            onChange={() => setPaymentMethod('COD')}
-                            className="accent-amber-700 w-5 h-5"
-                        />
-                        <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
-                    </label>
-                    
                     <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'Online' ? 'bg-amber-50 border-amber-500' : 'bg-white border-gray-200'}`}>
                         <input 
                             type="radio" 

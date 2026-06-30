@@ -177,7 +177,7 @@ const seedData = async () => {
         },
       ],
       total: 1200,
-      paymentMethod: "COD",
+      paymentMethod: "Online",
       paymentStatus: "Pending",
       trackingStatus: "Ordered",
       shippingAddress: {

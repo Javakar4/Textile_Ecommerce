@@ -27,9 +27,13 @@ import "./config/passport.js";
 import { initSocket } from "./config/socket.js";
 import maintenanceMode from "./middlewares/maintenance.js";
 import paymentService from "./services/paymentService.js"
+import settingsService from "./services/settingsService.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
 
 // Connect to Database
-connectDB();
+connectDB().then(() => {
+  settingsService.initialize();
+});
 
 const app = express();
 
@@ -39,7 +43,7 @@ app.use(morgan("dev"));
 app.use(maintenanceMode); // Add maintenance mode check
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "http://localhost:5173"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -64,6 +68,7 @@ app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/brands", brandRoutes);
 app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/settings", settingsRoutes);
 
 
 

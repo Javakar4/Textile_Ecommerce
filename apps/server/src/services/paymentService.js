@@ -114,10 +114,10 @@ export default {
 
 
 
-initiatePayment({
-    amount: 1000,
-    merchantOrderId: `TEST_${Date.now()}`,
-    phoneNumber: '9999999999'
-})
-.then(res => console.log("TEST RESULT:", res))
-.catch(err => console.error("TEST ERROR:", err.message));
+// initiatePayment({
+//     amount: 1000,
+//     merchantOrderId: `TEST_${Date.now()}`,
+//     phoneNumber: '9999999999'
+// })
+// .then(res => console.log("TEST RESULT:", res))
+// .catch(err => console.error("TEST ERROR:", err.message));

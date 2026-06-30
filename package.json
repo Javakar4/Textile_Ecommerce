@@ -2,6 +2,8 @@
   "name": "monorepo",
   "private": true,
   "packageManager": "pnpm@10.0.0",
+
+  
   "scripts": {
     "client": "pnpm --filter @apps/client dev",
     "server": "pnpm --filter @apps/server dev",
@@ -13,6 +15,7 @@
     "build:client": "pnpm --filter @apps/client build",
     "build:admin": "pnpm --filter @apps/admin build"
   },
+
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild",

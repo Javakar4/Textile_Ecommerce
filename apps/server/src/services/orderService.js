@@ -24,7 +24,7 @@ export const orderService = {
                 items,
                 total,
                 paymentMethod,
-                paymentStatus: paymentMethod === "COD" ? "Pending" : "Confirmed",
+                paymentStatus: "Initiated",
                 shippingAddress
             });
 
