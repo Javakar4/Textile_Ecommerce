@@ -92,7 +92,7 @@ const apiEndpoints = {
   },
 
   PRODUCTS: {
-    BASE: `/api/products`,
+    BASE: `/api/v1/products`,
   },
 
   WISHLIST: {

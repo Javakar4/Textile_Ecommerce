@@ -13,6 +13,7 @@ import Order from "../models/OrderSchema.js";
 import Cart from "../models/CartSchema.js";
 import Wishlist from "../models/WishListSchema.js";
 import Payment from "../models/PaymentSchema.js";
+import SystemSetting from "../models/SystemSetting.js";
 import verifySeed from "./verifySeed.js";
 
 
@@ -32,6 +33,7 @@ const seedData = async () => {
       Cart.deleteMany(),
       Wishlist.deleteMany(),
       Payment.deleteMany(),
+      SystemSetting.deleteMany(),
     ]);
 
     console.log("👥 Seeding Users...");
@@ -215,6 +217,12 @@ const seedData = async () => {
     await Wishlist.create({
       userId: regularUser._id,
       products: [{ productId: products[0]._id }],
+    });
+
+    console.log("⚙️ Seeding System Settings...");
+    await SystemSetting.create({
+      key: "maintenanceMode",
+      value: false,
     });
 
     console.log("✅ Seeding completed successfully!");

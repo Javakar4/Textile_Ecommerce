@@ -1,7 +1,31 @@
-import React from 'react';
-import { Settings } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Settings, RefreshCw } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import apiEndpoints from '../config/constants';
 
 const MaintenancePage = () => {
+  const navigate = useNavigate();
+  const [isChecking, setIsChecking] = useState(false);
+
+  const checkStatus = async () => {
+    setIsChecking(true);
+    try {
+      const res = await fetch(`${apiEndpoints.BASE_URL}${apiEndpoints.CATEGORIES.BASE}`);
+      if (res.status !== 503) {
+        // Server is back up
+        window.location.href = '/';
+      }
+    } catch (error) {
+      console.log('Server still in maintenance or unreachable');
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  useEffect(() => {
+    checkStatus();
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 text-center">
       <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full animate-in fade-in zoom-in duration-500">
@@ -25,10 +49,15 @@ const MaintenancePage = () => {
         </div>
         
         <button 
-          onClick={() => window.location.reload()}
-          className="mt-8 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200"
+          onClick={checkStatus}
+          disabled={isChecking}
+          className="mt-8 w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          Try Refreshing
+          {isChecking ? (
+            <RefreshCw className="w-5 h-5 animate-spin" />
+          ) : (
+            'Try Refreshing'
+          )}
         </button>
       </div>
       

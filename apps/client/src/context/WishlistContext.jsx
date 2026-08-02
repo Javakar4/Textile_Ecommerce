@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from "react";
 import { useWishlistServices } from "../hooks/useWishlistServices";
 import { useAuth } from "../hooks/useAuth";
+import toastUtils from "../utils/toastUtils";
 
 export const WishlistContext = createContext();
 
@@ -27,6 +28,12 @@ export const WishlistProvider = ({ children }) => {
     }, [remoteWishlist, user]);
 
     const addToWishlist = async (product) => {
+        if (!user) {
+            toastUtils.error("Please login to manage your wishlist");
+            window.location.href = "/auth";
+            return;
+        }
+
         // Optimistic update
         setWishlistItems((prev) => {
             const exists = prev.find(item => item._id === product._id);
@@ -38,10 +45,18 @@ export const WishlistProvider = ({ children }) => {
         if (!res.ok) {
             // Revert if failed
             setWishlistItems(remoteWishlist || []);
+        } else {
+            toastUtils.success("Added to wishlist");
         }
     };
 
     const removeFromWishlist = async (productId) => {
+        if (!user) {
+            toastUtils.error("Please login to manage your wishlist");
+            window.location.href = "/auth";
+            return;
+        }
+
         // Optimistic update
         setWishlistItems((prev) => prev.filter(item => item._id !== productId));
 
@@ -49,6 +64,8 @@ export const WishlistProvider = ({ children }) => {
         if (!res.ok) {
             // Revert if failed
             setWishlistItems(remoteWishlist || []);
+        } else {
+            toastUtils.success("Removed from wishlist");
         }
     };
 

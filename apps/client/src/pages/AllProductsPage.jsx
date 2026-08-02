@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, X, ChevronUp, ChevronDown, Star, Search } from 'lucide-react';
-import ProductCard from '../components/product/ProductCard';
+import ProductGrid from '../components/product/ProductGrid';
 import { useProductServices } from '../hooks/useProductServices';
 import { useApp } from '../hooks/useApp';
 import { useSearchParams } from 'react-router-dom';
@@ -546,13 +546,14 @@ const AllProductsPage = () => {
                                 </button>
                             </div>
                         ) : filteredProducts.length > 0 ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
-                                {filteredProducts.map((product, index) => (
-                                    <div key={product.id || index}>
-                                        <ProductCard product={product} />
-                                    </div>
-                                ))}
-                            </div>
+                            //  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center w-full">
+                            //     {filteredProducts.map((product, index) => (
+                            //         <div key={product.id || index}>
+                            //             <ProductCard product={product} />
+                            //         </div>
+                            //     ))}
+                            // </div>
+                            <ProductGrid products={filteredProducts} />
                         ) : (
                             <div className="text-center py-12 sm:py-16">
                                 <Search size={48} className="text-gray-300 mx-auto mb-4 sm:mb-6" />

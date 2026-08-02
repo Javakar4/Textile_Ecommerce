@@ -27,6 +27,7 @@ axiosClient.interceptors.response.use(
     return response.data;
   },
   (error) => {
+    console.log("from axiosClient", error)
     const message = error.response?.data?.message || 'Something went wrong';
     return Promise.reject(new Error(message));
   }

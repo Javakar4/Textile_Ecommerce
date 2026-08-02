@@ -56,7 +56,7 @@ function Navbar() {
             </NavLink>
 
             {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-4 lg:gap-8 uppercase text-sm lg:text-base">
+            <div className="hidden lg:flex items-center gap-4 lg:gap-8 uppercase text-sm lg:text-base">
                 <NavLink to="/" className="hover:text-amber-700 transition duration-200 font-semibold">
                     Home
                 </NavLink>
@@ -127,7 +127,7 @@ function Navbar() {
 
                 <form
                     onSubmit={handleSearch}
-                    className="hidden md:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full"
+                    className="hidden lg:flex items-center text-sm gap-2 border border-gray-300 px-3 rounded-full"
                 >
                     <input
                         value={searchText}
@@ -199,7 +199,7 @@ function Navbar() {
                 )}
             </div>
 
-            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="md:hidden">
+            <button onClick={() => open ? setOpen(false) : setOpen(true)} aria-label="Menu" className="lg:hidden">
                 {/* Menu Icon SVG */}
                 <svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect width="21" height="1.5" rx=".75" fill="#426287" />
@@ -210,7 +210,7 @@ function Navbar() {
 
             {/* Mobile Menu */}
             {open && (
-                <div className="bg-white/95 absolute top-[60px] left-0 w-full max-h-[calc(100vh-60px)] overflow-y-auto text-black shadow-lg py-5 pb-10 flex flex-col gap-5 px-6 text-lg md:hidden z-[100] animate-fadeSlide border-t border-[--color-secondary]/40 backdrop-blur-md">
+                <div className="bg-white/95 absolute top-[60px] left-0 w-full max-h-[calc(100vh-60px)] overflow-y-auto text-black shadow-lg py-5 pb-10 flex flex-col gap-5 px-6 text-lg lg:hidden z-[100] animate-fadeSlide border-t border-[--color-secondary]/40 backdrop-blur-md">
                     <NavLink to="/" onClick={() => setOpen(false)} className="hover:text-amber-700 transition duration-200">
                         Home
                     </NavLink>

@@ -72,10 +72,8 @@ const ProductCard = ({ product }) => {
                             onClick={() => {
                                 if (isFavorite) {
                                     removeFromWishlist(product._id);
-                                    toastUtils.success("Removed from wishlist");
                                 } else {
                                     addToWishlist(product);
-                                    toastUtils.success("Added to wishlist");
                                 }
                             }}
                             className="bg-white/90 backdrop-blur-sm p-1.5 rounded-full hover:bg-white transition-colors"

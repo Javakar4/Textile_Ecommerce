@@ -40,7 +40,6 @@ const app = express();
 /* MIDDLEWARES */
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(maintenanceMode); // Add maintenance mode check
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -55,6 +54,7 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+app.use(maintenanceMode); // Add maintenance mode check after CORS
 
 /* SENTRY */
 Sentry.init({
@@ -67,8 +67,8 @@ app.use(express.static("uploads"));
 /* ROUTES */
 app.use(passport.initialize()); // Initialize passport
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
