@@ -27,24 +27,33 @@ import "./config/passport.js";
 import { initSocket } from "./config/socket.js";
 import maintenanceMode from "./middlewares/maintenance.js";
 import paymentService from "./services/paymentService.js"
+import settingsService from "./services/settingsService.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
 
 // Connect to Database
-connectDB();
+connectDB().then(() => {
+  settingsService.initialize();
+});
 
 const app = express();
+
+
 
 /* MIDDLEWARES */
 app.use(express.json());
 app.use(morgan("dev"));
-app.use(maintenanceMode); // Add maintenance mode check
 app.use(
   cors({
-    origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: (origin, callback) => {
+      // Reflect the incoming origin to allow all while supporting credentials
+      callback(null, true);
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
   }),
 );
+app.use(maintenanceMode); // Add maintenance mode check after CORS
 
 /* SENTRY */
 Sentry.init({
@@ -57,13 +66,14 @@ app.use(express.static("uploads"));
 /* ROUTES */
 app.use(passport.initialize()); // Initialize passport
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/products", productRoutes);
-app.use("/api/cart", cartRoutes);
+app.use("/api/v1/products", productRoutes);
+app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/orders", orderRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/brands", brandRoutes);
 app.use("/api/v1/categories", categoryRoutes);
+app.use("/api/v1/settings", settingsRoutes);
 
 
 

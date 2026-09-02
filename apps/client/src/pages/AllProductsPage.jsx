@@ -1,6 +1,6 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
 import { Filter, X, ChevronUp, ChevronDown, Star, Search } from 'lucide-react';
-import ProductCard from '../components/product/ProductCard';
+import ProductGrid from '../components/product/ProductGrid';
 import { useProductServices } from '../hooks/useProductServices';
 import { useApp } from '../hooks/useApp';
 import { useSearchParams } from 'react-router-dom';
@@ -13,7 +13,7 @@ const AllProductsPage = () => {
     const categoryParam = searchParams.get("category");
     const searchQueryParam = searchParams.get("search") || "";
 
-    const { useProducts } = useProductServices();
+    const { useInfiniteProducts } = useProductServices();
     const { useCategories } = useCategoryServices();
     const { useBrands } = useBrandServices();
 
@@ -31,11 +31,61 @@ const AllProductsPage = () => {
         inStockOnly: false
     });
 
-    const { data: productsData, isLoading, error } = useProducts({
+    // Parse price ranges
+    const priceRangeParams = useMemo(() => {
+        if (filters.priceRanges.length === 0) return { minPrice: undefined, maxPrice: undefined };
+        let mins = [];
+        let maxs = [];
+        let hasMax = false;
+        filters.priceRanges.forEach(r => {
+            if (r === '0-50') { mins.push(0); maxs.push(50); }
+            if (r === '50-100') { mins.push(50); maxs.push(100); }
+            if (r === '100-200') { mins.push(100); maxs.push(200); }
+            if (r === '200+') { mins.push(200); hasMax = true; }
+        });
+        return {
+            minPrice: Math.min(...mins),
+            maxPrice: hasMax ? undefined : Math.max(...maxs)
+        };
+    }, [filters.priceRanges]);
+
+    const { 
+        data, 
+        isLoading, 
+        error, 
+        fetchNextPage, 
+        hasNextPage, 
+        isFetchingNextPage 
+    } = useInfiniteProducts({
         category: filters.category,
-        search: searchQueryParam
+        search: searchQueryParam,
+        sizes: filters.sizes.join(','),
+        materials: filters.materials.join(','),
+        brands: filters.brands.join(','),
+        tags: filters.tags.join(','),
+        ratings: filters.ratings.join(','),
+        inStockOnly: filters.inStockOnly,
+        minPrice: priceRangeParams.minPrice,
+        maxPrice: priceRangeParams.maxPrice,
+        sortBy: sortBy
     });
-    const products = productsData || [];
+
+    const products = useMemo(() => {
+        return data && data.pages ? data.pages.flatMap(page => page?.products || []) : [];
+    }, [data]);
+    
+    // Observer for infinite scrolling
+    const observer = useRef();
+    const lastProductElementRef = useCallback(node => {
+        if (isLoading || isFetchingNextPage) return;
+        if (observer.current) observer.current.disconnect();
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasNextPage) {
+                fetchNextPage();
+            }
+        });
+        if (node) observer.current.observe(node);
+    }, [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]);
 
     const { data: categories = [] } = useCategories();
     const { data: authoritativeBrands = [] } = useBrands();
@@ -121,114 +171,8 @@ const AllProductsPage = () => {
         setSortBy('featured');
     };
 
-    const filteredProducts = useMemo(() => {
-        let filtered = [...products];
-
-        // 🔍 SEARCH FILTER - Client side sorting/minor filtering if needed, 
-        // but core category and search are handled by backend.
-
-        // Price range filter
-        if (filters.priceRanges.length > 0) {
-            filtered = filtered.filter(p => {
-                const price = p.pricing?.current || p.price || 0;
-                return filters.priceRanges.some(range => {
-                    if (range === '0-50') return price < 50;
-                    if (range === '50-100') return price >= 50 && price < 100;
-                    if (range === '100-200') return price >= 100 && price < 200;
-                    if (range === '200+') return price >= 200;
-                    return false;
-                });
-            });
-        }
-
-        // Material filter
-        if (filters.materials.length > 0) {
-            filtered = filtered.filter(p => filters.materials.includes(p.material));
-        }
-
-        // Size filter
-        if (filters.sizes.length > 0) {
-            filtered = filtered.filter(p => {
-                if (p.sizes && Array.isArray(p.sizes)) {
-                    return filters.sizes.some(size => p.sizes.includes(size));
-                }
-                return false;
-            });
-        }
-
-        // Rating filter
-        if (filters.ratings.length > 0) {
-            filtered = filtered.filter(p => {
-                const rating = p.rating?.score || p.rating || 0;
-                return filters.ratings.some(r => rating >= parseInt(r));
-            });
-        }
-
-        // Brand filter
-        if (filters.brands.length > 0) {
-            filtered = filtered.filter(p => {
-                const brandName = p.brandId?.name;
-                return filters.brands.includes(brandName);
-            });
-        }
-
-        // Tags filter
-        if (filters.tags.length > 0) {
-            filtered = filtered.filter(p => {
-                if (Array.isArray(p.tags)) {
-                    return filters.tags.some(tag => p.tags.includes(tag));
-                }
-                return false;
-            });
-        }
-
-        // Stock filter
-        if (filters.inStockOnly) {
-            filtered = filtered.filter(p => {
-                if (p.stock && typeof p.stock === 'object') {
-                    return p.stock.available === true;
-                }
-                return p.inStock === true;
-            });
-        }
-
-        // Sorting
-        if (sortBy === 'price-low') {
-            filtered.sort((a, b) => {
-                const priceA = a.pricing?.current || a.price || 0;
-                const priceB = b.pricing?.current || b.price || 0;
-                return priceA - priceB;
-            });
-        } else if (sortBy === 'price-high') {
-            filtered.sort((a, b) => {
-                const priceA = a.pricing?.current || a.price || 0;
-                const priceB = b.pricing?.current || b.price || 0;
-                return priceB - priceA;
-            });
-        } else if (sortBy === 'newest') {
-            filtered.sort((a, b) => new Date(b.addedDate || 0) - new Date(a.addedDate || 0));
-        } else if (sortBy === 'rating') {
-            filtered.sort((a, b) => {
-                const ratingA = a.rating?.score || a.rating || 0;
-                const ratingB = b.rating?.score || b.rating || 0;
-                return ratingB - ratingA;
-            });
-        } else if (sortBy === 'popular') {
-            filtered.sort((a, b) => {
-                const reviewsA = a.rating?.count || a.reviews || 0;
-                const reviewsB = b.rating?.count || b.reviews || 0;
-                return reviewsB - reviewsA;
-            });
-        } else if (sortBy === 'discount') {
-            filtered.sort((a, b) => {
-                const discountA = a.pricing?.discount || a.discount || 0;
-                const discountB = b.pricing?.discount || b.discount || 0;
-                return discountB - discountA;
-            });
-        }
-
-        return filtered;
-    }, [products, filters, sortBy, searchQueryParam]);
+    // Filtering is now handled completely by the server
+    const filteredProducts = products;
 
     const FilterSection = ({ title, section, children }) => (
         <div className="mb-6 pb-6 border-b border-gray-200 last:border-b-0">
@@ -522,18 +466,13 @@ const AllProductsPage = () => {
 
                         {/* Results Count */}
                         <div className="mt-4 text-sm text-gray-600">
-                            <span className="font-semibold">{filteredProducts.length}</span> products found
+                            <span className="font-semibold">{data?.pages?.[0]?.total || 0}</span> products found
                         </div>
                     </div>
 
                     {/* Product Grid */}
                     <div className="p-4 sm:p-6">
-                        {isLoading ? (
-                            <div className="flex flex-col items-center justify-center py-20">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-700 mb-4"></div>
-                                <p className="text-gray-600">Loading products...</p>
-                            </div>
-                        ) : error ? (
+                        {error ? (
                             <div className="flex flex-col items-center justify-center py-20 text-center">
                                 <X size={48} className="text-red-500 mb-4" />
                                 <h3 className="text-lg font-semibold text-gray-900 mb-2">Error loading products</h3>
@@ -546,12 +485,24 @@ const AllProductsPage = () => {
                                 </button>
                             </div>
                         ) : filteredProducts.length > 0 ? (
-                            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 justify-items-center">
-                                {filteredProducts.map((product, index) => (
-                                    <div key={product.id || index}>
-                                        <ProductCard product={product} />
-                                    </div>
-                                ))}
+                            <>
+                                <ProductGrid products={filteredProducts} smNewStyleNeeded={true} />
+                                
+                                {/* Infinite Scroll Trigger */}
+                                <div ref={lastProductElementRef} className="py-8 text-center">
+                                    {isFetchingNextPage ? (
+                                        <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-700"></div>
+                                    ) : hasNextPage ? (
+                                        <span className="text-gray-500 text-sm">Scroll for more...</span>
+                                    ) : (
+                                        <span className="text-gray-400 text-sm">End of results</span>
+                                    )}
+                                </div>
+                            </>
+                        ) : isLoading ? (
+                            <div className="flex flex-col items-center justify-center py-20">
+                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-700 mb-4"></div>
+                                <p className="text-gray-600">Loading products...</p>
                             </div>
                         ) : (
                             <div className="text-center py-12 sm:py-16">

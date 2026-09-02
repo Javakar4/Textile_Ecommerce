@@ -1,21 +1,32 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import orderService from "../services/orderService";
 import toastUtils from "../utils/toastUtils";
 
 export const useOrderServices = () => {
   const queryClient = useQueryClient();
 
-  // -- GET MY ORDERS QUERY --
+  // -- GET MY ORDERS (INFINITE SCROLL) --
   const useMyOrders = () =>
-    useQuery({
+    useInfiniteQuery({
       queryKey: ["myOrders"],
-      queryFn: async () => {
-        const response = await orderService.getMyOrders();
+      queryFn: async ({ pageParam = 1 }) => {
+        const response = await orderService.getMyOrders(pageParam, 5);
         if (!response.ok) {
           throw new Error(response.message);
         }
-        return response.data;
+        return {
+          orders: response.data,
+          pagination: response.pagination
+        };
       },
+      getNextPageParam: (lastPage) => {
+        if (lastPage.pagination?.hasMore) {
+          return lastPage.pagination.currentPage + 1;
+        }
+        return undefined;
+      },
+      initialPageParam: 1,
+      refetchOnMount: 'always',
     });
 
   // -- GET ORDER BY ID QUERY --
@@ -40,6 +51,11 @@ export const useOrderServices = () => {
       if (res.ok) {
         toastUtils.success("Order created successfully");
         queryClient.invalidateQueries({ queryKey: ["myOrders"] });
+        
+        // Redirect to PhonePe payment page if redirectUrl is available
+        if (res.redirectUrl) {
+          window.location.href = res.redirectUrl;
+        }
       } else {
         toastUtils.error(res.message);
       }

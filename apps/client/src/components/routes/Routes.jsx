@@ -16,6 +16,7 @@ import ProfilePage from "../../pages/ProfilePage";
 import WishlistPage from "../../pages/WishlistPage";
 import Contact from "../../pages/ContactPage";
 import About from "../../pages/AboutPage";
+import FAQPage from "../../pages/FAQPage";
 import MaintenancePage from "../../pages/MaintenancePage";
 
 let AppRoutes = createBrowserRouter([
@@ -33,6 +34,7 @@ let AppRoutes = createBrowserRouter([
             { path: "payment/callback", element: <PaymentCallbackPage /> },
             { path: "contact", element: <Contact /> },
             { path: "about", element: <About /> },
+            { path: "faq", element: <FAQPage /> },
             { path: "all-collections", element: <AllProductsPage /> },
             { path: "collection-detail/:id", element: <ProductDetailPage /> },
             { path: "cart", element: <CartPage /> },

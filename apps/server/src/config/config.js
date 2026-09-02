@@ -28,19 +28,21 @@ export const config = {
 
 export const pgConfig = {
    SANDBOX:{
-     authURL :"https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token",
+     payEndpoint: "/checkout/v2/pay",
      checkoutURL: "https://api-preprod.phonepe.com/apis/pg-sandbox/checkout/v2/pay",
+     oauthURL: "https://api-preprod.phonepe.com/apis/pg-sandbox/v1/oauth/token",
      PG_MERCHANT_ID: process.env.PG_MERCHANT_ID,
      PG_MERCHANT_KEY: process.env.PG_MERCHANT_KEY,  
-     PG_ID:1
+     PG_ID: process.env.PG_ID || "1"
    },
 
    PRODUCTION:{
-     authURL :"https://api.phonepe.com/apis/pg/v1/oauth/token",
+     payEndpoint: "/checkout/v2/pay",
      checkoutURL: "https://api.phonepe.com/apis/pg/checkout/v2/pay",
+     oauthURL: "https://api.phonepe.com/apis/pg/v1/oauth/token",
      PG_MERCHANT_ID: process.env.PG_MERCHANT_ID,
      PG_MERCHANT_KEY: process.env.PG_MERCHANT_KEY,  
-     PG_ID:1
+     PG_ID: process.env.PG_ID || "1"
    }
 }
 

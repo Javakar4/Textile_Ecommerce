@@ -1,215 +1,159 @@
-
-import { useState } from "react";
-import { ChevronRight, Package2, Clock, IndianRupee, MapPin, Phone, ChevronDown } from "lucide-react";
+import { Package, Truck, CheckCircle, Clock } from "lucide-react";
+import fallbackImageSrc from "../../assets/fallback-image.png";
 
 export default function OrderItemCard({ order }) {
-    const [showDetails, setShowDetails] = useState(false);
-
     const getStatusColor = (status) => {
         const colors = {
-            Ordered: "from-primaryLight via-primary to-primaryDark",
-            Shipping: "from-blue-400 via-blue-500 to-blue-700",
-            Delivered: "from-green-400 via-green-500 to-green-700",
+            Placed: "text-amber-700",
+            Packed: "text-blue-600",
+            Shipped: "text-orange-500",
+            Delivered: "text-green-600",
+            Ordered: "text-amber-700",
         };
+        return colors[status] || "text-gray-700";
+    };
 
-
-        return colors[status] || colors["Ordered"];
+    const getStatusIcon = (status) => {
+        const icons = {
+            Placed: <Clock className="w-4 h-4" />,
+            Packed: <Package className="w-4 h-4" />,
+            Shipped: <Truck className="w-4 h-4" />,
+            Delivered: <CheckCircle className="w-4 h-4" />,
+            Ordered: <Clock className="w-4 h-4" />,
+        };
+        return icons[status] || null;
     };
 
     const getPaymentColor = (status) => {
         const colors = {
-            "Confirmed": "from-green-500 to-emerald-500",
-            "Pending": "from-yellow-500 to-orange-500",
-            "Failed": "from-red-500 to-rose-500"
+            Confirmed: "text-green-600 bg-green-50",
+            Initiated: "text-amber-700 bg-amber-50",
+            Pending: "text-yellow-600 bg-yellow-50",
+            Failed: "text-red-600 bg-red-50",
+            Refunded: "text-purple-600 bg-purple-50",
+            Refund_Failed: "text-red-700 bg-red-50",
         };
-        return colors[status] || colors["Pending"];
+        return colors[status] || "text-gray-600 bg-gray-50";
     };
 
+    const formattedDate = new Date(order.createdAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+    });
+
+    const formattedTime = new Date(order.createdAt).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+
+    const fallbackImage = fallbackImageSrc;
+
     return (
-        <div className="w-full relative">
-            {/* Decorative gradient bar */}
-            <div className={`h-2 w-full rounded-t-3xl bg-gradient-to-r ${getStatusColor(order.trackingStatus)}`} />
-
-            <div className="bg-white rounded-b-3xl shadow-2xl overflow-hidden">
-                {/* Header Section */}
-                <div className="bg-gradient-to-br from-slate-50 to-slate-100 p-6 md:p-8">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        {/* Order Info */}
-                        <div className="flex items-start gap-4">
-                            <div className={`p-4 rounded-2xl bg-gradient-to-br ${getStatusColor(order.trackingStatus)} shadow-lg`}>
-                                <Package2 className="w-6 h-6 text-white" />
-                            </div>
-
-                            <div>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <h3 className="text-2xl font-bold text-gray-900">#{order.orderId || order._id}</h3>
-                                    <div className={`px-7 py-1 rounded-full text-xs font-bold text-white bg-gradient-to-r ${getStatusColor(order.trackingStatus)} shadow-md`}>
-                                        {order.trackingStatus}
-                                    </div>
-                                </div>
-
-                                <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
-                                    <div className="flex items-center gap-1.5">
-                                        <Clock className="w-4 h-4" />
-                                        <span>{new Date(order.createdAt).toLocaleDateString('en-US', {
-                                            month: 'long',
-                                            day: 'numeric',
-                                            year: 'numeric'
-                                        })}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <Package2 className="w-4 h-4" />
-                                        <span>{order.items.length} {order.items.length === 1 ? 'Item' : 'Items'}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Payment & Total */}
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                            <div className={`px-4 py-2 rounded-xl bg-gradient-to-r ${getPaymentColor(order.paymentStatus)} shadow-lg`}>
-                                <p className="text-xs font-semibold text-white/90 uppercase tracking-wide">Payment</p>
-                                <p className="text-sm font-bold text-white">{order.paymentStatus}</p>
-                            </div>
-
-                            <div className="text-right">
-                                <p className="text-sm text-gray-500 font-medium mb-1">Total Amount</p>
-                                <div className="flex items-center gap-1">
-                                    <span className="text-3xl font-black text-gray-900">${order.total?.toFixed(2)}</span>
-                                </div>
-                            </div>
-                        </div>
+        <div className="w-full bg-white border border-gray-200 rounded-lg overflow-hidden mb-6 border-l-4 border-l-amber-700 shadow-sm hover:shadow-md transition-shadow duration-300">
+            {/* Header Section */}
+            <div className="p-5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 className="text-lg font-bold text-gray-900">
+                            Order #: {order.orderId || order._id}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                            {order.items?.length || 0} Products | By {order.shippingAddress?.name || 'Unknown'} | {formattedTime}, {formattedDate}
+                        </p>
+                    </div>
+                    <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold tracking-wide uppercase border ${
+                        order.trackingStatus === 'Placed' || order.trackingStatus === 'Ordered' ? 'bg-amber-50 border-amber-200 text-amber-700' :
+                        order.trackingStatus === 'Packed' ? 'bg-blue-50 border-blue-200 text-blue-600' :
+                        order.trackingStatus === 'Shipped' ? 'bg-orange-50 border-orange-200 text-orange-500' :
+                        order.trackingStatus === 'Delivered' ? 'bg-green-50 border-green-200 text-green-600' : 'bg-gray-50 border-gray-200 text-gray-600'
+                    }`}>
+                        {getStatusIcon(order.trackingStatus)}
+                        {order.trackingStatus}
                     </div>
                 </div>
-
-                {/* Toggle Button */}
-                <button
-                    onClick={() => setShowDetails(!showDetails)}
-                    className="w-full px-6 py-4 bg-gradient-to-r from-slate-100 to-slate-50 hover:from-slate-200 hover:to-slate-100 
-                               transition-all duration-300 flex items-center justify-center gap-2 text-gray-700 font-semibold
-                               border-t border-b border-slate-200 group"
-                >
-                    <span>{showDetails ? 'Hide Order Details' : 'View Order Details'}</span>
-                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 group-hover:translate-y-0.5 ${showDetails ? 'rotate-180' : ''}`} />
-                </button>
-
-                {/* Details Section */}
-                {showDetails && (
-                    <div className="animate-slideDown">
-                        {/* Items Grid */}
-                        <div className="p-6 md:p-8 bg-white">
-                            <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                <div className="w-1 h-6 bg-gradient-to-b from-indigo-500 to-purple-500 rounded-full" />
-                                Order Items
-                            </h4>
-
-                            <div className="grid gap-4">
-                                {order.items.map((item, index) => (
-                                    <div
-                                        key={item._id || item.productId || index}
-                                        className="group flex items-center gap-4 p-4 bg-gradient-to-br from-gray-50 to-white 
-                                                   rounded-2xl border-2 border-gray-100 hover:border-indigo-200 
-                                                   hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                                        style={{ animationDelay: `${index * 50}ms` }}
-                                    >
-                                        {/* Image */}
-                                        <div className="relative flex-shrink-0">
-                                            <div className="w-24 h-24 rounded-xl overflow-hidden bg-gray-100 shadow-md">
-                                                <img
-                                                    src={item.image}
-                                                    alt={item.name}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                                />
-                                            </div>
-                                            <div className="absolute -top-2 -right-2 w-8 h-8 bg-indigo-600 text-white 
-                                                          rounded-full flex items-center justify-center text-xs font-bold shadow-lg">
-                                                {item.quantity}
-                                            </div>
-                                        </div>
-
-                                        {/* Info */}
-                                        <div className="flex-1 min-w-0">
-                                            <h5 className="font-bold text-gray-900 mb-2 text-lg">{item.name}</h5>
-                                            <div className="flex flex-wrap gap-2 mb-2">
-                                                <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-lg text-xs font-semibold">
-                                                    Size: {item.size}
-                                                </span>
-                                                <span className="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-semibold">
-                                                    ${item.pricing?.current?.toFixed(2)} each
-                                                </span>
-                                            </div>
-                                        </div>
-
-                                        {/* Price */}
-                                        <div className="text-right flex-shrink-0">
-                                            <p className="text-sm text-gray-500 mb-1">Subtotal</p>
-                                            <p className="text-2xl font-black bg-gradient-to-r from-indigo-600 to-purple-600 
-                                                         bg-clip-text text-transparent">
-                                                ${(item.pricing?.current * item.quantity).toFixed(2)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Shipping Address */}
-                        <div className="p-6 md:p-8 bg-gradient-to-br from-slate-50 to-white border-t border-gray-100">
-                            <h4 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                                <div className="w-1 h-6 bg-gradient-to-b from-emerald-500 to-teal-500 rounded-full" />
-                                Delivery Address
-                            </h4>
-
-                            <div className="bg-white rounded-2xl p-6 border-2 border-gray-100 shadow-lg">
-                                <div className="flex items-start gap-4">
-                                    <div className="p-3 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl shadow-lg flex-shrink-0">
-                                        <MapPin className="w-5 h-5 text-white" />
-                                    </div>
-
-                                    <div className="flex-1">
-                                        <p className="font-bold text-gray-900 text-lg mb-3">
-                                            {order.shippingAddress.name}
-                                        </p>
-
-                                        <div className="space-y-2 text-gray-700">
-                                            <p className="leading-relaxed">{order.shippingAddress.address}</p>
-                                            <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}</p>
-                                            {order.shippingAddress.landmark && (
-                                                <p className="text-gray-500 italic text-sm">
-                                                    Landmark: {order.shippingAddress.landmark}
-                                                </p>
-                                            )}
-                                        </div>
-
-                                        <div className="mt-4 pt-4 border-t border-gray-200">
-                                            <div className="flex items-center gap-2 text-gray-700">
-                                                <Phone className="w-4 h-4" />
-                                                <span className="font-semibold">{order.shippingAddress.phone}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
             </div>
 
-            <style jsx>{`
-                @keyframes slideDown {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-                .animate-slideDown {
-                    animation: slideDown 0.4s ease-out;
-                }
-            `}</style>
+            <div className="px-5">
+                <div className="border-t border-amber-100" />
+            </div>
+
+            {/* Details Section */}
+            <div className="p-5 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-y-3 gap-x-6">
+                    <div className="text-gray-500">Status:</div>
+                    <div className={`sm:col-span-3 font-medium flex items-center gap-1.5 ${getStatusColor(order.trackingStatus)}`}>
+                        {getStatusIcon(order.trackingStatus)}
+                        {order.trackingStatus}
+                    </div>
+
+                    <div className="text-gray-500">Payment:</div>
+                    <div className="sm:col-span-3">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${getPaymentColor(order.paymentStatus)}`}>
+                            {order.paymentStatus}
+                        </span>
+                    </div>
+
+                    <div className="text-gray-500">Delivered to:</div>
+                    <div className="sm:col-span-3 text-gray-900">
+                        {[
+                            order.shippingAddress?.address,
+                            order.shippingAddress?.city,
+                            order.shippingAddress?.state,
+                            (order.shippingAddress?.pincode || order.shippingAddress?.zip) ? `PO: ${order.shippingAddress.pincode || order.shippingAddress.zip}` : null,
+                        ].filter(Boolean).join(", ")}
+                    </div>
+
+                    <div className="font-bold text-gray-900">Total:</div>
+                    <div className="sm:col-span-3 font-bold text-amber-800 text-base">
+                        ₹ {order.total?.toFixed(2)}
+                    </div>
+                </div>
+            </div>
+
+            <div className="px-5">
+                <div className="border-t border-amber-100" />
+            </div>
+
+            {/* Order Items Section */}
+            <div className="p-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {order.items?.map((item, index) => (
+                        <div key={item._id || item.productId || index} className="flex gap-4">
+                            <div className="w-20 h-20 rounded-lg bg-amber-50/50 flex-shrink-0 overflow-hidden border border-amber-200 flex items-center justify-center p-2">
+                                <img
+                                    src={item.image || fallbackImage}
+                                    alt={item.name}
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = fallbackImage;
+                                    }}
+                                    className="max-w-full max-h-full object-contain mix-blend-multiply"
+                                />
+                            </div>
+                            <div className="flex flex-col justify-center text-sm">
+                                <h5 className="font-medium text-gray-900 mb-1">{item.name}</h5>
+                                {item.quantity && item.pricing?.current && (
+                                    <p className="text-gray-500">
+                                        Quantity: {item.quantity}x = ₹ {(item.pricing?.current * item.quantity).toFixed(2)}
+                                    </p>
+                                )}
+                                {item.pricing?.current && (
+                                    <p className="text-gray-500">
+                                        Price: ₹ {item.pricing?.current?.toFixed(2)}
+                                    </p>
+                                )}
+                                {item.size && (
+                                    <p className="text-gray-500">
+                                        Size: {item.size}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

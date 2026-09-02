@@ -1,6 +1,9 @@
 import { authService } from "../services/authService.js";
 import { rtnRes } from "../utils/responseHandlerService.js";
 import { config } from "../config/config.js";
+import User from "../models/UserSchema.js";
+import Address from "../models/AddressSchema.js";
+import Order from "../models/OrderSchema.js";
 
 /**
  * Handle user signup.
@@ -189,6 +192,95 @@ const googleCallback = async (req, res) => {
   }
 };
 
+const getAllUsers = async (req, res) => {
+  try {
+    const { search, role, status } = req.query;
+    const query = {};
+
+    if (role) query.role = role;
+    if (status) query.status = status;
+
+    if (search) {
+      query.$or = [
+        { username: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { fullName: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const users = await User.find(query).select("-passwordHash").sort({ createdAt: -1 });
+
+    return rtnRes(res, 200, "Users retrieved successfully", users);
+  } catch (error) {
+    console.error("getAllUsers Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred retrieving users.");
+  }
+};
+
+const getUserDetails = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId).select("-passwordHash");
+    if (!user) {
+      return rtnRes(res, 404, "User not found.");
+    }
+
+    const addresses = await Address.find({ userId });
+    const orders = await Order.find({ userId }).sort({ createdAt: -1 });
+
+    return rtnRes(res, 200, "User details retrieved successfully", {
+      user,
+      addresses,
+      orders,
+    });
+  } catch (error) {
+    console.error("getUserDetails Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred retrieving user details.");
+  }
+};
+
+const updateUserStatus = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { status } = req.body;
+
+    if (!["active", "inactive"].includes(status)) {
+      return rtnRes(res, 400, "Invalid status. Must be 'active' or 'inactive'.");
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { status }, { new: true }).select("-passwordHash");
+    if (!user) {
+      return rtnRes(res, 404, "User not found.");
+    }
+
+    return rtnRes(res, 200, "User status updated successfully", user);
+  } catch (error) {
+    console.error("updateUserStatus Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred updating user status.");
+  }
+};
+
+const updateUserRole = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { role } = req.body;
+
+    if (!["admin", "user"].includes(role)) {
+      return rtnRes(res, 400, "Invalid role. Must be 'admin' or 'user'.");
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { role }, { new: true }).select("-passwordHash");
+    if (!user) {
+      return rtnRes(res, 404, "User not found.");
+    }
+
+    return rtnRes(res, 200, "User role updated successfully", user);
+  } catch (error) {
+    console.error("updateUserRole Error:", error);
+    return rtnRes(res, 500, "An internal server error occurred updating user role.");
+  }
+};
+
 export default {
   signup,
   login,
@@ -197,4 +289,8 @@ export default {
   forgotPassword,
   resetPassword,
   googleCallback,
+  getAllUsers,
+  getUserDetails,
+  updateUserStatus,
+  updateUserRole,
 };

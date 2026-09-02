@@ -1,15 +1,48 @@
 import Wishlist from "../models/WishListSchema.js";
 
 export const wishlistService = {
-    async getWishlist(userId) {
-        const wishlist = await Wishlist.findOne({ userId })
-            .populate("products.productId");
+    async getWishlist(userId, { page = 1, limit = 8 } = {}) {
+        const wishlist = await Wishlist.findOne({ userId });
 
-        if (!wishlist) {
-            return { ok: true, data: { products: [] } };
+        if (!wishlist || wishlist.products.length === 0) {
+            return {
+                ok: true,
+                data: {
+                    products: [],
+                    page: 1,
+                    totalPages: 0,
+                    totalItems: 0,
+                },
+            };
         }
 
-        return { ok: true, data: wishlist };
+        const totalItems = wishlist.products.length;
+        const totalPages = Math.ceil(totalItems / limit);
+        const safetyPage = Math.min(Math.max(1, page), totalPages);
+        const startIndex = (safetyPage - 1) * limit;
+        const endIndex = startIndex + limit;
+
+        // Sort by addedAt descending (newest first) before slicing
+        const sorted = [...wishlist.products].sort(
+            (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        );
+        const paginatedProductRefs = sorted.slice(startIndex, endIndex);
+
+        // Populate only the paginated slice
+        const populatedWishlist = await Wishlist.populate(
+            { products: paginatedProductRefs },
+            { path: "products.productId" }
+        );
+
+        return {
+            ok: true,
+            data: {
+                products: populatedWishlist.products,
+                page: safetyPage,
+                totalPages,
+                totalItems,
+            },
+        };
     },
 
     async addToWishlist(userId, productId) {

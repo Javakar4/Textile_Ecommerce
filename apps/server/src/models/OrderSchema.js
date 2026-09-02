@@ -44,19 +44,19 @@ const orderSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["COD", "CARD", "UPI", "NET_BANKING", "Online"]
+      enum: ["CARD", "UPI", "NET_BANKING", "Online"]
     },
 
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Initiated", "Confirmed", "Failed"],
+      enum: ["Pending", "Initiated", "Confirmed", "Failed", "Refunded", "Refund_Failed"],
       default: "Pending"
     },
 
     trackingStatus: {
       type: String,
-      enum: ["Ordered", "Packed", "Shipped", "Delivered"],
-      default: "Ordered"
+      enum: ["Placed", "Packed", "Shipped", "Delivered"],
+      default: "Placed"
     },
 
     shippingAddress: {

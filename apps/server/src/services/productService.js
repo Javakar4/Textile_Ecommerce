@@ -18,10 +18,17 @@ export const getAllProducts = async (query) => {
     page = 1,
     limit = 10,
     category,
-    size,
+    sizes,
+    size, // fallback for older clients
+    materials,
+    brands, // array of brand names
+    tags,
+    ratings, // array of min ratings e.g. ['4', '3']
+    inStockOnly,
     minPrice,
     maxPrice,
     search,
+    sortBy = 'featured'
   } = query;
 
   const filter = {};
@@ -30,13 +37,10 @@ export const getAllProducts = async (query) => {
     let categoryIds = [];
     
     if (mongoose.Types.ObjectId.isValid(category)) {
-      // If it's a valid ObjectId, we start with it
       categoryIds.push(new mongoose.Types.ObjectId(category));
-      // And find its children
       const children = await Category.find({ parentId: category });
       categoryIds.push(...children.map(child => child._id));
     } else {
-      // Otherwise try to find by slug first then name
       const categoryDoc = await Category.findOne({ 
         $or: [{ slug: category }, { name: category }] 
       });
@@ -51,27 +55,93 @@ export const getAllProducts = async (query) => {
     if (categoryIds.length > 0) {
       filter.categoryId = { $in: categoryIds };
     } else if (!mongoose.Types.ObjectId.isValid(category)) {
-      // If no category found and it wasn't an ID, return empty list
-      return [];
+      return { products: [], total: 0, page: 1, totalPages: 0, limit: Number(limit) };
     }
   }
 
-  if (size) filter.sizes = size;
+  // Sizes Filter
+  if (sizes) {
+    const sizeArr = Array.isArray(sizes) ? sizes : sizes.split(',');
+    filter.sizes = { $in: sizeArr };
+  } else if (size) {
+    filter.sizes = size;
+  }
+
+  // Materials Filter
+  if (materials) {
+    const matArr = Array.isArray(materials) ? materials : materials.split(',');
+    filter.material = { $in: matArr };
+  }
+
+  // Tags Filter
+  if (tags) {
+    const tagArr = Array.isArray(tags) ? tags : tags.split(',');
+    filter.tags = { $in: tagArr };
+  }
+
+  // Brands Filter (Needs lookup since client sends names)
+  if (brands) {
+    const brandArr = Array.isArray(brands) ? brands : brands.split(',');
+    // Wait, let's just do a populate and filter, or lookup brands first
+    const brandDocs = await mongoose.model("Brand").find({ name: { $in: brandArr } });
+    const brandIds = brandDocs.map(b => b._id);
+    if (brandIds.length > 0) {
+      filter.brandId = { $in: brandIds };
+    }
+  }
+
+  // Ratings Filter (Get highest min rating)
+  if (ratings) {
+    const rateArr = Array.isArray(ratings) ? ratings : ratings.split(',');
+    const minScore = Math.min(...rateArr.map(Number));
+    if (!isNaN(minScore)) {
+      filter["rating.score"] = { $gte: minScore };
+    }
+  }
+
+  // Stock Filter
+  if (inStockOnly === 'true' || inStockOnly === true) {
+    filter["stock.available"] = true;
+  }
+
+  // Price Filter
   if (minPrice || maxPrice) {
     filter["pricing.current"] = {};
     if (minPrice) filter["pricing.current"].$gte = Number(minPrice);
     if (maxPrice) filter["pricing.current"].$lte = Number(maxPrice);
   }
+
   if (search) {
     filter.name = { $regex: search, $options: "i" };
   }
 
-  return await Product.find(filter)
+  // Sorting
+  let sortOption = { createdAt: -1 };
+  if (sortBy === 'price-low') sortOption = { "pricing.current": 1 };
+  else if (sortBy === 'price-high') sortOption = { "pricing.current": -1 };
+  else if (sortBy === 'newest') sortOption = { addedDate: -1, createdAt: -1 };
+  else if (sortBy === 'rating') sortOption = { "rating.score": -1 };
+  else if (sortBy === 'popular') sortOption = { "rating.count": -1 };
+  else if (sortBy === 'discount') sortOption = { "pricing.discount": -1 };
+
+  // Add _id to sort to ensure stable pagination for items with identical sort fields
+  sortOption._id = 1;
+
+  const total = await Product.countDocuments(filter);
+  const products = await Product.find(filter)
     .populate("brandId", "name")
     .populate("categoryId", "name")
-    .skip((page - 1) * limit)
+    .skip((Number(page) - 1) * Number(limit))
     .limit(Number(limit))
-    .sort({ createdAt: -1 });
+    .sort(sortOption);
+
+  return {
+    products,
+    total,
+    page: Number(page),
+    totalPages: Math.ceil(total / Number(limit)),
+    limit: Number(limit)
+  };
 };
 
 /**

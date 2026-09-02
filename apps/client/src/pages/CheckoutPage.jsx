@@ -4,6 +4,14 @@ import { useProfileServices } from "../hooks/useProfileServices";
 import { useOrderServices } from "../hooks/useOrderServices";
 import { useState, useEffect } from "react";
 import toastUtils from "../utils/toastUtils";
+import fallbackImage from "../assets/fallback-image.png";
+
+const getSafeImgSrc = (url) => {
+    if (!url || url.includes('placehold.co') || url.includes('via.placeholder.com') || url.includes('dummyimage.com')) {
+        return fallbackImage;
+    }
+    return url;
+};
 
 export default function CheckoutPage() {
     const { addresses, isLoadingProfile } = useProfileServices();
@@ -12,7 +20,7 @@ export default function CheckoutPage() {
     const navigate = useNavigate();
 
     const [selectedIndex, setSelectedIndex] = useState(0);
-    const [paymentMethod, setPaymentMethod] = useState("COD");
+    const [paymentMethod, setPaymentMethod] = useState("Online");
 
     // Filter out invalid/empty addresses from the list if any
     const validAddresses = addresses || [];
@@ -80,7 +88,7 @@ export default function CheckoutPage() {
     }
 
     return (
-        <div className="max-w-5xl mx-auto mt-20 px-4 py-10 grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="max-w-5xl mx-auto mt-20 px-4 py-6 sm:py-10 grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-10 overflow-hidden">
             {/* LEFT — Shipping Section */}
             <div className="lg:col-span-2 space-y-8">
                 <h2 className="text-2xl font-bold text-gray-800 mb-4">Select Shipping Address</h2>
@@ -142,19 +150,19 @@ export default function CheckoutPage() {
             </div>
 
             {/* RIGHT — Order Summary */}
-            <div className="bg-white rounded-2xl shadow-lg p-6 h-fit sticky top-24">
+            <div className="bg-white rounded-2xl shadow-lg p-4 sm:p-6 h-fit lg:sticky lg:top-24">
                 <h3 className="text-lg font-semibold mb-4 text-gray-800">Order Summary</h3>
 
                 <div className="space-y-4 text-sm mb-4 max-h-[300px] overflow-y-auto pr-2">
                     {cartItems.map((i) => (
                         <div key={i.id || i._id} className="flex gap-3">
-                            <img src={i.image} alt={i.name} className="w-12 h-12 rounded object-cover" />
+                            <img src={getSafeImgSrc(i.image)} alt={i.name} className="w-12 h-12 rounded object-cover bg-gray-100" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = fallbackImage; }} />
                             <div className="flex-1">
                                 <p className="font-medium text-gray-800 line-clamp-1">{i.name}</p>
-                                <p className="text-gray-500">{i.quantity} × ${(i.pricing?.current || i.price).toFixed(2)}</p>
+                                <p className="text-gray-500">{i.quantity} × ₹{(i.pricing?.current || i.price).toFixed(2)}</p>
                             </div>
                             <span className="text-gray-700 font-medium">
-                                ${((i.pricing?.current || i.price) * i.quantity).toFixed(2)}
+                                ₹{((i.pricing?.current || i.price) * i.quantity).toFixed(2)}
                             </span>
                         </div>
                     ))}
@@ -165,42 +173,29 @@ export default function CheckoutPage() {
                 <div className="space-y-2">
                     <div className="flex justify-between text-sm text-gray-700">
                         <span>Subtotal</span>
-                        <span>${subtotal?.toFixed(2)}</span>
+                        <span>₹{subtotal?.toFixed(2)}</span>
                     </div>
 
                     {totalDiscount > 0 && (
                         <div className="flex justify-between text-sm text-green-600">
                             <span>Discount</span>
-                            <span>- ${totalDiscount?.toFixed(2)}</span>
+                            <span>- ₹{totalDiscount?.toFixed(2)}</span>
                         </div>
                     )}
 
                     <div className="flex justify-between text-sm text-gray-500">
                         <span>Estimated Tax</span>
-                        <span>${estimatedTax?.toFixed(2)}</span>
+                        <span>₹{estimatedTax?.toFixed(2)}</span>
                     </div>
 
                     <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t text-gray-900">
                         <span>Total</span>
-                        <span>${total?.toFixed(2)}</span>
+                        <span>₹{total?.toFixed(2)}</span>
                     </div>
                 </div>
 
                 <div className="mt-6 space-y-4">
                     <p className="text-sm font-bold text-gray-800 uppercase tracking-wider mb-2">Payment Method</p>
-                    
-                    <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'COD' ? 'bg-amber-50 border-amber-500' : 'bg-white border-gray-200'}`}>
-                        <input 
-                            type="radio" 
-                            name="paymentMethod" 
-                            value="COD" 
-                            checked={paymentMethod === 'COD'} 
-                            onChange={() => setPaymentMethod('COD')}
-                            className="accent-amber-700 w-5 h-5"
-                        />
-                        <span className="text-gray-800 font-medium">Cash on Delivery (COD)</span>
-                    </label>
-                    
                     <label className={`flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all ${paymentMethod === 'Online' ? 'bg-amber-50 border-amber-500' : 'bg-white border-gray-200'}`}>
                         <input 
                             type="radio" 
@@ -217,7 +212,7 @@ export default function CheckoutPage() {
                 <button
                     onClick={handlePlaceOrder}
                     disabled={!selectedComplete() || isCreatingOrder || cartItems.length === 0}
-                    className={`w-full py-4 rounded-xl transition-all duration-300 font-bold text-lg shadow-lg
+                    className={`w-full py-3 sm:py-4 rounded-xl transition-all duration-300 font-bold text-base sm:text-lg shadow-lg mt-4
                         ${selectedComplete() && !isCreatingOrder && cartItems.length > 0
                             ? "bg-amber-700 text-white hover:bg-amber-800 hover:shadow-xl transform hover:-translate-y-0.5"
                             : "bg-gray-200 text-gray-400 cursor-not-allowed shadow-none"

@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --color-theme-bg: #022c22;
+  --color-theme-card: rgba(4, 30, 24, 0.75);
+  --color-theme-border: rgba(212, 175, 55, 0.15);
+  --color-theme-accent: #047857;
+  --color-theme-accent-hover: #065f46;
+  --color-theme-gold: #d4af37;
+  --color-theme-gold-hover: #f59e0b;
+  
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-loading: loading 1.5s infinite linear;
+  --animate-fade-in: fadeIn 0.4s ease-out forwards;
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes loading {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-theme-bg);
+  color: #f9fafb;
+  font-family: var(--font-sans);
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Glassmorphism utility */
+.glass {
+  background: rgba(4, 30, 24, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(212, 175, 55, 0.15);
+}
+
+/* Grid background utility */
+.bg-grid-pattern {
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(212, 175, 55, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(212, 175, 55, 0.02) 1px, transparent 1px);
+}

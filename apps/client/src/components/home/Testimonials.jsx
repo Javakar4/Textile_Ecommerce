@@ -39,7 +39,6 @@ function Testimonials() {
                     </span>
                     <h2
                         className="text-3xl sm:text-4xl font-bold text-stone-900 mt-3 mb-3"
-                        style={{ fontFamily: "Playfair Display, serif" }}
                     >
                         What Our Customers Say
                     </h2>
@@ -68,7 +67,6 @@ function Testimonials() {
                                         {/* Text */}
                                         <p
                                             className="text-stone-700 text-lg sm:text-xl mb-6 italic text-center leading-relaxed"
-                                            style={{ fontFamily: "Playfair Display, serif" }}
                                         >
                                             "{t.text}"
                                         </p>
@@ -83,7 +81,6 @@ function Testimonials() {
                                             <div className="text-left">
                                                 <p
                                                     className="font-bold text-stone-900 text-base"
-                                                    style={{ fontFamily: "Playfair Display, serif" }}
                                                 >
                                                     {t.name}
                                                 </p>

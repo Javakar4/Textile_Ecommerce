@@ -10,7 +10,10 @@ export const getWishlist = async (req, res) => {
         const userId = req.user?.userId;
         if (!userId) return rtnRes(res, 401, "Unauthorized");
 
-        const result = await wishlistService.getWishlist(userId);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 8;
+
+        const result = await wishlistService.getWishlist(userId, { page, limit });
         return rtnRes(res, 200, "Wishlist fetched", result.data);
     } catch (err) {
         console.error("getWishlist error:", err);

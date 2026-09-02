@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 import { GiCottonFlower } from "react-icons/gi";
 
@@ -39,14 +40,19 @@ function Footer() {
                     <div>
                         <h3 className="font-bold text-lg mb-6 font-serif">Quick Links</h3>
                         <ul className="space-y-3">
-                            {["About Us", "Our Story", "Sustainability", "Careers"].map((item) => (
-                                <li key={item}>
-                                    <a
-                                        href="#"
+                            {[
+                                { name: "About Us", path: "/about" },
+                                { name: "Our Story", path: "/about" },
+                                { name: "Sustainability", path: "/about" },
+                                { name: "Careers", path: "/contact" }
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link
+                                        to={item.path}
                                         className="text-stone-400 hover:text-amber-400 transition-colors"
                                     >
-                                        {item}
-                                    </a>
+                                        {item.name}
+                                    </Link>
                                 </li>
                             ))}
                         </ul>
@@ -56,14 +62,19 @@ function Footer() {
                     <div>
                         <h3 className="font-bold text-lg mb-6 font-serif">Customer Service</h3>
                         <ul className="space-y-3">
-                            {["Contact Us", "Shipping Info", "Returns", "FAQ"].map((item) => (
-                                <li key={item}>
-                                    <a
-                                        href="#"
+                            {[
+                                { name: "Contact Us", path: "/contact" },
+                                { name: "Shipping Info", path: "/faq" },
+                                { name: "Returns", path: "/faq" },
+                                { name: "FAQ", path: "/faq" }
+                            ].map((item) => (
+                                <li key={item.name}>
+                                    <Link
+                                        to={item.path}
                                         className="text-stone-400 hover:text-amber-400 transition-colors"
                                     >
-                                        {item}
-                                    </a>
+                                        {item.name}
+                                    </Link>
                                 </li>
                             ))}
                         </ul>

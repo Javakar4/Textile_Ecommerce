@@ -11,6 +11,13 @@ import toastUtils from "../../utils/toastUtils";
 import ProductGallery from "./ProductGallery";
 import ProductInfo from "./ProductInfo";
 import ProductDescription from "./ProductDescription";
+import fallbackImage from "../../assets/fallback-image.png";
+
+const isPlaceholder = (url) =>
+    !url ||
+    url.includes('placehold.co') ||
+    url.includes('via.placeholder.com') ||
+    url.includes('dummyimage.com');
 
 export default function ProductDetailPage() {
     const navigate = useNavigate();
@@ -30,7 +37,8 @@ export default function ProductDetailPage() {
     useEffect(() => {
         if (productData) {
             setSelectedSize(productData.defaultSize || productData.sizes?.[0] || "");
-            setSelectedImage(productData.images?.main || "");
+            const mainImg = productData.images?.main || "";
+            setSelectedImage(isPlaceholder(mainImg) ? fallbackImage : mainImg);
         }
     }, [productData]);
 

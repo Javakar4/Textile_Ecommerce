@@ -27,3 +27,4 @@ poetry.lock
 *.njsproj
 *.sln
 *.sw?
+.vercel

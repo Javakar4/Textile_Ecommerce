@@ -53,7 +53,6 @@ export default function CategoriesSection() {
 
                     <h2
                         className="text-2xl sm:text-3xl font-bold text-stone-900 mt-1 mb-2"
-                        style={{ fontFamily: "Playfair Display, serif" }}
                     >
                         Shop By Categories
                     </h2>
@@ -90,7 +89,6 @@ export default function CategoriesSection() {
                                     {/* Title */}
                                     <h3
                                         className="text-lg font-bold text-stone-900 mb-1"
-                                        style={{ fontFamily: "Playfair Display, serif" }}
                                     >
                                         {cat.name}
                                     </h3>
