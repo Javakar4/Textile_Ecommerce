@@ -6,6 +6,30 @@ import { NavLink } from "react-router-dom";
 
 function CollectionsScroller({title, desc, products = [], category, isLoading}) {
     const [stopScroll, setStopScroll] = React.useState(false);
+    const scrollRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const container = scrollRef.current;
+        if (!container) return;
+
+        let animationFrameId;
+        
+        const scroll = () => {
+            if (!stopScroll) {
+                container.scrollLeft += 1.5; // Adjust this number for speed (higher = faster)
+                
+                // If scrolled past half the container (the duplicated items), reset to 0 for infinite loop
+                if (container.scrollLeft >= (container.scrollWidth / 2)) {
+                    container.scrollLeft = 0;
+                }
+            }
+            animationFrameId = requestAnimationFrame(scroll);
+        };
+        
+        animationFrameId = requestAnimationFrame(scroll);
+
+        return () => cancelAnimationFrame(animationFrameId);
+    }, [stopScroll]);
 
     if (isLoading) {
         return (
@@ -25,21 +49,26 @@ function CollectionsScroller({title, desc, products = [], category, isLoading}) 
     return (
         <>
             <style>{`
-        .marquee-inner {
+        .scroll-container {
           display: flex;
-          animation: marqueeScroll linear infinite;
+          overflow-x: auto;
+          -webkit-overflow-scrolling: touch;
+          scrollbar-width: none; /* Firefox */
+          -ms-overflow-style: none; /* IE 10+ */
         }
-        @keyframes marqueeScroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
+        .scroll-container::-webkit-scrollbar {
+          display: none; /* Chrome/Safari/Webkit */
+        }
+        .scroll-item {
+          flex: 0 0 auto;
         }
       `}</style>
 
             <div className="py-16 sm:px-8 relative bg-[radial-gradient(circle_at_top_left,rgba(244,244,244,0.8),white_60%)]">
 
                 {/* Page Title + Button */}
-                <div className="flex justify-between items-center max-w-7xl mx-auto mb-6 flex-col sm:flex-row gap-3">
-                    <div>
+                <div className="flex justify-between items-center max-w-7xl mx-auto mb-6 flex-col sm:flex-row gap-4">
+                    <div className="text-center sm:text-left">
                         <h2 className="text-3xl sm:text-4xl font-bold text-stone-900">
                             {title}
                         </h2>
@@ -48,38 +77,35 @@ function CollectionsScroller({title, desc, products = [], category, isLoading}) 
                         </p>
                     </div>
 
-                    <NavLink to={`/all-collections?category=${category}`} className="group bg-stone-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-amber-700 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg text-center">
+                    <NavLink to={`/all-collections?category=${category}`} className="group bg-stone-900 text-white px-8 py-4 rounded-full font-semibold hover:bg-amber-700 transition-all transform hover:scale-105 flex items-center gap-3 shadow-lg text-center w-full sm:w-[30px] justify-center max-w-[300px]">
                         View All {title}
                         <FaArrowRight className="text-lg transform transition-transform group-hover:translate-x-2" />
                     </NavLink>
                 </div>
 
                 {/* Scroller */}
-                <div
-                    className="overflow-hidden w-full relative max-w-7xl mx-auto"
-                    onMouseEnter={() => setStopScroll(true)}
-                    onMouseLeave={() => setStopScroll(false)}
-                >
+                <div className="relative w-full max-w-7xl mx-auto">
                     {/* Gradient Left */}
-                    <div className="absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
+                    <div className="hidden sm:block absolute left-0 top-0 h-full w-20 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent" />
 
-                    {/* Marquee */}
+                    {/* Scroll Container */}
                     <div
-                        className="marquee-inner gap-4 pb-8"
-                        style={{
-                            animationPlayState: stopScroll ? "paused" : "running",
-                            animationDuration: `${products.length * 6}s`,
-                        }}
+                        ref={scrollRef}
+                        className="scroll-container gap-4 pb-8 px-4 sm:px-0"
+                        onMouseEnter={() => setStopScroll(true)}
+                        onMouseLeave={() => setStopScroll(false)}
+                        onTouchStart={() => setStopScroll(true)}
+                        onTouchEnd={() => setStopScroll(false)}
                     >
                         {cards.map((product, index) => (
-                            <div key={index}>
+                            <div key={index} className="scroll-item">
                                 <ProductCard product={product} />
                             </div>
                         ))}
                     </div>
 
                     {/* Gradient Right */}
-                    <div className="absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
+                    <div className="hidden sm:block absolute right-0 top-0 h-full w-20 md:w-40 z-10 pointer-events-none bg-gradient-to-l from-white to-transparent" />
                 </div>
             </div>
         </>

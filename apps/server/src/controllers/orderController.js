@@ -66,12 +66,15 @@ export const createOrder = async (req, res) => {
                 const paymentRes = await paymentService.initiatePayment({
                     amount: Math.round(total * 100),
                     merchantOrderId: `TX_${orderId}`,
-                    redirectUrl: `${config.BACKEND_URL}/api/orders/payment/callback?orderId=${orderId}`,
+                    redirectUrl: `${config.BACKEND_URL}/api/v1/orders/payment/callback?orderId=${orderId}`,
                     phoneNumber: shippingAddress.phone || "9999999999"
                 });
 
                 // Extract redirect URL from PhonePe response
-                redirectUrl = paymentRes?.redirectInfo?.url || 
+                // v2 API returns redirectUrl at top level
+                redirectUrl = paymentRes?.redirectUrl ||
+                              paymentRes?.data?.redirectUrl ||
+                              paymentRes?.redirectInfo?.url || 
                               paymentRes?.instrumentResponse?.redirectInfo?.url ||
                               paymentRes?.data?.redirectInfo?.url ||
                               paymentRes?.data?.instrumentResponse?.redirectInfo?.url ||

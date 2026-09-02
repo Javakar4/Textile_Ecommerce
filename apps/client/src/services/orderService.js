@@ -5,7 +5,7 @@ const orderService = {
   createOrder: async (data) => {
     try {
       const response = await api.post(apiEndpoints.ORDERS.CREATE, data);
-      return { ok: true, data: response.data };
+      return { ok: true, data: response.data, redirectUrl: response.redirectUrl };
     } catch (error) {
       console.error("Create order error:", error);
       return {

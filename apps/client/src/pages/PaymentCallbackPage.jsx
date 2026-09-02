@@ -1,12 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
-import { CheckCircle, XCircle } from "lucide-react";
+import { XCircle } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function PaymentCallbackPage() {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
     const { clear } = useCart();
+    const [show, setShow] = useState(false);
+    const queryClient = useQueryClient();
 
     const status = searchParams.get("status");
     const orderId = searchParams.get("orderId");
@@ -15,45 +18,84 @@ export default function PaymentCallbackPage() {
 
     useEffect(() => {
         if (isSuccess) {
-            clear(); // Clear cart on successful order
+            clear();
         }
+        // Trigger animation after mount
+        const timer = setTimeout(() => setShow(true), 100);
+        return () => clearTimeout(timer);
     }, [isSuccess, clear]);
 
-    return (
-        <div className="min-h-[70vh] flex items-center justify-center p-4">
-            <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 text-center transform transition-all">
-                {isSuccess ? (
-                    <div className="animate-bounce mb-6 flex justify-center">
-                        <CheckCircle className="w-24 h-24 text-green-500" />
-                    </div>
-                ) : (
-                    <div className="animate-pulse mb-6 flex justify-center">
-                        <XCircle className="w-24 h-24 text-red-500" />
-                    </div>
-                )}
-                
-                <h1 className={`text-3xl font-extrabold mb-4 ${isSuccess ? 'text-green-600' : 'text-red-600'}`}>
-                    Payment {isSuccess ? 'Successful!' : 'Failed'}
-                </h1>
-                
-                <p className="text-gray-600 mb-8 text-lg">
-                    {isSuccess 
-                        ? `Thank you for your order. Your order #${orderId || ''} has been placed successfully.`
-                        : "Unfortunately, your payment could not be processed. Please try again or choose a different payment method."
-                    }
-                </p>
+    useEffect(() => {
+        if (isSuccess) {
+            const redirectTimer = setTimeout(() => {
+                queryClient.invalidateQueries({ queryKey: ["myOrders"] });
+                window.location.href = '/my-orders';
+            }, 4000);
+            return () => clearTimeout(redirectTimer);
+        }
+    }, [isSuccess, navigate, queryClient]);
 
-                <div className="flex flex-col gap-4">
-                    <button 
-                        onClick={() => navigate('/my-orders')}
-                        className="w-full bg-amber-700 hover:bg-amber-800 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform hover:-translate-y-1"
+    return (
+        <div className="payment-callback-overlay">
+            <div className={`payment-callback-modal ${show ? 'payment-callback-modal--visible' : ''}`}>
+                {isSuccess ? (
+                    <>
+                        {/* Animated SVG Checkmark */}
+                        <div className="payment-tick-container">
+                            <svg className="payment-tick-svg" viewBox="0 0 52 52">
+                                <circle className="payment-tick-circle" cx="26" cy="26" r="25" fill="none" />
+                                <path className="payment-tick-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" />
+                            </svg>
+                        </div>
+
+                        <h1 className="payment-callback-title payment-callback-title--success">
+                            Payment Successful!
+                        </h1>
+
+                        <p className="payment-callback-message">
+                            Thank you for your order! Your order
+                            {orderId && <span className="payment-callback-orderid"> #{orderId}</span>}
+                            {" "}has been placed successfully.
+                        </p>
+
+                        <p className="payment-callback-redirect-text">
+                            Redirecting to your orders...
+                        </p>
+
+                        <div className="payment-callback-progress">
+                            <div className="payment-callback-progress-bar"></div>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className={`payment-fail-icon ${show ? 'payment-fail-icon--visible' : ''}`}>
+                            <XCircle size={80} />
+                        </div>
+
+                        <h1 className="payment-callback-title payment-callback-title--fail">
+                            Payment Failed
+                        </h1>
+
+                        <p className="payment-callback-message">
+                            Unfortunately, your payment could not be processed. Please try again or choose a different payment method.
+                        </p>
+                    </>
+                )}
+
+                <div className="payment-callback-actions">
+                    <button
+                        onClick={() => {
+                            queryClient.invalidateQueries({ queryKey: ["myOrders"] });
+                            window.location.href = '/my-orders';
+                        }}
+                        className="payment-callback-btn payment-callback-btn--primary"
                     >
                         View My Orders
                     </button>
                     {!isSuccess && (
-                        <button 
-                            onClick={() => navigate('/checkout')}
-                            className="w-full bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold py-4 px-6 rounded-xl transition-colors"
+                        <button
+                            onClick={() => navigate('/cart/checkout', { replace: true })}
+                            className="payment-callback-btn payment-callback-btn--secondary"
                         >
                             Try Again
                         </button>

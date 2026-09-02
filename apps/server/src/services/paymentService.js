@@ -4,6 +4,38 @@ import { config, pgConfig } from '../config/config.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
+async function getAccessToken() {
+    const environment = config.NODE_ENV === 'production' ? 'PRODUCTION' : 'SANDBOX';
+    const oauthUrl = pgConfig[environment]?.oauthURL;
+
+    const clientId = pgConfig[environment]?.PG_MERCHANT_ID;
+    const clientSecret = pgConfig[environment]?.PG_MERCHANT_KEY;
+    const clientVersion = pgConfig[environment]?.PG_ID || "1";
+
+    if (!clientId || !clientSecret) {
+        throw new Error(`PhonePe configuration missing for ${environment}`);
+    }
+
+    const requestBody = new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        client_version: clientVersion,
+        grant_type: "client_credentials"
+    }).toString();
+
+    try {
+        const response = await axios.post(oauthUrl, requestBody, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        });
+
+        console.log("✅ PhonePe access token retrieved successfully");
+        return response.data.access_token;
+    } catch (error) {
+        console.error("❌ PhonePe OAuth Error:", error?.response?.data || error.message);
+        throw new Error("Failed to fetch PhonePe access token");
+    }
+}
+
 async function initiatePayment({ amount, merchantOrderId, redirectUrl, phoneNumber }) {
     // Input validation
     if (!amount || typeof amount !== 'number' || amount < 100 || !Number.isFinite(amount)) {
@@ -15,51 +47,49 @@ async function initiatePayment({ amount, merchantOrderId, redirectUrl, phoneNumb
 
     try {
         const environment = config.NODE_ENV === 'production' ? 'PRODUCTION' : 'SANDBOX';
-        const checkoutURL = pgConfig[environment]?.checkoutURL;
-        const payEndpoint = pgConfig[environment]?.payEndpoint || "/pg/v1/pay";
         const merchantId = pgConfig[environment]?.PG_MERCHANT_ID;
-        const saltKey = pgConfig[environment]?.PG_MERCHANT_KEY;
-        const saltIndex = pgConfig[environment]?.PG_ID || "1";
 
-        if (!checkoutURL || !merchantId || !saltKey) {
+        if (!merchantId) {
             throw new Error(`PhonePe configuration missing for ${environment}`);
         }
 
+        // Step 1: Get OAuth access token
+        const accessToken = await getAccessToken();
+
+        // Step 2: Build the checkout v2 pay request
+        const checkoutUrl = pgConfig[environment]?.checkoutURL;
+
         const payload = {
-            merchantId: merchantId,
-            merchantTransactionId: merchantOrderId || `TX_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`,
-            merchantUserId: `MUID_${crypto.randomBytes(6).toString('hex')}`,
+            merchantOrderId: merchantOrderId || `TX_${Date.now()}_${crypto.randomBytes(4).toString('hex')}`,
             amount: amount,
-            redirectUrl: redirectUrl || `${config.CLIENT_BASE_URL}/payment/callback`,
-            redirectMode: "REDIRECT",
-            callbackUrl: `${config.BACKEND_URL}/api/orders/payment/webhook`,
-            mobileNumber: phoneNumber || "9999999999",
-            paymentInstrument: {
-                type: "PAY_PAGE"
-            }
-        };
-
-        const base64Payload = Buffer.from(JSON.stringify(payload)).toString('base64');
-        const stringToHash = base64Payload + payEndpoint + saltKey;
-        const sha256 = crypto.createHash('sha256').update(stringToHash).digest('hex');
-        const checksum = sha256 + "###" + saltIndex;
-
-        const requestHeaders = {
-            "Content-Type": "application/json",
-            "X-VERIFY": checksum
+            expireAfter: 1200,
+            metaInfo: {
+                udf1: merchantId
+            },
+            paymentFlow: {
+                type: "PG_CHECKOUT",
+                merchantUrls: {
+                    redirectUrl: redirectUrl || `${config.CLIENT_BASE_URL}/payment/callback`
+                }
+            },
+            ...(phoneNumber && { prefillUserLoginDetails: { phone: phoneNumber } })
         };
 
         const response = await axios({
             method: 'POST',
-            url: checkoutURL,
-            headers: requestHeaders,
-            data: { request: base64Payload }
+            url: checkoutUrl,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `O-Bearer ${accessToken}`
+            },
+            data: payload
         });
 
-        console.log("PhonePe Initiate Payment Success: Order created");
+        console.log("✅ PhonePe Initiate Payment Success:", response.data?.orderId);
         return response.data;
     } catch (error) {
-        console.error("PhonePe Initiate Payment Error:", error?.response?.status || error.message);
+        console.error("❌ PhonePe Initiate Payment Error:", error?.response?.status || error.message);
+        console.error("Error details:", error?.response?.data);
         throw new Error(error?.response?.data?.message || "Failed to initiate payment with PhonePe");
     }
 }

@@ -26,6 +26,7 @@ export const useOrderServices = () => {
         return undefined;
       },
       initialPageParam: 1,
+      refetchOnMount: 'always',
     });
 
   // -- GET ORDER BY ID QUERY --
@@ -50,6 +51,11 @@ export const useOrderServices = () => {
       if (res.ok) {
         toastUtils.success("Order created successfully");
         queryClient.invalidateQueries({ queryKey: ["myOrders"] });
+        
+        // Redirect to PhonePe payment page if redirectUrl is available
+        if (res.redirectUrl) {
+          window.location.href = res.redirectUrl;
+        }
       } else {
         toastUtils.error(res.message);
       }
