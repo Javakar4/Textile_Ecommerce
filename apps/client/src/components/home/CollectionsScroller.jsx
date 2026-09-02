@@ -40,7 +40,7 @@ function CollectionsScroller({title, desc, products = [], category, isLoading}) 
                 {/* Page Title + Button */}
                 <div className="flex justify-between items-center max-w-7xl mx-auto mb-6 flex-col sm:flex-row gap-3">
                     <div>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-stone-900" style={{ fontFamily: "Playfair Display, serif" }}>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-stone-900">
                             {title}
                         </h2>
                         <p className="text-stone-600 mt-1 text-sm sm:text-base">
@@ -65,7 +65,7 @@ function CollectionsScroller({title, desc, products = [], category, isLoading}) 
 
                     {/* Marquee */}
                     <div
-                        className="marquee-inner gap-4"
+                        className="marquee-inner gap-4 pb-8"
                         style={{
                             animationPlayState: stopScroll ? "paused" : "running",
                             animationDuration: `${products.length * 6}s`,

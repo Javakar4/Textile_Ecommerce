@@ -5,7 +5,8 @@ export const catalogService = {
   // PRODUCTS
   async getProducts(filters = {}) {
     const params = {
-      limit: 100, // Load enough for simple dashboard view
+      limit: filters.limit || 10,
+      page: filters.page || 1
     };
     if (filters.search) params.search = filters.search;
     if (filters.category && filters.category !== 'all') params.category = filters.category;

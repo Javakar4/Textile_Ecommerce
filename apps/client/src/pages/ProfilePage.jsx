@@ -43,19 +43,21 @@ const ProfilePage = () => {
     const handleAddAddress = async (e) => {
         e.preventDefault();
         try {
-            await addAddress(newAddress);
-            setShowAddAddress(false);
-            setNewAddress({
-                name: "",
-                phone: "",
-                address: "",
-                landmark: "",
-                city: "",
-                state: "",
-                pincode: "",
-                country: "India",
-                isDefault: false
-            });
+            const res = await addAddress(newAddress);
+            if (res && (res.ok || res.success)) {
+                setShowAddAddress(false);
+                setNewAddress({
+                    name: "",
+                    phone: "",
+                    address: "",
+                    landmark: "",
+                    city: "",
+                    state: "",
+                    pincode: "",
+                    country: "India",
+                    isDefault: false
+                });
+            }
         } catch (error) {
             // Error handled by hook toast
         }

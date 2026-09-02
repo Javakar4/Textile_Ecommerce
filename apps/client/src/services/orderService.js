@@ -15,10 +15,11 @@ const orderService = {
     }
   },
 
-  getMyOrders: async () => {
+  getMyOrders: async (page = 1, limit = 5) => {
     try {
-      const response = await api.get(apiEndpoints.ORDERS.BASE);
-      return { ok: true, data: response.data };
+      const response = await api.get(`${apiEndpoints.ORDERS.BASE}?page=${page}&limit=${limit}`);
+      // axios interceptor already returns response.data, so 'response' here is { success, data, pagination }
+      return { ok: true, data: response?.data || [], pagination: response?.pagination };
     } catch (error) {
       console.error("Get my orders error:", error);
       return {

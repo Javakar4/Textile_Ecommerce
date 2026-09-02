@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { CAT_CONSTANTS } from '../../config/constants';
+
 export default function ProductRowList({ filteredProducts, categories, onEdit, onDelete }) {
   return (
     <div className="glass rounded-2xl overflow-hidden border border-[#d4af37]/10 shadow-xl animate-fade-in">
@@ -22,7 +24,20 @@ export default function ProductRowList({ filteredProducts, categories, onEdit, o
                 <tr key={p._id} className="hover:bg-emerald-950/20 transition-all">
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <img src={p.image} alt={p.name} className="w-10 h-10 rounded-lg object-cover border border-emerald-500/20" />
+                      {(() => {
+                        let imgSrc = p.images?.main || p.image;
+                        if (!imgSrc || imgSrc.includes('placehold.co') || imgSrc.includes('via.placeholder.com') || imgSrc.includes('dummyimage.com')) {
+                          imgSrc = CAT_CONSTANTS.MOCK_IMAGES.silk;
+                        }
+                        return (
+                          <img 
+                            src={imgSrc} 
+                            alt={p.name} 
+                            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = CAT_CONSTANTS.MOCK_IMAGES.silk; }}
+                            className="w-10 h-10 rounded-lg object-cover border border-emerald-500/20" 
+                          />
+                        );
+                      })()}
                       <div>
                         <span className="font-bold text-white block">{p.name}</span>
                         <span className="text-[10px] text-emerald-100/50">{p.material}</span>

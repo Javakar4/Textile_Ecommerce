@@ -2,12 +2,30 @@ import api from "../utils/axios";
 import apiEndpoints from "../config/constants";
 
 const wishlistService = {
-  getWishlist: async () => {
+  getWishlist: async ({ page = 1, limit = 8 } = {}) => {
     try {
-      const response = await api.get(apiEndpoints.WISHLIST.BASE);
+      const response = await api.get(apiEndpoints.WISHLIST.BASE, {
+        params: { page, limit },
+      });
       return { ok: true, data: response.data };
     } catch (error) {
       console.error("Get wishlist error:", error);
+      return {
+        ok: false,
+        message: error.response?.data?.message || "Failed to fetch wishlist",
+      };
+    }
+  },
+
+  // Fetch all items (no pagination) — used by the context for isInWishlist checks
+  getAllWishlistIds: async () => {
+    try {
+      const response = await api.get(apiEndpoints.WISHLIST.BASE, {
+        params: { page: 1, limit: 9999 },
+      });
+      return { ok: true, data: response.data };
+    } catch (error) {
+      console.error("Get all wishlist error:", error);
       return {
         ok: false,
         message: error.response?.data?.message || "Failed to fetch wishlist",

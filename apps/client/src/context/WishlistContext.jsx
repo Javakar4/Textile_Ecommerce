@@ -11,8 +11,10 @@ export const WishlistProvider = ({ children }) => {
         useWishlist, 
         addToWishlist: addToWishlistApi, 
         removeFromWishlist: removeFromWishlistApi,
+        clearWishlist: clearWishlistApi,
         isAddingToWishlist,
-        isRemovingFromWishlist
+        isRemovingFromWishlist,
+        isClearingWishlist
     } = useWishlistServices();
 
     const { data: remoteWishlist, isLoading: isLoadingWishlist } = useWishlist(!!user);
@@ -45,8 +47,6 @@ export const WishlistProvider = ({ children }) => {
         if (!res.ok) {
             // Revert if failed
             setWishlistItems(remoteWishlist || []);
-        } else {
-            toastUtils.success("Added to wishlist");
         }
     };
 
@@ -64,8 +64,24 @@ export const WishlistProvider = ({ children }) => {
         if (!res.ok) {
             // Revert if failed
             setWishlistItems(remoteWishlist || []);
-        } else {
-            toastUtils.success("Removed from wishlist");
+        }
+    };
+
+    const clearWishlist = async () => {
+        if (!user) {
+            toastUtils.error("Please login to manage your wishlist");
+            return;
+        }
+
+        const prevItems = [...wishlistItems];
+        // Optimistic update
+        setWishlistItems([]);
+
+        const res = await clearWishlistApi();
+        if (!res.ok) {
+            // Revert if failed
+            setWishlistItems(prevItems);
+            toastUtils.error("Failed to clear wishlist");
         }
     };
 
@@ -77,10 +93,12 @@ export const WishlistProvider = ({ children }) => {
         wishlistItems,
         addToWishlist,
         removeFromWishlist,
+        clearWishlist,
         isInWishlist,
         isLoadingWishlist,
         isAddingToWishlist,
-        isRemovingFromWishlist
+        isRemovingFromWishlist,
+        isClearingWishlist
     };
 
     return (
@@ -89,5 +107,3 @@ export const WishlistProvider = ({ children }) => {
         </WishlistContext.Provider>
     );
 };
-
-

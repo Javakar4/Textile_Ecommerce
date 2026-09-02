@@ -196,15 +196,15 @@ export default function OrderDetail() {
                     <div className="flex items-center gap-2.5 text-xs text-emerald-100/60 font-mono mt-1">
                       <span>Size: <strong className="text-white">{item.size}</strong></span>
                       <span>•</span>
-                      <span>Qty: <strong className="text-white">{item.qty}</strong></span>
+                      <span>Qty: <strong className="text-white">{item.quantity || item.qty || 1}</strong></span>
                       <span>•</span>
-                      <span>Price: <strong className="text-white">₹{item.price.toFixed(2)}</strong></span>
+                      <span>Price: <strong className="text-white">₹{(item.pricing?.current || item.price || 0).toFixed(2)}</strong></span>
                     </div>
                   </div>
 
                   {/* Subtotal */}
                   <div className="text-right">
-                    <span className="block text-xs font-bold text-white font-mono">₹{(item.price * item.qty).toFixed(2)}</span>
+                    <span className="block text-xs font-bold text-white font-mono">₹{((item.pricing?.current || item.price || 0) * (item.quantity || item.qty || 1)).toFixed(2)}</span>
                   </div>
                 </div>
               ))}

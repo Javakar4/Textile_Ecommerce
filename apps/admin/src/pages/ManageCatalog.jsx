@@ -6,8 +6,9 @@ import {
   CategoryFormModal,
   ProductRowList,
   ProductCardGrid,
-  ProductFormModal
-} from '../components/catalog';
+  ProductFormModal,
+  TabSwitchers
+} from '../components/catalog/';
 import {
   useProductsQuery,
   useCreateProductMutation,
@@ -27,6 +28,7 @@ export default function ManageCatalog() {
   // Search & Filters State
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [page, setPage] = useState(1);
   const [stockFilter, setStockFilter] = useState('all'); // 'all', 'in-stock', 'out-of-stock'
   const [productViewMode, setProductViewMode] = useState('rows'); // 'rows' or 'cards'
 
@@ -43,12 +45,19 @@ export default function ManageCatalog() {
   // Queries
   const { data: productsRes, isLoading: loadingProducts, error: errorProducts } = useProductsQuery({
     search: searchTerm,
-    category: categoryFilter
+    category: categoryFilter,
+    page: page
   });
 
   const { data: categoriesRes, isLoading: loadingCategories, error: errorCategories } = useCategoriesQuery();
 
-  const products = productsRes?.data || [];
+  const products = productsRes?.data?.products || productsRes?.data || [];
+  const pagination = productsRes?.data?.total !== undefined ? {
+    total: productsRes.data.total,
+    page: productsRes.data.page,
+    totalPages: productsRes.data.totalPages,
+    limit: productsRes.data.limit
+  } : null;
   const categories = categoriesRes?.data || [];
 
   // Mutations
@@ -335,28 +344,10 @@ export default function ManageCatalog() {
   return (
     <div className="space-y-6">
       {/* Tab Switcher at the top of Catalog page */}
-      <div className="flex bg-[#041e18]/70 p-1 rounded-xl border border-emerald-500/15 w-fit animate-fade-in">
-        <button 
-          onClick={() => setActiveTab('products')} 
-          className={`px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-            activeTab === 'products' 
-              ? 'bg-[#d4af37] text-emerald-950 font-bold shadow' 
-              : 'text-emerald-100/60 hover:text-white'
-          }`}
-        >
-          📦 Products
-        </button>
-        <button 
-          onClick={() => setActiveTab('categories')} 
-          className={`px-4 py-2 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-            activeTab === 'categories' 
-              ? 'bg-[#d4af37] text-emerald-950 font-bold shadow' 
-              : 'text-emerald-100/60 hover:text-white'
-          }`}
-        >
-          📂 Categories
-        </button>
-      </div>
+      <TabSwitchers 
+        activeTab={activeTab}
+        tabSwitchHandler={(v)=>(setActiveTab(v))}
+      />
 
       {activeTab === 'products' ? (
         // ----------------------------------------------------
@@ -382,7 +373,10 @@ export default function ManageCatalog() {
               <input 
                 type="text" 
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setPage(1);
+                }}
                 placeholder="Search name, SKU, or fiber..."
                 className="w-full bg-[#031c16]/50 border border-emerald-500/15 rounded-xl pl-4 pr-10 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-[#d4af37] focus:ring-1 focus:ring-[#d4af37] transition"
               />
@@ -422,7 +416,10 @@ export default function ManageCatalog() {
                 <label className="text-[10px] uppercase text-[#d4af37] font-semibold tracking-wider mb-1.5 ml-1">Category</label>
                 <select 
                   value={categoryFilter}
-                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  onChange={(e) => {
+                    setCategoryFilter(e.target.value);
+                    setPage(1);
+                  }}
                   className="bg-[#031c16]/70 border border-emerald-500/15 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-white focus:outline-none focus:border-[#d4af37] cursor-pointer"
                 >
                   <option value="all">All Categories</option>
@@ -460,21 +457,48 @@ export default function ManageCatalog() {
               <p className="text-emerald-100/60 text-sm max-w-sm mx-auto">{errorProducts.message}</p>
             </div>
           ) : filteredProducts.length > 0 ? (
-            productViewMode === 'rows' ? (
-              <ProductRowList 
-                filteredProducts={filteredProducts}
-                categories={categories}
-                onEdit={openProductEdit}
-                onDelete={setProductDeleteConfirm}
-              />
-            ) : (
-              <ProductCardGrid 
-                filteredProducts={filteredProducts}
-                categories={categories}
-                onEdit={openProductEdit}
-                onDelete={setProductDeleteConfirm}
-              />
-            )
+            <>
+              {productViewMode === 'rows' ? (
+                <ProductRowList 
+                  filteredProducts={filteredProducts}
+                  categories={categories}
+                  onEdit={openProductEdit}
+                  onDelete={setProductDeleteConfirm}
+                />
+              ) : (
+                <ProductCardGrid 
+                  filteredProducts={filteredProducts}
+                  categories={categories}
+                  onEdit={openProductEdit}
+                  onDelete={setProductDeleteConfirm}
+                />
+              )}
+              
+              {/* Pagination UI */}
+              {pagination && pagination.totalPages > 1 && (
+                <div className="flex justify-between items-center bg-[#041e18]/70 border border-emerald-500/15 rounded-xl p-4 mt-6">
+                  <span className="text-emerald-100/60 text-sm">
+                    Showing {(pagination.page - 1) * pagination.limit + 1} - {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} products
+                  </span>
+                  <div className="flex gap-2">
+                    <button
+                      disabled={pagination.page <= 1}
+                      onClick={() => setPage(p => p - 1)}
+                      className="px-4 py-2 rounded-lg bg-[#031c16] border border-emerald-500/30 text-emerald-100 hover:bg-emerald-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      disabled={pagination.page >= pagination.totalPages}
+                      onClick={() => setPage(p => p + 1)}
+                      className="px-4 py-2 rounded-lg bg-[#031c16] border border-emerald-500/30 text-emerald-100 hover:bg-emerald-900/50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           ) : (
             <div className="glass rounded-2xl p-16 text-center space-y-4 shadow-xl">
               <span className="text-4xl">📦</span>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { CAT_CONSTANTS } from '../../config/constants';
 
 export default function ProductCardGrid({ filteredProducts, categories, onEdit, onDelete }) {
   return (
@@ -14,11 +15,20 @@ export default function ProductCardGrid({ filteredProducts, categories, onEdit, 
 
             {/* Image container */}
             <div className="h-44 w-full bg-[#031c16]/60 overflow-hidden relative border-b border-emerald-500/10">
-              <img 
-                src={p.image} 
-                alt={p.name} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
+              {(() => {
+                let imgSrc = p.images?.main || p.image;
+                if (!imgSrc || imgSrc.includes('placehold.co') || imgSrc.includes('via.placeholder.com') || imgSrc.includes('dummyimage.com')) {
+                  imgSrc = CAT_CONSTANTS.MOCK_IMAGES.silk;
+                }
+                return (
+                  <img 
+                    src={imgSrc} 
+                    alt={p.name} 
+                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = CAT_CONSTANTS.MOCK_IMAGES.silk; }}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                );
+              })()}
               {p.stock.quantity === 0 && (
                 <div className="absolute inset-0 bg-[#022c22]/80 flex items-center justify-center">
                   <span className="text-xs uppercase tracking-widest font-bold text-rose-400 border border-rose-500/20 px-3 py-1.5 rounded-lg bg-rose-950/50">Out of Stock</span>

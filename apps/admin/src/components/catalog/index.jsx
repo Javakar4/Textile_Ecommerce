@@ -5,3 +5,4 @@ export { default as CategoryFormModal } from './CategoryFormModal';
 export { default as ProductRowList } from './ProductRowList';
 export { default as ProductCardGrid } from './ProductCardGrid';
 export { default as ProductFormModal } from './ProductFormModal';
+export { default as TabSwitchers } from './TabSwitchers';

@@ -10,14 +10,14 @@ function CartPage() {
     const { cartItems, setCart, subtotal, totalDiscount, estimatedTax, total, updateItem, removeFromCart } = useCart();
 
     const handleIncrement = (id) => {
-        const item = cartItems.find(i => i.id === id);
+        const item = cartItems.find(i => (i._id || i.id) === id);
         if (item && item.quantity < 10) {
             updateItem(id, item.quantity + 1);
         }
     };
 
     const handleDecrement = (id) => {
-        const item = cartItems.find(i => i.id === id);
+        const item = cartItems.find(i => (i._id || i.id) === id);
         if (item && item.quantity > 1) {
             updateItem(id, item.quantity - 1);
         }
@@ -44,11 +44,11 @@ function CartPage() {
                             <CartItem
                                 cartItems={cartItems}
                                 handleIncrement={(id, size) => {
-                                    const item = cartItems.find(i => i.id === id && i.size === size);
+                                    const item = cartItems.find(i => (i._id || i.id) === id && i.size === size);
                                     if(item) updateItem(id, item.quantity + 1);
                                 }}
                                 handleDecrement={(id, size) => {
-                                    const item = cartItems.find(i => i.id === id && i.size === size);
+                                    const item = cartItems.find(i => (i._id || i.id) === id && i.size === size);
                                     if(item) updateItem(id, Math.max(1, item.quantity - 1));
                                 }}
                                 handleRemove={handleRemove}
@@ -68,12 +68,12 @@ function CartPage() {
 
                     <div className="flex justify-between text-sm mb-2">
                         <span>Subtotal</span>
-                        <span>${subtotal.toFixed(2)}</span>
+                        <span>₹{subtotal.toFixed(2)}</span>
                     </div>
 
                     <div className="flex justify-between text-sm mb-2 text-green-600">
                         <span>Discount</span>
-                        <span>- ${totalDiscount.toFixed(2)}</span>
+                        <span>- ₹{totalDiscount.toFixed(2)}</span>
                     </div>
 
                     <div className="flex justify-between text-sm mb-2 text-gray-500">
@@ -83,15 +83,23 @@ function CartPage() {
 
                     <div className="flex justify-between text-sm mb-4">
                         <span>Estimated Tax</span>
-                        <span>${estimatedTax.toFixed(2)}</span>
+                        <span>₹{estimatedTax.toFixed(2)}</span>
                     </div>
 
                     <div className="border-t pt-4 flex justify-between font-bold text-base mb-6">
                         <span>Total</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span>₹{total.toFixed(2)}</span>
                     </div>
 
-                    <button onClick={() => (cartItems.length > 0 ? navigate("/cart/checkout") : toast.error("Cart is empty!"))} className="w-full bg-amber-800 text-white py-3 rounded-lg hover:bg-amber-600 transition">
+                    <button 
+                        onClick={() => navigate("/cart/checkout")} 
+                        disabled={cartItems.length === 0}
+                        className={`w-full py-3 rounded-lg transition font-medium ${
+                            cartItems.length > 0 
+                                ? "bg-amber-800 text-white hover:bg-amber-600 shadow-sm" 
+                                : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                        }`}
+                    >
                         Proceed to Checkout
                     </button>
                 </div>

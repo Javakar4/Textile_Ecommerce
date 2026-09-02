@@ -55,8 +55,8 @@ const orderSchema = new mongoose.Schema(
 
     trackingStatus: {
       type: String,
-      enum: ["Ordered", "Packed", "Shipped", "Delivered"],
-      default: "Ordered"
+      enum: ["Placed", "Packed", "Shipped", "Delivered"],
+      default: "Placed"
     },
 
     shippingAddress: {

@@ -37,21 +37,20 @@ connectDB().then(() => {
 
 const app = express();
 
+
+
 /* MIDDLEWARES */
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || /^http:\/\/(localhost|127\.0\.0\.1|192\.168\.\d+\.\d+|10\.\d+\.\d+\.\d+|172\.(1[6-9]|2\d|3[01])\.\d+\.\d+)(:\d+)?$/.test(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
+      // Reflect the incoming origin to allow all while supporting credentials
+      callback(null, true);
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "ngrok-skip-browser-warning"],
   }),
 );
 app.use(maintenanceMode); // Add maintenance mode check after CORS

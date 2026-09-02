@@ -108,13 +108,25 @@ export const createOrder = async (req, res) => {
 export const getMyOrders = async (req, res) => {
     try {
         const userId = req.user?.userId;
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 5;
+        const skip = (page - 1) * limit;
 
+        const totalOrders = await Order.countDocuments({ userId });
         const orders = await Order.find({ userId })
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(limit);
 
         return res.status(200).json({
             success: true,
-            data: orders
+            data: orders,
+            pagination: {
+                currentPage: page,
+                totalPages: Math.ceil(totalOrders / limit),
+                totalOrders,
+                hasMore: page < Math.ceil(totalOrders / limit)
+            }
         });
     } catch (err) {
         console.error("getMyOrders error:", err);
@@ -133,10 +145,12 @@ export const getOrderById = async (req, res) => {
         const { orderId } = req.params;
         const userId = req.user?.userId;
 
-        const order = await Order.findOne({
-            orderId: Number(orderId),
-            userId
-        });
+        const query = { orderId: Number(orderId) };
+        if (req.user?.role !== "admin") {
+            query.userId = userId;
+        }
+
+        const order = await Order.findOne(query);
 
         if (!order) {
             return res.status(404).json({

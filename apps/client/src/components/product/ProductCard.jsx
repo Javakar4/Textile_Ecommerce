@@ -6,6 +6,7 @@ import { useAuth } from "../../hooks/useAuth";
 import { useWishlist } from "../../hooks/useWishlist";
 import { useApp } from "../../hooks/useApp";
 import toastUtils from "../../utils/toastUtils";
+import fallbackImage from "../../assets/fallback-image.png";
 
 
 // Product Card Component
@@ -41,21 +42,41 @@ const ProductCard = ({ product }) => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {/* Image Container */}
-                {/* <div className="relative h-[60%] bg-gray-200 overflow-hidden"> */}
-                <div className="relative w-full aspect-[3/4] bg-gray-200 overflow-hidden sm:aspect-[3/4]">
+                {/* ── Helper to determine actual image srcs ── */}
+                {(() => {
+                    let imgSrc = product.images?.main;
+                    if (!imgSrc || imgSrc.includes('placehold.co') || imgSrc.includes('via.placeholder.com') || imgSrc.includes('dummyimage.com')) {
+                        imgSrc = fallbackImage;
+                    }
 
-                    <img
-                        src={product.images?.main}
-                        alt={product.name}
-                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <img
-                        src={product.images?.thumbnails?.[1] || product.images?.main}
-                        alt={`${product.name} alternate`}
-                        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"
-                            }`}
-                    />
+                    let hoverImgSrc = product.images?.thumbnails?.[1] || product.images?.main;
+                    if (!hoverImgSrc || hoverImgSrc.includes('placehold.co') || hoverImgSrc.includes('via.placeholder.com') || hoverImgSrc.includes('dummyimage.com')) {
+                        hoverImgSrc = fallbackImage;
+                    }
+
+                    return (
+                        <>
+                            {/* Image Container */}
+                            <div className="relative w-full aspect-[4/5] bg-gray-50 overflow-hidden sm:aspect-[3/4]">
+                                <img
+                                    src={imgSrc}
+                                    alt={product.name}
+                                    className="absolute inset-0 w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110 p-2"
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = fallbackImage;
+                                    }}
+                                />
+                                <img
+                                    src={hoverImgSrc}
+                                    alt={`${product.name} alternate`}
+                                    className={`absolute inset-0 w-full h-full object-contain mix-blend-multiply transition-opacity duration-300 p-2 ${isHovered ? "opacity-100" : "opacity-0"
+                                        }`}
+                                    onError={(e) => {
+                                        e.currentTarget.onerror = null;
+                                        e.currentTarget.src = fallbackImage;
+                                    }}
+                                />
 
                     {/* Discount Badge */}
                     {product.pricing?.discount > 0 && (
@@ -154,17 +175,20 @@ const ProductCard = ({ product }) => {
                     <div className="mt-auto flex items-center justify-between">
                         <div className="flex items-baseline gap-1">
                             <span className="text-sm font-bold text-gray-900">
-                                ${product.pricing?.current?.toFixed(2) || "0.00"}
+                                ₹{product.pricing?.current?.toFixed(2) || "0.00"}
                             </span>
                             <span className="text-[10px] text-gray-400 line-through">
-                                ${product.pricing?.original?.toFixed(2) || "0.00"}
+                                ₹{product.pricing?.original?.toFixed(2) || "0.00"}
                             </span>
                         </div>
-                        <button onClick={handleCartButton} className="bg-gray-900 text-white p-2 rounded-lg hover:bg-gray-800 transition-colors flex flex-row items-center gap-1">
+                        <button onClick={handleCartButton} className="bg-amber-700 text-white p-2 rounded-lg hover:bg-amber-800 transition-colors flex flex-row items-center gap-1">
                             <span className='hidden sm:block text-[10px]'>Add to Cart</span><ShoppingBag size={14} />
                         </button>
                     </div>
                 </div>
+                        </>
+                    );
+                })()}
             </div>
         </div>
 
